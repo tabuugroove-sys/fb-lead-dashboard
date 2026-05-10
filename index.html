@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>FB Lead Pipeline · Dashboard</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js"></script>
+<style>
+  :root {
+    --bg: #0d1117; --card: #161b22; --border: #30363d;
+    --text: #c9d1d9; --muted: #8b949e;
+    --blue: #58a6ff; --green: #3fb950; --yellow: #d29922; --red: #f85149; --purple: #bc8cff;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; line-height: 1.5; padding: 24px; }
+  .container { max-width: 1400px; margin: 0 auto; }
+  header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+  header h1 { font-size: 22px; font-weight: 600; }
+  header .subtitle { color: var(--muted); font-size: 12px; margin-top: 2px; }
+  .badges { display: flex; gap: 8px; }
+  .badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 12px; font-size: 12px; background: var(--card); border: 1px solid var(--border); }
+  .badge .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); animation: pulse 2s infinite; }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+  .badge.model { color: var(--purple); border-color: rgba(188,140,255,.3); }
+
+  .tabs { display: flex; gap: 6px; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 0; }
+  .tab { background: none; border: none; color: var(--muted); padding: 10px 16px; cursor: pointer; font-size: 13px; font-family: inherit; border-bottom: 2px solid transparent; margin-bottom: -1px; }
+  .tab.active { color: var(--blue); border-bottom-color: var(--blue); font-weight: 600; }
+  .tab:hover:not(.active) { color: var(--text); }
+  .page { display: none; }
+  .page.active { display: block; }
+
+  .grid { display: grid; gap: 16px; }
+  .grid.cols-2 { grid-template-columns: 2fr 1fr; }
+  .grid.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 20px; }
+  .card h2 { font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--muted); margin-bottom: 14px; font-weight: 600; }
+
+  /* Token widget */
+  .token-card { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: center; }
+  .token-stats .big { font-size: 36px; font-weight: 700; font-feature-settings: "tnum"; }
+  .token-stats .label { color: var(--muted); font-size: 12px; margin-bottom: 4px; }
+  .token-stats .trend { display: inline-flex; align-items: center; gap: 4px; margin-top: 8px; font-size: 13px; font-weight: 500; }
+  .trend.up { color: var(--green); }
+  .trend.down { color: var(--red); }
+  .token-stats .secondary { margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border); display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .token-stats .secondary div .num { font-size: 18px; font-weight: 600; font-feature-settings: "tnum"; }
+  .token-stats .secondary div .lbl { color: var(--muted); font-size: 11px; text-transform: uppercase; }
+  .sparkline-wrap { height: 140px; position: relative; }
+
+  /* Stats row */
+  .stat-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-bottom: 16px; }
+  .stat-row.four { grid-template-columns: repeat(4, 1fr); }
+  .stat { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 14px; transition: all 0.15s; }
+  .stat .num { font-size: 24px; font-weight: 700; font-feature-settings: "tnum"; }
+  .stat .lbl { color: var(--muted); font-size: 10px; text-transform: uppercase; margin-top: 4px; letter-spacing: 0.3px; }
+  .stat.clickable { cursor: pointer; }
+  .stat.clickable:hover { border-color: var(--blue); transform: translateY(-1px); }
+  .stat.clickable:hover .lbl { color: var(--blue); }
+
+  /* Funnel */
+  .funnel { display: grid; grid-template-columns: 1fr 18px 1fr 18px 1fr 18px 1fr 18px 1fr; align-items: stretch; gap: 8px; margin: 8px 0; }
+  .funnel .stage { background: var(--bg); border: 1px solid var(--border); border-radius: 6px; padding: 12px; text-align: center; }
+  .funnel .stage .v { font-size: 22px; font-weight: 700; }
+  .funnel .stage .l { color: var(--muted); font-size: 10px; text-transform: uppercase; margin-top: 4px; }
+  .funnel .arr { display: flex; align-items: center; justify-content: center; color: var(--muted); font-size: 18px; }
+
+  /* Agent cards */
+  .agents-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; }
+  .agent { background: var(--bg); border: 1px solid var(--border); border-radius: 6px; padding: 14px; }
+  .agent .head { display: flex; justify-content: space-between; align-items: start; margin-bottom: 8px; }
+  .agent .name { font-weight: 600; font-size: 13px; }
+  .agent .model { color: var(--purple); font-size: 11px; font-family: "JetBrains Mono", monospace; margin-top: 2px; }
+  .agent .desc { color: var(--muted); font-size: 11px; line-height: 1.5; }
+  .agent .footer { display: flex; justify-content: space-between; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border); font-size: 11px; }
+  .agent .footer .lbl { color: var(--muted); }
+  .status-pill { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.3px; }
+  .status-running  { background: rgba(63,185,80,0.15); color: var(--green); }
+  .status-idle     { background: rgba(139,148,158,0.15); color: var(--muted); }
+  .status-planned  { background: rgba(88,166,255,0.15); color: var(--blue); }
+  .status-error    { background: rgba(248,81,73,0.15); color: var(--red); }
+
+  /* Activity feed */
+  .feed { font-family: "JetBrains Mono", "Consolas", monospace; font-size: 11px; }
+  .feed .row { display: grid; grid-template-columns: 80px 110px 1fr; gap: 12px; padding: 6px 0; border-bottom: 1px solid rgba(48,54,61,0.5); }
+  .feed .row:last-child { border-bottom: none; }
+  .feed .ts { color: var(--muted); }
+  .feed .agent-tag { color: var(--blue); font-weight: 600; }
+  .feed .msg { color: var(--text); }
+
+  /* Mermaid */
+  .mermaid { background: #0a0e13; border-radius: 8px; padding: 24px; text-align: center; }
+
+  /* Rules */
+  .rule-card { padding: 14px; background: rgba(88,166,255,0.05); border-left: 3px solid var(--blue); border-radius: 4px; margin-bottom: 10px; }
+  .rule-card.critical { border-left-color: var(--red); background: rgba(248,81,73,0.05); }
+  .rule-card .title { font-weight: 600; font-size: 13px; margin-bottom: 4px; }
+  .rule-card .body { font-size: 12px; color: var(--muted); }
+
+  /* Tables */
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--border); }
+  th { color: var(--muted); font-weight: 500; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; }
+  td a { color: var(--blue); text-decoration: none; }
+  td a:hover { text-decoration: underline; }
+  .pri-badge { display: inline-block; padding: 1px 6px; border-radius: 4px; font-size: 11px; font-weight: 600; }
+  .p5 { background: rgba(248,81,73,0.15); color: var(--red); }
+  .p4 { background: rgba(210,153,34,0.15); color: var(--yellow); }
+  .p3 { background: rgba(88,166,255,0.15); color: var(--blue); }
+  .p2 { background: rgba(63,185,80,0.15); color: var(--green); }
+  .p1 { background: rgba(139,148,158,0.15); color: var(--muted); }
+
+  .pills { display: flex; flex-wrap: wrap; gap: 8px; }
+  .pill { padding: 4px 10px; border-radius: 12px; background: rgba(88,166,255,0.1); border: 1px solid rgba(88,166,255,0.3); color: var(--blue); font-size: 12px; font-family: "JetBrains Mono", monospace; }
+
+  .filetree { font-family: "JetBrains Mono", monospace; font-size: 12px; }
+  .filetree .line { display: grid; grid-template-columns: 1fr 80px 130px; gap: 8px; padding: 4px 0; border-bottom: 1px solid rgba(48,54,61,0.5); }
+  .filetree .line:hover { background: rgba(88,166,255,0.05); }
+  .filetree .name.dir { color: var(--blue); font-weight: 500; }
+  .filetree .size, .filetree .modified { color: var(--muted); text-align: right; font-size: 11px; }
+
+  .bar-row { display: grid; grid-template-columns: 110px 1fr 50px; align-items: center; gap: 8px; margin-bottom: 6px; font-size: 12px; }
+  .bar-track { background: rgba(48,54,61,0.5); border-radius: 4px; height: 8px; overflow: hidden; }
+  .bar-fill { height: 100%; border-radius: 4px; transition: width 0.5s ease; }
+  .bar-row .lbl { color: var(--muted); }
+  .bar-row .num { font-weight: 600; text-align: right; font-feature-settings: "tnum"; }
+
+  /* Modal */
+  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 1000; align-items: center; justify-content: center; padding: 24px; backdrop-filter: blur(4px); }
+  .modal-overlay.open { display: flex; }
+  .modal { background: var(--card); border: 1px solid var(--border); border-radius: 12px; width: 100%; max-width: 1100px; max-height: 90vh; display: flex; flex-direction: column; box-shadow: 0 20px 60px rgba(0,0,0,0.5); }
+  .modal-header { display: flex; align-items: center; justify-content: space-between; padding: 18px 24px; border-bottom: 1px solid var(--border); }
+  .modal-header h2 { font-size: 16px; text-transform: none; letter-spacing: 0; color: var(--text); margin: 0; }
+  #modal-close { background: none; border: none; color: var(--muted); font-size: 28px; cursor: pointer; line-height: 1; padding: 0 4px; }
+  #modal-close:hover { color: var(--text); }
+  .modal-search { padding: 12px 24px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; }
+  .modal-search input { flex: 1; background: var(--bg); border: 1px solid var(--border); border-radius: 6px; padding: 8px 12px; color: var(--text); font-size: 13px; outline: none; }
+  .modal-search input:focus { border-color: var(--blue); }
+  .modal-search .muted { color: var(--muted); font-size: 12px; white-space: nowrap; }
+  .modal-body { overflow-y: auto; padding: 0 24px 24px; flex: 1; }
+  .modal-body table { margin-top: 12px; }
+  .modal-body .empty { padding: 40px; text-align: center; color: var(--muted); }
+  .muted { color: var(--muted); }
+  code { background: var(--bg); padding: 1px 6px; border-radius: 3px; font-family: "JetBrains Mono", monospace; font-size: 12px; }
+
+  footer { margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--border); color: var(--muted); font-size: 11px; text-align: center; }
+  footer code { background: var(--card); }
+</style>
+</head>
+<body>
+<div class="container">
+
+<header>
+  <div>
+    <h1>Facebook Lead Pipeline</h1>
+    <div class="subtitle">Photographer outreach lead generation • Phase 1 (parser) ready · Phase 2 (AI pipeline) in plan</div>
+  </div>
+  <div class="badges">
+    <span class="badge"><span class="dot"></span>Operational</span>
+    <span class="badge model">⌬ claude-opus-4-7</span>
+  </div>
+</header>
+
+<nav class="tabs">
+  <button class="tab active" data-page="leads">📡 Lead Pipeline</button>
+  <button class="tab" data-page="parser">⚙️ Parser</button>
+  <button class="tab" data-page="system">🔧 System</button>
+</nav>
+
+<!-- ====================== PAGE: LEADS (главная) ====================== -->
+<div class="page active" data-page="leads">
+
+  <!-- Token widget с CLI/API split -->
+  <div class="card" style="margin-bottom: 16px;">
+    <h2>Token Usage — CLI vs API · Weekly Trend</h2>
+    <div class="token-card">
+      <div class="token-stats">
+        <div class="label">Сегодня (всего)</div>
+        <div class="big">0</div>
+        <div class="trend up">
+          ▲ 0.0% vs вчера
+        </div>
+        <div class="secondary">
+          <div>
+            <div class="num" style="color:var(--green)">0</div>
+            <div class="lbl">CLI calls (free)</div>
+          </div>
+          <div>
+            <div class="num" style="color:var(--yellow)">1</div>
+            <div class="lbl">API calls</div>
+          </div>
+          <div>
+            <div class="num">1.1K</div>
+            <div class="lbl">API tokens (7d)</div>
+          </div>
+          <div>
+            <div class="num" style="color:var(--purple)">$0.00</div>
+            <div class="lbl">API cost (7d)</div>
+          </div>
+        </div>
+      </div>
+      <div class="sparkline-wrap"><canvas id="sparkline"></canvas></div>
+    </div>
+    <div style="margin-top: 12px; font-size: 11px; color: var(--muted);">
+      Источник: <code>data/ai-stats.jsonl (1 calls tracked)</code> ·
+      CLI = твоя подписка (free) · API = pay-per-token ·
+      Обновить: <code>node build-dashboard.js</code>
+    </div>
+  </div>
+
+  <!-- Funnel stats -->
+  <div class="stat-row">
+    <div class="stat"><div class="num" style="color:var(--blue)">11</div><div class="lbl">Posts collected</div></div>
+    <div class="stat"><div class="num">5</div><div class="lbl">After lex filter</div></div>
+    <div class="stat"><div class="num">0</div><div class="lbl">Tier-1 pass (Haiku)</div></div>
+    <div class="stat"><div class="num" style="color:var(--green)">0</div><div class="lbl">Tier-2 confirmed</div></div>
+    <div class="stat"><div class="num" style="color:var(--yellow)">0</div><div class="lbl">Sent to Telegram</div></div>
+  </div>
+
+  <!-- Funnel viz -->
+  <div class="card" style="margin-bottom: 16px;">
+    <h2>Lead Funnel</h2>
+    <div class="funnel">
+      <div class="stage"><div class="v">11</div><div class="l">posts</div></div>
+      <div class="arr">→</div>
+      <div class="stage"><div class="v">5</div><div class="l">lex filter</div></div>
+      <div class="arr">→</div>
+      <div class="stage"><div class="v">0</div><div class="l">tier-1 haiku</div></div>
+      <div class="arr">→</div>
+      <div class="stage"><div class="v">0</div><div class="l">tier-2 sonnet</div></div>
+      <div class="arr">→</div>
+      <div class="stage" style="border-color: var(--green);"><div class="v" style="color:var(--green)">0</div><div class="l">delivered</div></div>
+    </div>
+  </div>
+
+  <!-- Agents grid -->
+  <div class="card" style="margin-bottom: 16px;">
+    <h2>Agents & Processes</h2>
+    <div class="agents-grid">
+      
+        <div class="agent">
+          <div class="head">
+            <div>
+              <div class="name">Scraper v2</div>
+              <div class="model">Puppeteer + AdsPower P#8</div>
+            </div>
+            <span class="status-pill status-idle">idle</span>
+          </div>
+          <div class="desc">3 сессии/сутки, 25-30 групп/сессия, cursor-based по last_post_id</div>
+          <div class="footer">
+            <span class="lbl">posts/day</span>
+            <span><b>9</b></span>
+          </div>
+        </div>
+        <div class="agent">
+          <div class="head">
+            <div>
+              <div class="name">Lex Filter</div>
+              <div class="model">regex / V1+V2 dictionary</div>
+            </div>
+            <span class="status-pill status-idle">idle</span>
+          </div>
+          <div class="desc">Срез 70-85% мусора без расхода токенов AI</div>
+          <div class="footer">
+            <span class="lbl">vocab size</span>
+            <span><b>218</b></span>
+          </div>
+        </div>
+        <div class="agent">
+          <div class="head">
+            <div>
+              <div class="name">Tier-1 Classifier</div>
+              <div class="model">Haiku 4.5</div>
+            </div>
+            <span class="status-pill status-idle">idle</span>
+          </div>
+          <div class="desc">Broad sweep, batch-50, prompt cache (rules + few-shot)</div>
+          <div class="footer">
+            <span class="lbl">batches/day</span>
+            <span><b>1</b></span>
+          </div>
+        </div>
+        <div class="agent">
+          <div class="head">
+            <div>
+              <div class="name">Tier-2 Classifier</div>
+              <div class="model">Sonnet 4.6</div>
+            </div>
+            <span class="status-pill status-idle">idle</span>
+          </div>
+          <div class="desc">Precision pass, structured output, только borderline (T1 conf 40-70)</div>
+          <div class="footer">
+            <span class="lbl">leads/day</span>
+            <span><b>0</b></span>
+          </div>
+        </div>
+        <div class="agent">
+          <div class="head">
+            <div>
+              <div class="name">Lead Delivery</div>
+              <div class="model">Telegram Bot</div>
+            </div>
+            <span class="status-pill status-idle">idle</span>
+          </div>
+          <div class="desc">Карточка: post text + author profile + contact methods</div>
+          <div class="footer">
+            <span class="lbl">sent/day</span>
+            <span><b>0</b></span>
+          </div>
+        </div>
+    </div>
+  </div>
+
+  <div class="grid cols-2" style="margin-bottom: 16px;">
+    <!-- Pipeline mermaid -->
+    <div class="card">
+      <h2>Architecture · 5 layers + test set</h2>
+      <div class="mermaid">
+graph TB
+  SCRAPER[Scraper v2<br/>Puppeteer + AdsPower P#8<br/>3 sessions/day]
+  POSTS[(posts.jsonl)]
+  LEX[Lex Filter<br/>regex / V1+V2 dictionary]
+  CAND[(candidates.jsonl)]
+  T1[AI Tier-1<br/>Haiku 4.5 batch-50<br/>broad sweep]
+  POT[(potentials.jsonl)]
+  T2[AI Tier-2<br/>Sonnet 4.6<br/>precision pass]
+  LEADS[(leads.jsonl)]
+  TG[Telegram Bot<br/>card delivery]
+  TS{Test set 100 posts<br/>single H / single S / cascade}
+
+  SCRAPER --> POSTS --> LEX --> CAND --> T1 --> POT --> T2 --> LEADS --> TG
+  TS -.measures.-> T1
+  TS -.measures.-> T2
+      </div>
+    </div>
+
+    <!-- Activity feed -->
+    <div class="card">
+      <h2>Recent Activity</h2>
+      <div class="feed">
+        
+          <div class="row">
+            <div class="ts">07:01</div>
+            <div class="agent-tag">PIPELINE</div>
+            <div class="msg">run-phase2 finished</div>
+          </div>
+          <div class="row">
+            <div class="ts">07:01</div>
+            <div class="agent-tag">TIER-1</div>
+            <div class="msg">5 candidates → 0 leads (cli=0, api=1, tokens i=970 o=174)</div>
+          </div>
+          <div class="row">
+            <div class="ts">07:01</div>
+            <div class="agent-tag">LEX FILTER</div>
+            <div class="msg">11 → 0 (55% dropped, vocab=218)</div>
+          </div>
+          <div class="row">
+            <div class="ts">07:01</div>
+            <div class="agent-tag">PIPELINE</div>
+            <div class="msg">run-phase2 start</div>
+          </div>
+          <div class="row">
+            <div class="ts">06:03</div>
+            <div class="agent-tag">LEX FILTER</div>
+            <div class="msg">11 → 5 (55% dropped, vocab=218)</div>
+          </div>
+          <div class="row">
+            <div class="ts">06:02</div>
+            <div class="agent-tag">SCRAPER</div>
+            <div class="msg">Session done — 9 posts from 3 groups</div>
+          </div>
+          <div class="row">
+            <div class="ts">06:00</div>
+            <div class="agent-tag">SCRAPER</div>
+            <div class="msg">Session start — 3 groups, profile #30</div>
+          </div>
+          <div class="row">
+            <div class="ts">05:28</div>
+            <div class="agent-tag">SCRAPER</div>
+            <div class="msg">Session done — 2 posts from 3 groups</div>
+          </div>
+          <div class="row">
+            <div class="ts">05:26</div>
+            <div class="agent-tag">SCRAPER</div>
+            <div class="msg">Session start — 3 groups, profile #30</div>
+          </div>
+          <div class="row">
+            <div class="ts">05:21</div>
+            <div class="agent-tag">SCRAPER</div>
+            <div class="msg">Session done — 0 posts from 0 groups</div>
+          </div>
+          <div class="row">
+            <div class="ts">05:20</div>
+            <div class="agent-tag">SCRAPER</div>
+            <div class="msg">⚠ FB block detected (&quot;captcha&quot;) on 530720422544477 — abort session</div>
+          </div>
+          <div class="row">
+            <div class="ts">05:20</div>
+            <div class="agent-tag">SCRAPER</div>
+            <div class="msg">Session start — 25 groups, profile #30</div>
+          </div>
+          <div class="row">
+            <div class="ts">scheduled</div>
+            <div class="agent-tag">SCRAPER</div>
+            <div class="msg">Будет запускаться 3×/сутки: 09:00, 13:00, 18:00</div>
+          </div>
+          <div class="row">
+            <div class="ts">scheduled</div>
+            <div class="agent-tag">LEX FILTER</div>
+            <div class="msg">Применяется к posts.jsonl сразу после каждой сессии scraper</div>
+          </div>
+          <div class="row">
+            <div class="ts">scheduled</div>
+            <div class="agent-tag">TIER-1</div>
+            <div class="msg">Промпт-кэшинг: rules + 5 few-shot. Batch=50 постов/запрос</div>
+          </div>
+          <div class="row">
+            <div class="ts">scheduled</div>
+            <div class="agent-tag">TIER-2</div>
+            <div class="msg">Активируется только на borderline. Output: structured JSON с extracted fields</div>
+          </div>
+          <div class="row">
+            <div class="ts">scheduled</div>
+            <div class="agent-tag">TELEGRAM</div>
+            <div class="msg">BotFather → token в .env (TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID)</div>
+          </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Configuration -->
+  <div class="grid cols-2">
+    <div class="card">
+      <h2>Critical Rules</h2>
+      <div class="rule-card critical">
+        <div class="title">▸ Profile #8 — единственный разрешённый профиль</div>
+        <div class="body">
+          US_ASH_WED_08 · serial 30 · IP 84.37.40.81<br>
+          <b>Только чтение</b>. Никаких DM/like/join/post с этого профиля — иначе FB anti-bot повышает скор.
+        </div>
+      </div>
+      <div class="rule-card">
+        <div class="title">▸ 3 сессии/сутки, разрывы 3-4ч</div>
+        <div class="body">25-30 групп/сессия · 60с перерыв каждые 10 групп · 15-30с между запросами · stop-on-CAPTCHA</div>
+      </div>
+      <div class="rule-card">
+        <div class="title">▸ Lead delivery — только Telegram, не FB/IG</div>
+        <div class="body">Отправка из профиля 8 в DM = риск бана. Telegram-бот = 0 риска, мгновенные пуши.</div>
+      </div>
+      <div class="rule-card">
+        <div class="title">▸ Token economy: lex filter ДО AI</div>
+        <div class="body">Срез 70-85% мусора без расхода токенов. Промпт-кэшинг на T1. Sonnet только на borderline.</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Test Set Targets</h2>
+      <p style="font-size: 13px; color: var(--muted); margin-bottom: 14px;">100 размеченных постов прогоняются через 3 конфига. Победитель → прод.</p>
+      <table>
+        <thead><tr><th>Configuration</th><th>Cost</th><th>Precision target</th></tr></thead>
+        <tbody>
+          <tr><td>Single Haiku 4.5</td><td>$</td><td>≥85%</td></tr>
+          <tr><td>Haiku → Sonnet (cascade)</td><td>$$</td><td>≥85%</td></tr>
+          <tr><td>Single Sonnet 4.6</td><td>$$$</td><td>≥85%</td></tr>
+        </tbody>
+      </table>
+      <p style="font-size: 12px; color: var(--muted); margin-top: 14px;">Цель: precision на класс <b>order</b> ≥ 85%. Recall не критичен.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ====================== PAGE: PARSER ====================== -->
+<div class="page" data-page="parser">
+
+  <div class="stat-row four">
+    <div class="stat clickable" data-modal="groups"><div class="num" style="color:var(--blue)">251</div><div class="lbl">Groups collected ↗</div></div>
+    <div class="stat clickable" data-modal="cities"><div class="num">10</div><div class="lbl">Target cities ↗</div></div>
+    <div class="stat clickable" data-modal="keywords"><div class="num">8</div><div class="lbl">Keywords ↗</div></div>
+    <div class="stat clickable" data-modal="profiles"><div class="num">8</div><div class="lbl">AdsPower profiles ↗</div></div>
+  </div>
+
+  <div class="card" style="margin-bottom: 16px;">
+    <h2>Parser Pipeline</h2>
+    <div class="mermaid">
+graph LR
+  CFG[project_config.json]
+  PARSER[parser.js<br/>Node 24 ESM]
+  ADSAPI[AdsPower Local API<br/>:50325 + api_key]
+  PROFILE["Profile #8<br/>US_ASH_WED_08<br/>serial=30"]
+  PROXY[Proxy<br/>84.37.40.81 / US]
+  SUN[SunBrowser<br/>Anti-detect]
+  PUP[puppeteer-core<br/>via CDP/WS]
+  FB["facebook.com/<br/>search/groups"]
+  STORE[(groups.json<br/>251 entries)]
+
+  CFG --> PARSER --> ADSAPI --> PROFILE --> PROXY
+  PROFILE --> SUN --> PUP --> FB --> STORE
+    </div>
+  </div>
+
+  <div class="grid cols-2" style="margin-bottom: 16px;">
+    <div class="card">
+      <h2>Top groups (by priority)</h2>
+      <table>
+        <thead><tr><th>Group</th><th>Members</th><th>Pri</th><th>Cities</th></tr></thead>
+        <tbody>
+          
+            <tr>
+              <td><a href="https://www.facebook.com/groups/386521125929053/" target="_blank">Affordable Photographer/Videographer Group (budget meal)</a></td>
+              <td>228K</td>
+              <td><span class="pri-badge p5">P5</span></td>
+              <td class="muted">New York</td>
+            </tr>
+            <tr>
+              <td><a href="https://www.facebook.com/groups/theweddinghacker/" target="_blank">Budget Wedding Planning Community</a></td>
+              <td>197K</td>
+              <td><span class="pri-badge p5">P5</span></td>
+              <td class="muted">New York, Los Angeles, Chicago, Houston, Phoenix, Philadelphia</td>
+            </tr>
+            <tr>
+              <td><a href="https://www.facebook.com/groups/426864460029408/" target="_blank">Wedding Planning Advice, Tips, Amazon Budget Wedding and Hom</a></td>
+              <td>108K</td>
+              <td><span class="pri-badge p5">P5</span></td>
+              <td class="muted">New York, Los Angeles, Chicago, Phoenix, Philadelphia</td>
+            </tr>
+            <tr>
+              <td><a href="https://www.facebook.com/groups/newyorkcityphotographers/" target="_blank">New York City Photography</a></td>
+              <td>551K</td>
+              <td><span class="pri-badge p5">P5</span></td>
+              <td class="muted">New York</td>
+            </tr>
+            <tr>
+              <td><a href="https://www.facebook.com/groups/destinationweddingdirectory/" target="_blank">Destination Wedding Directory</a></td>
+              <td>111K</td>
+              <td><span class="pri-badge p5">P5</span></td>
+              <td class="muted">Chicago</td>
+            </tr>
+            <tr>
+              <td><a href="https://www.facebook.com/groups/1519806368214005/" target="_blank">FREELANCE VIDEOGRAPHER AND PHOTOGRAPHER PHILIPPINES</a></td>
+              <td>127K</td>
+              <td><span class="pri-badge p5">P5</span></td>
+              <td class="muted">Philadelphia</td>
+            </tr>
+            <tr>
+              <td><a href="https://www.facebook.com/groups/623845381027124/" target="_blank">NYC Photographers</a></td>
+              <td>41K</td>
+              <td><span class="pri-badge p4">P4</span></td>
+              <td class="muted">New York</td>
+            </tr>
+            <tr>
+              <td><a href="https://www.facebook.com/groups/433363276700217/" target="_blank">Wedding Suppliers Freelance Photographer Videographer of the</a></td>
+              <td>60K</td>
+              <td><span class="pri-badge p4">P4</span></td>
+              <td class="muted">New York</td>
+            </tr>
+            <tr>
+              <td><a href="https://www.facebook.com/groups/277471346190369/" target="_blank">Kolkata Wedding Photographer</a></td>
+              <td>43K</td>
+              <td><span class="pri-badge p4">P4</span></td>
+              <td class="muted">New York</td>
+            </tr>
+            <tr>
+              <td><a href="https://www.facebook.com/groups/352527064790380/" target="_blank">NC Photographers &amp; Videographers</a></td>
+              <td>41K</td>
+              <td><span class="pri-badge p4">P4</span></td>
+              <td class="muted">New York, Phoenix</td>
+            </tr>
+            <tr>
+              <td><a href="https://www.facebook.com/groups/1346089515925020/" target="_blank">Upstate New York Photography</a></td>
+              <td>45K</td>
+              <td><span class="pri-badge p4">P4</span></td>
+              <td class="muted">New York</td>
+            </tr>
+            <tr>
+              <td><a href="https://www.facebook.com/groups/NYCFilmProduction/" target="_blank">NYC Film Production</a></td>
+              <td>63K</td>
+              <td><span class="pri-badge p4">P4</span></td>
+              <td class="muted">New York</td>
+            </tr>
+        </tbody>
+      </table>
+    </div>
+    <div>
+      <div class="card" style="margin-bottom: 16px;">
+        <h2>By City</h2>
+        <div class="bar-row">
+      <div class="lbl">New York</div>
+      <div class="bar-track"><div class="bar-fill" style="width:100%;background:#58a6ff"></div></div>
+      <div class="num">85</div>
+    </div><div class="bar-row">
+      <div class="lbl">Phoenix</div>
+      <div class="bar-track"><div class="bar-fill" style="width:61%;background:#58a6ff"></div></div>
+      <div class="num">52</div>
+    </div><div class="bar-row">
+      <div class="lbl">Los Angeles</div>
+      <div class="bar-track"><div class="bar-fill" style="width:61%;background:#58a6ff"></div></div>
+      <div class="num">52</div>
+    </div><div class="bar-row">
+      <div class="lbl">Chicago</div>
+      <div class="bar-track"><div class="bar-fill" style="width:60%;background:#58a6ff"></div></div>
+      <div class="num">51</div>
+    </div><div class="bar-row">
+      <div class="lbl">Philadelphia</div>
+      <div class="bar-track"><div class="bar-fill" style="width:55%;background:#58a6ff"></div></div>
+      <div class="num">47</div>
+    </div><div class="bar-row">
+      <div class="lbl">Houston</div>
+      <div class="bar-track"><div class="bar-fill" style="width:44%;background:#58a6ff"></div></div>
+      <div class="num">37</div>
+    </div><div class="bar-row">
+      <div class="lbl">San Antonio</div>
+      <div class="bar-track"><div class="bar-fill" style="width:20%;background:#58a6ff"></div></div>
+      <div class="num">17</div>
+    </div>
+      </div>
+      <div class="card" style="margin-bottom: 16px;">
+        <h2>By Activity</h2>
+        <div class="bar-row">
+      <div class="lbl">medium</div>
+      <div class="bar-track"><div class="bar-fill" style="width:100%;background:#d29922"></div></div>
+      <div class="num">121</div>
+    </div><div class="bar-row">
+      <div class="lbl">low</div>
+      <div class="bar-track"><div class="bar-fill" style="width:97%;background:#8b949e"></div></div>
+      <div class="num">117</div>
+    </div><div class="bar-row">
+      <div class="lbl">high</div>
+      <div class="bar-track"><div class="bar-fill" style="width:11%;background:#f85149"></div></div>
+      <div class="num">13</div>
+    </div>
+      </div>
+      <div class="card">
+        <h2>By Priority</h2>
+        <div class="bar-row">
+      <div class="lbl">2</div>
+      <div class="bar-track"><div class="bar-fill" style="width:100%;background:#58a6ff"></div></div>
+      <div class="num">117</div>
+    </div><div class="bar-row">
+      <div class="lbl">3</div>
+      <div class="bar-track"><div class="bar-fill" style="width:58%;background:#58a6ff"></div></div>
+      <div class="num">68</div>
+    </div><div class="bar-row">
+      <div class="lbl">1</div>
+      <div class="bar-track"><div class="bar-fill" style="width:37%;background:#58a6ff"></div></div>
+      <div class="num">43</div>
+    </div><div class="bar-row">
+      <div class="lbl">4</div>
+      <div class="bar-track"><div class="bar-fill" style="width:15%;background:#58a6ff"></div></div>
+      <div class="num">17</div>
+    </div><div class="bar-row">
+      <div class="lbl">5</div>
+      <div class="bar-track"><div class="bar-fill" style="width:5%;background:#58a6ff"></div></div>
+      <div class="num">6</div>
+    </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ====================== PAGE: SYSTEM ====================== -->
+<div class="page" data-page="system">
+
+  <div class="grid cols-2">
+    <div class="card">
+      <h2>Project Structure</h2>
+      <div class="filetree">
+        
+          <div class="line">
+            <div class="name ">📄 build-dashboard.js</div>
+            <div class="size">40.1 KB</div>
+            <div class="modified">2026-05-10 03:29</div>
+          </div>
+          <div class="line">
+            <div class="name ">📄 dashboard-tokens.json</div>
+            <div class="size">608 B</div>
+            <div class="modified">2026-05-10 03:29</div>
+          </div>
+          <div class="line">
+            <div class="name ">📄 dashboard.html</div>
+            <div class="size">102.7 KB</div>
+            <div class="modified">2026-05-10 03:29</div>
+          </div>
+          <div class="line">
+            <div class="name dir">📁 data</div>
+            <div class="size"></div>
+            <div class="modified">2026-05-10 03:29</div>
+          </div>
+          <div class="line">
+            <div class="name dir">📁 dictionaries</div>
+            <div class="size"></div>
+            <div class="modified">2026-05-10 03:29</div>
+          </div>
+          <div class="line">
+            <div class="name dir">📁 docs</div>
+            <div class="size"></div>
+            <div class="modified">2026-05-10 03:29</div>
+          </div>
+          <div class="line">
+            <div class="name ">📄 groups.json</div>
+            <div class="size">137.5 KB</div>
+            <div class="modified">2026-05-10 03:29</div>
+          </div>
+          <div class="line">
+            <div class="name ">📄 package-lock.json</div>
+            <div class="size">129.9 KB</div>
+            <div class="modified">2026-05-10 03:30</div>
+          </div>
+          <div class="line">
+            <div class="name ">📄 package.json</div>
+            <div class="size">862 B</div>
+            <div class="modified">2026-05-10 03:29</div>
+          </div>
+          <div class="line">
+            <div class="name ">📄 parser.js</div>
+            <div class="size">13.5 KB</div>
+            <div class="modified">2026-05-10 03:29</div>
+          </div>
+          <div class="line">
+            <div class="name ">📄 project_config.json</div>
+            <div class="size">7.5 KB</div>
+            <div class="modified">2026-05-10 03:29</div>
+          </div>
+          <div class="line">
+            <div class="name dir">📁 scripts</div>
+            <div class="size"></div>
+            <div class="modified">2026-05-10 03:29</div>
+          </div>
+          <div class="line">
+            <div class="name dir">📁 src</div>
+            <div class="size"></div>
+            <div class="modified">2026-05-10 03:29</div>
+          </div>
+      </div>
+    </div>
+    <div>
+      <div class="card" style="margin-bottom: 16px;">
+        <h2>Tech Stack</h2>
+        <div class="pills">
+          <span class="pill">Node.js 24 (LTS)</span>
+          <span class="pill">ESM</span>
+          <span class="pill">@anthropic-ai/sdk@0.30.0</span><span class="pill">axios@1.7.7</span><span class="pill">dotenv@16.4.5</span><span class="pill">node-telegram-bot-api@0.66.0</span><span class="pill">puppeteer-core@23.5.0</span>
+          <span class="pill">AdsPower 7.12 + SunBrowser</span>
+          <span class="pill">AutoHotkey v2</span>
+          <span class="pill">GitHub CLI 2.92</span>
+        </div>
+      </div>
+      <div class="card">
+        <h2>Workflow Steps</h2>
+        <ol style="padding-left: 20px; font-size: 13px; line-height: 1.8;">
+          <li>Initialize AdsPower profile (#8 only)</li>
+          <li>AdsPower starts SunBrowser with assigned proxy</li>
+          <li>Puppeteer connects via CDP WebSocket</li>
+          <li>Loop cities × keywords (humanized timing)</li>
+          <li>Navigate facebook.com/search/groups, scroll, extract</li>
+          <li>Merge results into groups.json by slug (dedup)</li>
+          <li>Stop browser via AdsPower API on session end</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ====================== MODAL ====================== -->
+<div id="modal-overlay" class="modal-overlay">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 id="modal-title">—</h2>
+      <button id="modal-close">×</button>
+    </div>
+    <div class="modal-search">
+      <input type="text" id="modal-search-input" placeholder="Поиск...">
+      <span id="modal-count" class="muted"></span>
+    </div>
+    <div id="modal-body" class="modal-body"></div>
+  </div>
+</div>
+
+<footer>
+  Сгенерировано: 10.05.2026, 05:30:41 ·
+  Последний прогон парсера: 05.05.2026, 01:40:11 ·
+  Обновить: <code>node build-dashboard.js</code>
+</footer>
+
+</div>
+
+<script>
+mermaid.initialize({ startOnLoad: true, theme: 'dark', themeVariables: { background: '#0a0e13', primaryColor: '#1e2530', primaryTextColor: '#c9d1d9', lineColor: '#58a6ff', textColor: '#c9d1d9' } });
+
+// ===== Tabs router =====
+function showPage(name) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.page === name));
+  document.querySelectorAll('.page').forEach(p => p.classList.toggle('active', p.dataset.page === name));
+  history.replaceState(null, '', '#/' + name);
+  // re-render mermaid в активной вкладке
+  setTimeout(() => mermaid.run({ querySelector: '.page.active .mermaid' }), 50);
+}
+document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => showPage(t.dataset.page)));
+const initial = (location.hash.match(/^#\/(\w+)/) || [])[1] || 'leads';
+if (['leads','parser','system'].includes(initial)) showPage(initial);
+
+// ===== CLI vs API split chart =====
+const aiDaily = [{"date":"пн","iso":"2026-05-03","cli_calls":0,"api_calls":0,"cli_tokens":0,"api_tokens":0,"cost_usd":0},{"date":"вт","iso":"2026-05-04","cli_calls":0,"api_calls":0,"cli_tokens":0,"api_tokens":0,"cost_usd":0},{"date":"ср","iso":"2026-05-05","cli_calls":0,"api_calls":1,"cli_tokens":0,"api_tokens":1144,"cost_usd":0.00184},{"date":"чт","iso":"2026-05-06","cli_calls":0,"api_calls":0,"cli_tokens":0,"api_tokens":0,"cost_usd":0},{"date":"пт","iso":"2026-05-07","cli_calls":0,"api_calls":0,"cli_tokens":0,"api_tokens":0,"cost_usd":0},{"date":"сб","iso":"2026-05-08","cli_calls":0,"api_calls":0,"cli_tokens":0,"api_tokens":0,"cost_usd":0},{"date":"вс","iso":"2026-05-09","cli_calls":0,"api_calls":0,"cli_tokens":0,"api_tokens":0,"cost_usd":0}];
+const ctx = document.getElementById('sparkline').getContext('2d');
+new Chart(ctx, {
+  type: 'line',
+  data: {
+    labels: aiDaily.map(d => d.date),
+    datasets: [
+      {
+        label: 'CLI (free)',
+        data: aiDaily.map(d => d.cli_tokens),
+        borderColor: '#3fb950',
+        backgroundColor: 'rgba(63,185,80,0.15)',
+        fill: true, tension: 0.35,
+        pointRadius: 3, pointBackgroundColor: '#3fb950', pointHoverRadius: 5,
+        borderWidth: 2
+      },
+      {
+        label: 'API (paid)',
+        data: aiDaily.map(d => d.api_tokens),
+        borderColor: '#d29922',
+        backgroundColor: 'rgba(210,153,34,0.15)',
+        fill: true, tension: 0.35,
+        pointRadius: 3, pointBackgroundColor: '#d29922', pointHoverRadius: 5,
+        borderWidth: 2
+      }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {
+      legend: { display: true, position: 'top', labels: { color: '#c9d1d9', font: { size: 11 }, boxWidth: 12 } },
+      tooltip: {
+        backgroundColor: '#161b22', borderColor: '#30363d', borderWidth: 1,
+        callbacks: {
+          label: c => {
+            const v = c.parsed.y;
+            const day = aiDaily[c.dataIndex];
+            if (c.dataset.label.startsWith('CLI')) {
+              return `CLI: ${day.cli_calls} calls (${(v/1000).toFixed(1)}K tokens, free)`;
+            }
+            return `API: ${day.api_calls} calls (${(v/1000).toFixed(1)}K tokens, $${day.cost_usd.toFixed(3)})`;
+          }
+        }
+      }
+    },
+    scales: {
+      x: { grid: { display: false }, ticks: { color: '#8b949e', font: { size: 11 } } },
+      y: { grid: { color: 'rgba(48,54,61,0.5)' }, ticks: { color: '#8b949e', font: { size: 11 }, callback: v => v >= 1000 ? (v/1000).toFixed(0)+'K' : v } }
+    }
+  }
+});
+
+// ===== Modal =====
+const modalData = {
+  groups: [{"name":"Affordable Photographer/Videographer Group (budget meal)","members":"228K","link":"https://www.facebook.com/groups/386521125929053/","priority":5,"activity":"high","cities":["New York"],"keywords":["wedding photographer"]},{"name":"Budget Wedding Planning Community","members":"197K","link":"https://www.facebook.com/groups/theweddinghacker/","priority":5,"activity":"high","cities":["New York","Los Angeles","Chicago","Houston","Phoenix","Philadelphia"],"keywords":["wedding planning"]},{"name":"Wedding Planning Advice, Tips, Amazon Budget Wedding and Home Deals by Moxx","members":"108K","link":"https://www.facebook.com/groups/426864460029408/","priority":5,"activity":"high","cities":["New York","Los Angeles","Chicago","Phoenix","Philadelphia"],"keywords":["wedding planning"]},{"name":"New York City Photography","members":"551K","link":"https://www.facebook.com/groups/newyorkcityphotographers/","priority":5,"activity":"high","cities":["New York"],"keywords":["photography services"]},{"name":"Destination Wedding Directory","members":"111K","link":"https://www.facebook.com/groups/destinationweddingdirectory/","priority":5,"activity":"high","cities":["Chicago"],"keywords":["wedding planning"]},{"name":"FREELANCE VIDEOGRAPHER AND PHOTOGRAPHER PHILIPPINES","members":"127K","link":"https://www.facebook.com/groups/1519806368214005/","priority":5,"activity":"high","cities":["Philadelphia"],"keywords":["event photographer"]},{"name":"NYC Photographers","members":"41K","link":"https://www.facebook.com/groups/623845381027124/","priority":4,"activity":"medium","cities":["New York"],"keywords":["wedding photographer","photographer needed","photography services"]},{"name":"Wedding Suppliers Freelance Photographer Videographer of the PHILIPPINES","members":"60K","link":"https://www.facebook.com/groups/433363276700217/","priority":4,"activity":"high","cities":["New York"],"keywords":["wedding photographer"]},{"name":"Kolkata Wedding Photographer","members":"43K","link":"https://www.facebook.com/groups/277471346190369/","priority":4,"activity":"medium","cities":["New York"],"keywords":["wedding photographer"]},{"name":"NC Photographers & Videographers","members":"41K","link":"https://www.facebook.com/groups/352527064790380/","priority":4,"activity":"medium","cities":["New York","Phoenix"],"keywords":["wedding photographer","photography services"]},{"name":"Upstate New York Photography","members":"45K","link":"https://www.facebook.com/groups/1346089515925020/","priority":4,"activity":"medium","cities":["New York"],"keywords":["photographer needed","photography services"]},{"name":"NYC Film Production","members":"63K","link":"https://www.facebook.com/groups/NYCFilmProduction/","priority":4,"activity":"high","cities":["New York"],"keywords":["videographer"]},{"name":"NYC Film/TV Gigs (PAID)","members":"45K","link":"https://www.facebook.com/groups/NYCFilmGigs/","priority":4,"activity":"medium","cities":["New York"],"keywords":["videographer"]},{"name":"DMV Wedding Directory","members":"40K","link":"https://www.facebook.com/groups/1070592286415617/","priority":4,"activity":"medium","cities":["New York","Chicago","Phoenix","Philadelphia"],"keywords":["wedding services","wedding planning"]},{"name":"looking for affordable photographer","members":"96K","link":"https://www.facebook.com/groups/3434522096784677/","priority":4,"activity":"high","cities":["Los Angeles","Chicago"],"keywords":["wedding photographer"]},{"name":"Los Angeles Actors, Models , Photographers, MUAHS, Agents, LA & Hollywood","members":"44K","link":"https://www.facebook.com/groups/967290983469795/","priority":4,"activity":"medium","cities":["Los Angeles"],"keywords":["photographer needed","photography services","event photographer"]},{"name":"Paid Film/TV Production Jobs: Los Angeles Area","members":"83K","link":"https://www.facebook.com/groups/PAJobsLA/","priority":4,"activity":"high","cities":["Los Angeles"],"keywords":["videographer"]},{"name":"Wedding DIY group","members":"34K","link":"https://www.facebook.com/groups/125847850767767/","priority":4,"activity":"medium","cities":["Los Angeles","Chicago"],"keywords":["wedding planning"]},{"name":"Brides of Chicago","members":"32K","link":"https://www.facebook.com/groups/111050779414653/","priority":4,"activity":"medium","cities":["Chicago"],"keywords":["wedding planning","wedding services"]},{"name":"I need a photo/videographer (International Group)","members":"99K","link":"https://www.facebook.com/groups/ineedaphotographer/","priority":4,"activity":"high","cities":["Chicago","Phoenix"],"keywords":["photography services","videographer"]},{"name":"Houston area events and vendor reviews","members":"95K","link":"https://www.facebook.com/groups/625333780988765/","priority":4,"activity":"high","cities":["Houston"],"keywords":["event photographer"]},{"name":"Wedding Videographer Network","members":"45K","link":"https://www.facebook.com/groups/1620071041727209/","priority":4,"activity":"medium","cities":["Phoenix"],"keywords":["videographer"]},{"name":"Vintage Photos of Philadelphia","members":"88K","link":"https://www.facebook.com/groups/301080196930990/","priority":4,"activity":"high","cities":["Philadelphia"],"keywords":["photography services"]},{"name":"New York Weddings","members":"22K","link":"https://www.facebook.com/groups/dannyphamphotography/","priority":3,"activity":"medium","cities":["New York"],"keywords":["wedding photographer","wedding vendors","wedding planning"]},{"name":"ISO Budget Friendly Wedding Photographer- No Ads","members":"28K","link":"https://www.facebook.com/groups/1765590277249860/","priority":3,"activity":"medium","cities":["New York","Los Angeles","Chicago","Houston","Phoenix","Philadelphia","San Antonio"],"keywords":["wedding photographer","photographer needed","event photographer"]},{"name":"Destination Wedding Photographers Network","members":"14K","link":"https://www.facebook.com/groups/382739011348613/","priority":3,"activity":"medium","cities":["New York","Chicago","Houston"],"keywords":["wedding photographer"]},{"name":"New York Wedding and Event Professionals","members":"13K","link":"https://www.facebook.com/groups/NYWeddingpros/","priority":3,"activity":"medium","cities":["New York"],"keywords":["wedding photographer"]},{"name":"New York City Weddings","members":"11K","link":"https://www.facebook.com/groups/newyorkcityweddings/","priority":3,"activity":"medium","cities":["New York"],"keywords":["wedding photographer","wedding vendors"]},{"name":"Wedding Vendors NJ NY PA & CT","members":"10K","link":"https://www.facebook.com/groups/831023224701054/","priority":3,"activity":"medium","cities":["New York"],"keywords":["wedding photographer","wedding vendors"]},{"name":"New York Photographers & Videographers Network","members":"13K","link":"https://www.facebook.com/groups/897642666928981/","priority":3,"activity":"medium","cities":["New York"],"keywords":["wedding photographer","videographer"]},{"name":"FREELANCE WEDDING PHOTOGRAPHER/ CINEMATOGRAPHER","members":"14K","link":"https://www.facebook.com/groups/188711348426109/","priority":3,"activity":"medium","cities":["New York","Los Angeles"],"keywords":["wedding photographer"]},{"name":"Indian Wedding Photographer's Club","members":"10K","link":"https://www.facebook.com/groups/indianweddingphotographer/","priority":3,"activity":"medium","cities":["New York"],"keywords":["wedding photographer"]},{"name":"BRIDES of New York And Northern NJ","members":"12K","link":"https://www.facebook.com/groups/377680212417415/","priority":3,"activity":"medium","cities":["New York"],"keywords":["wedding photographer"]},{"name":"Upstate NY Weddings","members":"10K","link":"https://www.facebook.com/groups/787558361345004/","priority":3,"activity":"medium","cities":["New York"],"keywords":["wedding photographer"]},{"name":"wedding photographer","members":"14K","link":"https://www.facebook.com/groups/weddingphotographerclub/","priority":3,"activity":"medium","cities":["New York"],"keywords":["wedding photographer"]},{"name":"Wedding Photographer","members":"15K","link":"https://www.facebook.com/groups/jurufoto.perkahwinan/","priority":3,"activity":"medium","cities":["New York"],"keywords":["wedding photographer"]},{"name":"Wedding Makeup Artist & Photographer Kolkata","members":"26K","link":"https://www.facebook.com/groups/832861026898624/","priority":3,"activity":"medium","cities":["New York"],"keywords":["wedding photographer"]},{"name":"Wedding Photographer Nepal","members":"15K","link":"https://www.facebook.com/groups/314215216538334/","priority":3,"activity":"medium","cities":["New York"],"keywords":["wedding photographer"]},{"name":"WEDDING PHOTOGRAPHER | FOTOGRAFER PERKAHWINAN","members":"27K","link":"https://www.facebook.com/groups/185672131461879/","priority":3,"activity":"medium","cities":["New York"],"keywords":["wedding photographer"]},{"name":"Charleston Weddings + Vendors","members":"18K","link":"https://www.facebook.com/groups/charlestonwedding/","priority":3,"activity":"medium","cities":["New York"],"keywords":["wedding photographer"]},{"name":"DMV Photography Group (For Models & Photographers)","members":"10K","link":"https://www.facebook.com/groups/dmvphotographygroup/","priority":3,"activity":"medium","cities":["New York","Phoenix","Philadelphia"],"keywords":["wedding photographer","photography services"]},{"name":"USA PHOTOGRAPHER","members":"17K","link":"https://www.facebook.com/groups/photographerofusa/","priority":3,"activity":"medium","cities":["New York"],"keywords":["wedding photographer"]},{"name":"I Need A Photographer or Videographer in New York City - NYC - Paid Jobs","members":"14K","link":"https://www.facebook.com/groups/419714976656539/","priority":3,"activity":"medium","cities":["New York","Chicago","Phoenix","Philadelphia"],"keywords":["photographer needed","videographer","event photographer"]},{"name":"NEW YORK! Photographers - Models - Makeup Artist & Artist","members":"21K","link":"https://www.facebook.com/groups/750194741716968/","priority":3,"activity":"medium","cities":["New York"],"keywords":["photographer needed","photography services","event photographer"]},{"name":"NYC Photographers","members":"15K","link":"https://www.facebook.com/groups/nycphotographersusa/","priority":3,"activity":"medium","cities":["New York"],"keywords":["photographer needed","event photographer"]},{"name":"Florida Wedding Brides and Vendors","members":"19K","link":"https://www.facebook.com/groups/780513274250527/","priority":3,"activity":"medium","cities":["New York","Chicago","Houston","Phoenix","Philadelphia"],"keywords":["wedding vendors"]},{"name":"NC Wedding Planners & Vendors","members":"12K","link":"https://www.facebook.com/groups/267456132963265/","priority":3,"activity":"medium","cities":["New York","Chicago","Phoenix","Philadelphia"],"keywords":["wedding vendors","wedding services"]},{"name":"Wedding Vendors in New Jersey","members":"18K","link":"https://www.facebook.com/groups/137039107054991/","priority":3,"activity":"medium","cities":["New York"],"keywords":["wedding vendors"]},{"name":"Florida Weddings & Events Resale, Venues & Vendors","members":"16K","link":"https://www.facebook.com/groups/1062116291793796/","priority":3,"activity":"medium","cities":["New York","Los Angeles","Chicago","Phoenix","Philadelphia"],"keywords":["wedding vendors"]},{"name":"Florida's Best Event & Wedding Vendors","members":"23K","link":"https://www.facebook.com/groups/bestfloridaweddingvendor/","priority":3,"activity":"medium","cities":["New York","Chicago","Phoenix"],"keywords":["wedding vendors"]},{"name":"NYC FILMMAKER COMMUNITY","members":"10K","link":"https://www.facebook.com/groups/530720422544477/","priority":3,"activity":"medium","cities":["New York"],"keywords":["videographer"]},{"name":"New Jersey Brides Wedding Planning","members":"23K","link":"https://www.facebook.com/groups/newjerseybridesweddingplanning/","priority":3,"activity":"medium","cities":["New York","Philadelphia"],"keywords":["wedding planning"]},{"name":"New York Wedding Information for Brides and their Bridal Party","members":"14K","link":"https://www.facebook.com/groups/newyorkbrideschoice/","priority":3,"activity":"medium","cities":["New York"],"keywords":["wedding planning"]},{"name":"Southern California Photographer Search","members":"19K","link":"https://www.facebook.com/groups/322870532646906/","priority":3,"activity":"medium","cities":["Los Angeles","Phoenix"],"keywords":["wedding photographer","photographer needed","videographer","event photographer"]},{"name":"I need A Affordable Photographer/Videographer in Arizona","members":"18K","link":"https://www.facebook.com/groups/478444433870189/","priority":3,"activity":"medium","cities":["Los Angeles","Chicago","Phoenix","Philadelphia"],"keywords":["wedding photographer","videographer","photographer needed","photography services","event photographer"]},{"name":"I Need A Photographer or Videographer in Los Angeles California - LA - Jobs","members":"11K","link":"https://www.facebook.com/groups/389879199853276/","priority":3,"activity":"medium","cities":["Los Angeles"],"keywords":["photographer needed","videographer","event photographer"]},{"name":"Photographers, Videographers, Models, Actors In Los Angeles","members":"25K","link":"https://www.facebook.com/groups/1575300009459868/","priority":3,"activity":"medium","cities":["Los Angeles"],"keywords":["photographer needed","videographer","event photographer"]},{"name":"Los Angeles Photographers","members":"11K","link":"https://www.facebook.com/groups/46881667408/","priority":3,"activity":"medium","cities":["Los Angeles"],"keywords":["photographer needed","photography services"]},{"name":"Photographers & Models Wanted Los Angeles","members":"10K","link":"https://www.facebook.com/groups/PhotoLA/","priority":3,"activity":"medium","cities":["Los Angeles"],"keywords":["photographer needed","photography services"]},{"name":"SoCal Weddings & Events (Vendors & Discussion)","members":"10K","link":"https://www.facebook.com/groups/3061008987465814/","priority":3,"activity":"medium","cities":["Los Angeles"],"keywords":["wedding vendors","wedding services"]},{"name":"California Wedding Vendors","members":"20K","link":"https://www.facebook.com/groups/californiaweddingvendors1/","priority":3,"activity":"medium","cities":["Los Angeles"],"keywords":["wedding vendors"]},{"name":"Arizona Wedding/Event Vendors & Venues","members":"22K","link":"https://www.facebook.com/groups/909001089874390/","priority":3,"activity":"medium","cities":["Los Angeles","Chicago","Phoenix"],"keywords":["wedding vendors","event photographer"]},{"name":"Freelance Film Crew - Los Angeles","members":"17K","link":"https://www.facebook.com/groups/1640820006416803/","priority":3,"activity":"medium","cities":["Los Angeles"],"keywords":["videographer"]},{"name":"Weddings in Los Angeles (Share Ideas, Trade/Sell Wedding Items/Services )","members":"13K","link":"https://www.facebook.com/groups/WeddingsLA/","priority":3,"activity":"medium","cities":["Los Angeles"],"keywords":["wedding planning","wedding services"]},{"name":"Wedding Items Resale Los Angeles County","members":"28K","link":"https://www.facebook.com/groups/LosAngelesWeddingResale/","priority":3,"activity":"medium","cities":["Los Angeles"],"keywords":["wedding planning"]},{"name":"Weddings & Events Sell & Swap - Los Angeles","members":"16K","link":"https://www.facebook.com/groups/608154082716119/","priority":3,"activity":"medium","cities":["Los Angeles"],"keywords":["wedding services"]},{"name":"ISO Wedding and Events 916 & 530","members":"12K","link":"https://www.facebook.com/groups/210858355920303/","priority":3,"activity":"medium","cities":["Los Angeles"],"keywords":["wedding services"]},{"name":"Cheap Photographer & Videographer","members":"14K","link":"https://www.facebook.com/groups/603217294474404/","priority":3,"activity":"medium","cities":["Chicago","Phoenix","Philadelphia"],"keywords":["wedding photographer","videographer","event photographer"]},{"name":"Looking For Photographer’s -DFW Area","members":"16K","link":"https://www.facebook.com/groups/1178781449280054/","priority":3,"activity":"medium","cities":["Chicago","Houston","Phoenix","San Antonio"],"keywords":["photographer needed","event photographer","photography services","wedding photographer"]},{"name":"Chicago Brides ISO Wedding Vendors","members":"11K","link":"https://www.facebook.com/groups/426883634084390/","priority":3,"activity":"medium","cities":["Chicago"],"keywords":["wedding vendors","wedding planning"]},{"name":"Chicago Filmmakers","members":"18K","link":"https://www.facebook.com/groups/109674265769579/","priority":3,"activity":"medium","cities":["Chicago"],"keywords":["videographer"]},{"name":"London Freelance (Only Paid Services) Photographers and Videographers","members":"18K","link":"https://www.facebook.com/groups/168886597131412/","priority":3,"activity":"medium","cities":["Chicago","Phoenix","Philadelphia"],"keywords":["photography services"]},{"name":"Central Illinois Wedding Vendors","members":"10K","link":"https://www.facebook.com/groups/524470497577432/","priority":3,"activity":"medium","cities":["Chicago"],"keywords":["wedding services"]},{"name":"Photographers of Houston","members":"11K","link":"https://www.facebook.com/groups/412644225549897/","priority":3,"activity":"medium","cities":["Houston"],"keywords":["wedding photographer","photographer needed","videographer","photography services"]},{"name":"Houston Wedding Community","members":"16K","link":"https://www.facebook.com/groups/houstonweddingcommunity/","priority":3,"activity":"medium","cities":["Houston"],"keywords":["wedding photographer","wedding vendors","wedding planning","wedding services"]},{"name":"Houston Wedding Brides","members":"28K","link":"https://www.facebook.com/groups/453052061521245/","priority":3,"activity":"medium","cities":["Houston"],"keywords":["wedding photographer","wedding planning","wedding services"]},{"name":"Brides Houston Area","members":"27K","link":"https://www.facebook.com/groups/4177377222382530/","priority":3,"activity":"medium","cities":["Houston"],"keywords":["wedding vendors","wedding planning","wedding services"]},{"name":"Bride to Bride North Houston","members":"15K","link":"https://www.facebook.com/groups/1360786180614572/","priority":3,"activity":"medium","cities":["Houston"],"keywords":["wedding vendors"]},{"name":"Houston Brides on a Budget","members":"11K","link":"https://www.facebook.com/groups/houstonweddingrecycle/","priority":3,"activity":"medium","cities":["Houston"],"keywords":["wedding vendors","wedding services"]},{"name":"Houston Area Wedding Decor Resale / Trade / Sell","members":"17K","link":"https://www.facebook.com/groups/366624879417330/","priority":3,"activity":"medium","cities":["Houston"],"keywords":["wedding planning"]},{"name":"DMV Wedding & Event Decor Sale","members":"29K","link":"https://www.facebook.com/groups/763685450414399/","priority":3,"activity":"medium","cities":["Phoenix"],"keywords":["wedding planning"]},{"name":"DMV Photographers","members":"15K","link":"https://www.facebook.com/groups/DMVPhotographers/","priority":3,"activity":"medium","cities":["Phoenix","Philadelphia"],"keywords":["photography services"]},{"name":"San Antonio Area Wedding & Event Vendors","members":"28K","link":"https://www.facebook.com/groups/sanantonioweddingandeventvendors/","priority":3,"activity":"medium","cities":["Phoenix","San Antonio"],"keywords":["wedding services","wedding photographer"]},{"name":"North Georgia Weddings","members":"23K","link":"https://www.facebook.com/groups/NorthGeorgiaWeddings/","priority":3,"activity":"medium","cities":["Phoenix"],"keywords":["wedding services"]},{"name":"Philadelphia Brides","members":"16K","link":"https://www.facebook.com/groups/PhiladelphiaBrides/","priority":3,"activity":"medium","cities":["Philadelphia"],"keywords":["wedding photographer","wedding vendors","wedding planning","wedding services","event photographer"]},{"name":"\"All Things Wedding\" - South Central PA","members":"11K","link":"https://www.facebook.com/groups/198647013634203/","priority":3,"activity":"medium","cities":["Philadelphia"],"keywords":["wedding photographer","wedding services"]},{"name":"South Jersey Weddings","members":"24K","link":"https://www.facebook.com/groups/2395179653920658/","priority":3,"activity":"medium","cities":["Philadelphia"],"keywords":["wedding vendors","wedding planning"]},{"name":"Philadelphia Weddings","members":"13K","link":"https://www.facebook.com/groups/PhiladelphiaWeddings/","priority":3,"activity":"medium","cities":["Philadelphia"],"keywords":["wedding planning","wedding services"]},{"name":"PA Wedding Guide","members":"18K","link":"https://www.facebook.com/groups/983162982451009/","priority":3,"activity":"medium","cities":["Philadelphia"],"keywords":["wedding services"]},{"name":"San Antonio Photographers","members":"19K","link":"https://www.facebook.com/groups/486102838114690/","priority":3,"activity":"medium","cities":["San Antonio"],"keywords":["wedding photographer","photographer needed"]},{"name":"Austin & San Antonio Wedding & Brides","members":"27K","link":"https://www.facebook.com/groups/1174696692575072/","priority":3,"activity":"medium","cities":["San Antonio"],"keywords":["wedding photographer"]},{"name":"Chicago Photographers","members":"8.5K","link":"https://www.facebook.com/groups/2218697532/","priority":2,"activity":"medium","cities":["Chicago"],"keywords":["photography services"]},{"name":"NY Wedding Connection","members":"6.7K","link":"https://www.facebook.com/groups/nyweddingconnection/","priority":2,"activity":"medium","cities":["New York"],"keywords":["wedding photographer","wedding planning","wedding services"]},{"name":"NYC Wedding Photographers' Hub","members":"5.7K","link":"https://www.facebook.com/groups/nycweddingphotographer/","priority":2,"activity":"medium","cities":["New York"],"keywords":["wedding photographer","wedding services"]},{"name":"Wedding Vendors of New York","members":"1.3K","link":"https://www.facebook.com/groups/1288611878503686/","priority":2,"activity":"low","cities":["New York"],"keywords":["wedding photographer","wedding vendors","wedding planning"]},{"name":"New Jersey & New York Weddings & Events","members":"1.3K","link":"https://www.facebook.com/groups/1415985408870764/","priority":2,"activity":"low","cities":["New York"],"keywords":["wedding photographer","wedding planning","event photographer"]},{"name":"Upstate 💍 NY Wedding","members":"4.3K","link":"https://www.facebook.com/groups/556787096357125/","priority":2,"activity":"low","cities":["New York"],"keywords":["wedding photographer","wedding services"]},{"name":"New York Photographers and Talent.","members":"4.9K","link":"https://www.facebook.com/groups/174429342729764/","priority":2,"activity":"low","cities":["New York"],"keywords":["wedding photographer","videographer","photography services","event photographer"]},{"name":"Looking For An Affordable Photographer","members":"3.7K","link":"https://www.facebook.com/groups/1471123713843544/","priority":2,"activity":"low","cities":["New York","Los Angeles","Chicago","Phoenix"],"keywords":["wedding photographer"]},{"name":"Chicago Wedding Photographers","members":"2.6K","link":"https://www.facebook.com/groups/596371002346098/","priority":2,"activity":"low","cities":["New York","Los Angeles","Chicago","Philadelphia"],"keywords":["wedding photographer","photographer needed","wedding vendors","wedding services","event photographer"]},{"name":"Missouri Wedding Photography - Find a photographer for your wedding photos!","members":"2K","link":"https://www.facebook.com/groups/MissouriWeddings/","priority":2,"activity":"low","cities":["New York","Chicago","Phoenix"],"keywords":["wedding photographer"]},{"name":"NY Wedding Photographers & Cinematographers","members":"3.1K","link":"https://www.facebook.com/groups/938557339491037/","priority":2,"activity":"low","cities":["New York"],"keywords":["wedding photographer"]},{"name":"I need a Photographer/Videographer/or Graphic Designer - Upstate New York","members":"7.7K","link":"https://www.facebook.com/groups/1005965389940710/","priority":2,"activity":"medium","cities":["New York"],"keywords":["wedding photographer"]},{"name":"Photographers And Second Shooters -- Upstate New York","members":"1.2K","link":"https://www.facebook.com/groups/1600012236917976/","priority":2,"activity":"low","cities":["New York"],"keywords":["wedding photographer"]},{"name":"NY Brides to be Wedding Planning Group","members":"3.5K","link":"https://www.facebook.com/groups/NyBridesToBe/","priority":2,"activity":"low","cities":["New York"],"keywords":["wedding photographer"]},{"name":"Indian Wedding Photographer","members":"6.5K","link":"https://www.facebook.com/groups/304023286417930/","priority":2,"activity":"medium","cities":["New York"],"keywords":["wedding photographer"]},{"name":"Hire a professional wedding photographer in Ireland","members":"1.5K","link":"https://www.facebook.com/groups/1642922012603441/","priority":2,"activity":"low","cities":["New York"],"keywords":["wedding photographer"]},{"name":"looking for Wedding Videographers/photographers for WV, OH, VA, PA, KY, MD","members":"4K","link":"https://www.facebook.com/groups/199968855975193/","priority":2,"activity":"low","cities":["New York"],"keywords":["wedding photographer"]},{"name":"I need a videographer/photographer in Florida!","members":"6.3K","link":"https://www.facebook.com/groups/1564033070437626/","priority":2,"activity":"medium","cities":["New York","Phoenix"],"keywords":["wedding photographer","videographer"]},{"name":"DC area photographers","members":"9.6K","link":"https://www.facebook.com/groups/dcareaphoto/","priority":2,"activity":"medium","cities":["New York"],"keywords":["wedding photographer"]},{"name":"I Need A Photographer or Videographer in Miami - Florida - Orlando","members":"2.6K","link":"https://www.facebook.com/groups/7320833324631442/","priority":2,"activity":"low","cities":["New York"],"keywords":["wedding photographer"]},{"name":"Montgomery Wedding Vendors","members":"1.6K","link":"https://www.facebook.com/groups/628593097258455/","priority":2,"activity":"low","cities":["New York"],"keywords":["wedding photographer"]},{"name":"West Bengal Wedding Photographer","members":"4.2K","link":"https://www.facebook.com/groups/189256209625154/","priority":2,"activity":"low","cities":["New York"],"keywords":["wedding photographer"]},{"name":"Hampton Roads Photographers Network","members":"7.4K","link":"https://www.facebook.com/groups/HRPNetwork/","priority":2,"activity":"medium","cities":["New York"],"keywords":["wedding photographer"]},{"name":"New York Photography Referral Group!","members":"2.6K","link":"https://www.facebook.com/groups/ericaberger/","priority":2,"activity":"low","cities":["New York"],"keywords":["photographer needed","photography services","event photographer"]},{"name":"I need a professional Photographer or Videographer in NYC - New York CIty","members":"3.8K","link":"https://www.facebook.com/groups/1363091461326360/","priority":2,"activity":"low","cities":["New York"],"keywords":["photographer needed","event photographer"]},{"name":"Photo / Videography Hire in NY NJ PA CT","members":"3.3K","link":"https://www.facebook.com/groups/822808398685040/","priority":2,"activity":"low","cities":["New York"],"keywords":["photographer needed","videographer"]},{"name":"Affordable Photographers","members":"2.1K","link":"https://www.facebook.com/groups/1547891779852457/","priority":2,"activity":"low","cities":["New York","Chicago","Houston","Phoenix","Philadelphia","San Antonio"],"keywords":["photographer needed","wedding photographer"]},{"name":"Long Island, NYC Party vendors, DJ, wedding & event planners","members":"9.7K","link":"https://www.facebook.com/groups/958783207497034/","priority":2,"activity":"medium","cities":["New York"],"keywords":["wedding vendors","wedding services"]},{"name":"NYC Video - (for editors, DP's, production, animators, directors)","members":"2.2K","link":"https://www.facebook.com/groups/833174923418427/","priority":2,"activity":"low","cities":["New York"],"keywords":["videographer"]},{"name":"New York Wedding Elopement","members":"6.1K","link":"https://www.facebook.com/groups/2438441013067377/","priority":2,"activity":"medium","cities":["New York"],"keywords":["wedding planning","wedding services"]},{"name":"Model/photography Castings NYC - JTS Photography","members":"3.3K","link":"https://www.facebook.com/groups/739347562775423/","priority":2,"activity":"low","cities":["New York"],"keywords":["photography services"]},{"name":"USA Photography Growth Hub","members":"3.5K","link":"https://www.facebook.com/groups/1232185888116206/","priority":2,"activity":"low","cities":["New York","Chicago"],"keywords":["photography services"]},{"name":"New York Photography","members":"7.7K","link":"https://www.facebook.com/groups/NYSPG/","priority":2,"activity":"medium","cities":["New York"],"keywords":["photography services"]},{"name":"New York Photography Society Group","members":"1.5K","link":"https://www.facebook.com/groups/583979368449731/","priority":2,"activity":"low","cities":["New York"],"keywords":["photography services"]},{"name":"SoCal Leads & 2nd Shooters for Wedding/Portrait Photographers","members":"3.9K","link":"https://www.facebook.com/groups/ocphotogleads/","priority":2,"activity":"low","cities":["Los Angeles"],"keywords":["wedding photographer"]},{"name":"Help! I need a Photographer!","members":"8.7K","link":"https://www.facebook.com/groups/419264981605870/","priority":2,"activity":"medium","cities":["Los Angeles","Chicago","Phoenix","Philadelphia"],"keywords":["wedding photographer","photographer needed","photography services","event photographer"]},{"name":"Makeup artists, photographers, and models in l.a","members":"5.8K","link":"https://www.facebook.com/groups/1460226687528278/","priority":2,"activity":"medium","cities":["Los Angeles"],"keywords":["photographer needed","photography services"]},{"name":"Los Angeles Event Vendors","members":"4.4K","link":"https://www.facebook.com/groups/LAPartyVendors/","priority":2,"activity":"low","cities":["Los Angeles"],"keywords":["wedding vendors","wedding planning"]},{"name":"California Event & Wedding Vendors","members":"2.3K","link":"https://www.facebook.com/groups/698789091919697/","priority":2,"activity":"low","cities":["Los Angeles"],"keywords":["wedding vendors"]},{"name":"Wedding Vendors Central Valley 559","members":"7.5K","link":"https://www.facebook.com/groups/1217679112608755/","priority":2,"activity":"medium","cities":["Los Angeles"],"keywords":["wedding vendors"]},{"name":"OC | Party • Services • Vendors • Planners","members":"3.2K","link":"https://www.facebook.com/groups/1148669410139463/","priority":2,"activity":"low","cities":["Los Angeles"],"keywords":["wedding vendors"]},{"name":"Riverside Wedding Vendors","members":"2.1K","link":"https://www.facebook.com/groups/riversideweddingvendors/","priority":2,"activity":"low","cities":["Los Angeles"],"keywords":["wedding vendors"]},{"name":"SoCal Wedding & Event Vendors!","members":"2K","link":"https://www.facebook.com/groups/1752882721612266/","priority":2,"activity":"low","cities":["Los Angeles"],"keywords":["wedding vendors"]},{"name":"San Diego / Los Angeles - Wedding Videographers","members":"1.9K","link":"https://www.facebook.com/groups/201014947194652/","priority":2,"activity":"low","cities":["Los Angeles"],"keywords":["videographer"]},{"name":"NorCal Photographers, Videographers & Creatives","members":"3.2K","link":"https://www.facebook.com/groups/982726983972042/","priority":2,"activity":"low","cities":["Los Angeles"],"keywords":["videographer"]},{"name":"Los Angeles California Weddings & Brides On A Budget","members":"5.6K","link":"https://www.facebook.com/groups/347269686683/","priority":2,"activity":"medium","cities":["Los Angeles"],"keywords":["wedding planning","wedding services"]},{"name":"Quinceañeras and Weddings Los Angeles","members":"5.8K","link":"https://www.facebook.com/groups/1527066700704777/","priority":2,"activity":"medium","cities":["Los Angeles"],"keywords":["wedding planning","wedding services"]},{"name":"Los Angeles Street Photography","members":"1K","link":"https://www.facebook.com/groups/279125498906947/","priority":2,"activity":"low","cities":["Los Angeles"],"keywords":["photography services"]},{"name":"All About Los Angeles","members":"2.8K","link":"https://www.facebook.com/groups/allaboutlosangeles/","priority":2,"activity":"low","cities":["Los Angeles"],"keywords":["photography services"]},{"name":"LAs Key: LA (Los Angeles) wedding & event venue + vendor matchmaking","members":"1.7K","link":"https://www.facebook.com/groups/3694025754011428/","priority":2,"activity":"low","cities":["Los Angeles"],"keywords":["wedding services"]},{"name":"California Wedding couples","members":"3.8K","link":"https://www.facebook.com/groups/1974257669397516/","priority":2,"activity":"low","cities":["Los Angeles"],"keywords":["wedding services"]},{"name":"Need a London Photographer - paid work","members":"4.8K","link":"https://www.facebook.com/groups/2411229139191388/","priority":2,"activity":"low","cities":["Los Angeles","Chicago","Philadelphia"],"keywords":["event photographer"]},{"name":"Los Angeles fashion networking - models,photographers,artists,stylists","members":"1.8K","link":"https://www.facebook.com/groups/215597396060/","priority":2,"activity":"low","cities":["Los Angeles"],"keywords":["event photographer"]},{"name":"Chicago Last Minute Photographer","members":"5K","link":"https://www.facebook.com/groups/449439834247861/","priority":2,"activity":"medium","cities":["Chicago","Phoenix"],"keywords":["photographer needed","videographer","photography services","event photographer","wedding photographer"]},{"name":"Chicago Photographers Group","members":"2.2K","link":"https://www.facebook.com/groups/chicagophotographersfreegroup/","priority":2,"activity":"low","cities":["Chicago"],"keywords":["photographer needed","videographer","event photographer"]},{"name":"Chicago Photography Events","members":"3.9K","link":"https://www.facebook.com/groups/184875954984774/","priority":2,"activity":"low","cities":["Chicago"],"keywords":["photographer needed"]},{"name":"Brides & Vendors of Chicago!","members":"1.3K","link":"https://www.facebook.com/groups/475486822941663/","priority":2,"activity":"low","cities":["Chicago"],"keywords":["wedding vendors","wedding planning"]},{"name":"Tennessee Weddings Bride & Vendors","members":"6.8K","link":"https://www.facebook.com/groups/2754525808152153/","priority":2,"activity":"medium","cities":["Chicago","Phoenix"],"keywords":["wedding vendors","wedding services"]},{"name":"CHICAGO VIDEOGRAPHERS AND FILM","members":"7K","link":"https://www.facebook.com/groups/575523955920202/","priority":2,"activity":"medium","cities":["Chicago"],"keywords":["videographer"]},{"name":"CHICAGOLAND & SUBURBAN WEDDINGS & SPECIAL EVENTS!!","members":"1.1K","link":"https://www.facebook.com/groups/868758136612171/","priority":2,"activity":"low","cities":["Chicago"],"keywords":["wedding planning","wedding services"]},{"name":"BRIDES ON A BUDGET","members":"8.7K","link":"https://www.facebook.com/groups/362120577889420/","priority":2,"activity":"medium","cities":["Chicago"],"keywords":["wedding planning"]},{"name":"Wedding Planning 2026-2029❤️","members":"6.7K","link":"https://www.facebook.com/groups/774263665197712/","priority":2,"activity":"medium","cities":["Chicago","Phoenix"],"keywords":["wedding planning"]},{"name":"Chicago Photography Equipment Exchange","members":"7.1K","link":"https://www.facebook.com/groups/224345447730871/","priority":2,"activity":"medium","cities":["Chicago"],"keywords":["photography services"]},{"name":"Models and Photographers","members":"4.8K","link":"https://www.facebook.com/groups/677376176632826/","priority":2,"activity":"low","cities":["Chicago"],"keywords":["photography services"]},{"name":"TFP Midwest Models \\ Photographers","members":"8K","link":"https://www.facebook.com/groups/480514277367594/","priority":2,"activity":"medium","cities":["Chicago"],"keywords":["photography services"]},{"name":"Dc/VA/MD Wedding Professionals","members":"4.1K","link":"https://www.facebook.com/groups/110073302411635/","priority":2,"activity":"low","cities":["Chicago","Phoenix","Philadelphia"],"keywords":["wedding services"]},{"name":"Wedding Knot Wiz Chicago","members":"3K","link":"https://www.facebook.com/groups/180752565732205/","priority":2,"activity":"low","cities":["Chicago"],"keywords":["wedding services"]},{"name":"Wedding and Event Professionals of Houston and Surrounding Areas","members":"5.7K","link":"https://www.facebook.com/groups/weprohouston/","priority":2,"activity":"medium","cities":["Houston"],"keywords":["wedding photographer","wedding planning"]},{"name":"Houston Photographers: Search for a photographer!","members":"1.5K","link":"https://www.facebook.com/groups/1518827068963620/","priority":2,"activity":"low","cities":["Houston"],"keywords":["wedding photographer","photographer needed","videographer","photography services","event photographer"]},{"name":"Houston Wedding Scene","members":"4.3K","link":"https://www.facebook.com/groups/1593512164286329/","priority":2,"activity":"low","cities":["Houston"],"keywords":["wedding photographer","wedding vendors","wedding planning","wedding services"]},{"name":"Creatives of Houston - Photographers, Videographers, & Models","members":"7.5K","link":"https://www.facebook.com/groups/1713805642398594/","priority":2,"activity":"medium","cities":["Houston"],"keywords":["wedding photographer","photographer needed","videographer","event photographer"]},{"name":"Houston area photographers","members":"4.3K","link":"https://www.facebook.com/groups/780298049497400/","priority":2,"activity":"low","cities":["Houston"],"keywords":["photographer needed","videographer"]},{"name":"Houston Photography Classifieds","members":"6.7K","link":"https://www.facebook.com/groups/250360311815456/","priority":2,"activity":"medium","cities":["Houston"],"keywords":["photographer needed","photography services"]},{"name":"Greater Houston Area Photography","members":"1.2K","link":"https://www.facebook.com/groups/greaterhoustonphotography/","priority":2,"activity":"low","cities":["Houston"],"keywords":["photographer needed","photography services","event photographer"]},{"name":"Houston Events- Venues and Vendors","members":"7.5K","link":"https://www.facebook.com/groups/342329531218468/","priority":2,"activity":"medium","cities":["Houston"],"keywords":["wedding vendors","event photographer"]},{"name":"Best of Houston Wedding Vendors","members":"4.7K","link":"https://www.facebook.com/groups/Houweddingvendors/","priority":2,"activity":"low","cities":["Houston"],"keywords":["wedding vendors","wedding services"]},{"name":"Houston Wedding Market","members":"1.6K","link":"https://www.facebook.com/groups/houstonweddingmarket/","priority":2,"activity":"low","cities":["Houston"],"keywords":["wedding vendors"]},{"name":"Houston Videographers","members":"6.1K","link":"https://www.facebook.com/groups/993553661240694/","priority":2,"activity":"medium","cities":["Houston"],"keywords":["videographer"]},{"name":"Houston Quinces,Weddings and Events","members":"6.7K","link":"https://www.facebook.com/groups/houstonquincesandweddings/","priority":2,"activity":"medium","cities":["Houston"],"keywords":["videographer","photography services","event photographer"]},{"name":"Austin TX - Photographers/Videographers","members":"6.3K","link":"https://www.facebook.com/groups/400430569468811/","priority":2,"activity":"medium","cities":["Houston"],"keywords":["videographer"]},{"name":"Houston Photographers & Videographers","members":"1.6K","link":"https://www.facebook.com/groups/1429790297341302/","priority":2,"activity":"low","cities":["Houston"],"keywords":["videographer"]},{"name":"Brides Of Houston","members":"4.8K","link":"https://www.facebook.com/groups/350504065626986/","priority":2,"activity":"low","cities":["Houston"],"keywords":["wedding planning","wedding services"]},{"name":"Houston Texas Quinceañeras Photography, Video, DJs, Vendors, Venues, Halls","members":"8.3K","link":"https://www.facebook.com/groups/HoustonQuinceaneras/","priority":2,"activity":"medium","cities":["Houston"],"keywords":["photography services"]},{"name":"🇺🇸 📸 HOUSTON EVENTS PHOTOGRAPHER WEDDINGS PHOTOGRAPHY","members":"3K","link":"https://www.facebook.com/groups/JoeSioufi/","priority":2,"activity":"low","cities":["Houston","Phoenix"],"keywords":["photography services","event photographer","wedding photographer"]},{"name":"Texas Models and Actors Network","members":"2.8K","link":"https://www.facebook.com/groups/417330842076166/","priority":2,"activity":"low","cities":["Houston"],"keywords":["photography services"]},{"name":"Weddings and Quinceañeras Services Houston, Woodlands, Huntsville, Conroe.","members":"1.6K","link":"https://www.facebook.com/groups/565480583659870/","priority":2,"activity":"low","cities":["Houston"],"keywords":["photography services","wedding services"]},{"name":"Wedding Photographers of Tucson & Phoenix Arizona","members":"1K","link":"https://www.facebook.com/groups/542802845804827/","priority":2,"activity":"low","cities":["Phoenix"],"keywords":["wedding photographer","event photographer"]},{"name":"ARIZONA Photographers","members":"3.7K","link":"https://www.facebook.com/groups/PhoenixPhotographers/","priority":2,"activity":"low","cities":["Phoenix"],"keywords":["photographer needed","videographer","photography services","event photographer"]},{"name":"PHOENIX PHOTOGRAPHERS | MODELS | MUAS","members":"2.6K","link":"https://www.facebook.com/groups/divinecustoms/","priority":2,"activity":"low","cities":["Phoenix"],"keywords":["photographer needed","event photographer"]},{"name":"AZ Photographers, Talent and Artists Hub","members":"3K","link":"https://www.facebook.com/groups/tucsontalent/","priority":2,"activity":"low","cities":["Phoenix"],"keywords":["photographer needed"]},{"name":"Phoenix Wedding Vendors & Resale","members":"9.9K","link":"https://www.facebook.com/groups/1662643860635154/","priority":2,"activity":"medium","cities":["Phoenix"],"keywords":["wedding vendors"]},{"name":"Getting Married in Arizona Wedding Planning","members":"4.4K","link":"https://www.facebook.com/groups/1354775031279446/","priority":2,"activity":"low","cities":["Phoenix"],"keywords":["wedding vendors"]},{"name":"Virginia Wedding Vendors","members":"7.7K","link":"https://www.facebook.com/groups/virginiaweddingvendors/","priority":2,"activity":"medium","cities":["Phoenix"],"keywords":["wedding vendors","wedding services"]},{"name":"DMV VIDEOGRAPHER / PHOTOGRAPHER - HELP WANTED/BUY/SELL/FINDPHOTOGRAPHER","members":"1.4K","link":"https://www.facebook.com/groups/204455483060848/","priority":2,"activity":"low","cities":["Phoenix","Philadelphia"],"keywords":["videographer"]},{"name":"Phoenix Wedding Events & Bridal Services","members":"5.4K","link":"https://www.facebook.com/groups/PhoenixWeddings/","priority":2,"activity":"medium","cities":["Phoenix"],"keywords":["wedding planning","wedding services"]},{"name":"Virginia Weddings Bridal Guide","members":"6.6K","link":"https://www.facebook.com/groups/VirginiaWeddingsBridalGuide/","priority":2,"activity":"medium","cities":["Phoenix"],"keywords":["wedding planning"]},{"name":"Virgina, Maryland, DC Brides","members":"8.7K","link":"https://www.facebook.com/groups/485088160040874/","priority":2,"activity":"medium","cities":["Phoenix"],"keywords":["wedding planning"]},{"name":"Phoenix Arizona Area Used Camera & Photography Gear","members":"2.3K","link":"https://www.facebook.com/groups/PhoenixCameras/","priority":2,"activity":"low","cities":["Phoenix"],"keywords":["photography services"]},{"name":"Virginia Beach Brides","members":"4.5K","link":"https://www.facebook.com/groups/virginiabeachbrides/","priority":2,"activity":"low","cities":["Phoenix"],"keywords":["wedding services"]},{"name":"Brides On A Budget - Wedding Group","members":"7.3K","link":"https://www.facebook.com/groups/1699334243585198/","priority":2,"activity":"medium","cities":["Phoenix","Philadelphia"],"keywords":["wedding services"]},{"name":"Cosplay in Phoenix Arizona! Cos-Player Events, Models, Photographers, HMUA","members":"1.4K","link":"https://www.facebook.com/groups/PhoenixCosplay/","priority":2,"activity":"low","cities":["Phoenix"],"keywords":["event photographer"]},{"name":"Wedding Planning Philadelphia Area","members":"9.6K","link":"https://www.facebook.com/groups/205531703400131/","priority":2,"activity":"medium","cities":["Philadelphia"],"keywords":["wedding photographer","wedding planning","wedding services"]},{"name":"Engaged? MD,DC, VA, DE, NJ, WV & PA","members":"5.2K","link":"https://www.facebook.com/groups/1698050730467046/","priority":2,"activity":"medium","cities":["Philadelphia"],"keywords":["wedding photographer"]},{"name":"PHILLY PHOTOGRAPHERS","members":"1.5K","link":"https://www.facebook.com/groups/phillyphotographers/","priority":2,"activity":"low","cities":["Philadelphia"],"keywords":["wedding photographer","photographer needed","photography services"]},{"name":"The Philadelphia Clique - Actors, Models, Photographers, Film and Musicians","members":"9.9K","link":"https://www.facebook.com/groups/30856461084/","priority":2,"activity":"medium","cities":["Philadelphia"],"keywords":["photographer needed"]},{"name":"Philadelphia Photography Group","members":"3.6K","link":"https://www.facebook.com/groups/PhiladelphiaPhoto/","priority":2,"activity":"low","cities":["Philadelphia"],"keywords":["photographer needed","photography services"]},{"name":"Philly Monthly Meetup for Actors/Models/Photographers/Filmmakers","members":"1K","link":"https://www.facebook.com/groups/666265877111165/","priority":2,"activity":"low","cities":["Philadelphia"],"keywords":["photographer needed","videographer"]},{"name":"All About Weddings Philadelphia","members":"1.8K","link":"https://www.facebook.com/groups/allaboutweddingsphiladelphia/","priority":2,"activity":"low","cities":["Philadelphia"],"keywords":["wedding vendors"]},{"name":"Bucks County Events and Weddings","members":"7.1K","link":"https://www.facebook.com/groups/573104659746330/","priority":2,"activity":"medium","cities":["Philadelphia"],"keywords":["wedding vendors"]},{"name":"Eastern Pa Weddings Vendors","members":"2.1K","link":"https://www.facebook.com/groups/1876681239245107/","priority":2,"activity":"low","cities":["Philadelphia"],"keywords":["wedding vendors"]},{"name":"Filmmaking Hub of Philadelphia","members":"4.3K","link":"https://www.facebook.com/groups/filmmakinghubPHL/","priority":2,"activity":"low","cities":["Philadelphia"],"keywords":["videographer"]},{"name":"Philadelphia Area Photography","members":"2K","link":"https://www.facebook.com/groups/PhiladelphiaAreaPhotography/","priority":2,"activity":"low","cities":["Philadelphia"],"keywords":["photography services"]},{"name":"Philly/South Jersey Brides & Wives","members":"1.3K","link":"https://www.facebook.com/groups/1772986456075856/","priority":2,"activity":"low","cities":["Philadelphia"],"keywords":["wedding services"]},{"name":"Delaware & Tri-State Wedding connections","members":"1.7K","link":"https://www.facebook.com/groups/deltriwed/","priority":2,"activity":"low","cities":["Philadelphia"],"keywords":["wedding services"]},{"name":"Bride to Be San Antonio","members":"6.5K","link":"https://www.facebook.com/groups/371038363039329/","priority":2,"activity":"medium","cities":["San Antonio"],"keywords":["wedding photographer"]},{"name":"San Antonio Wedding Resale","members":"5.2K","link":"https://www.facebook.com/groups/sanantonioweddingresale/","priority":2,"activity":"medium","cities":["San Antonio"],"keywords":["wedding photographer"]},{"name":"San Antonio Area - Camera Buy/Sell/Trade Review & Tech","members":"1.6K","link":"https://www.facebook.com/groups/SACameraBuySellTrade/","priority":2,"activity":"low","cities":["San Antonio"],"keywords":["photographer needed"]},{"name":"Phoenix Gate Pictures - Videography/Videographer","members":"16","link":"https://www.facebook.com/groups/2580816909/","priority":1,"activity":"low","cities":["Phoenix"],"keywords":["videographer"]},{"name":"New york Bridal Planning","members":"409","link":"https://www.facebook.com/groups/bridesandguides/","priority":1,"activity":"low","cities":["New York"],"keywords":["wedding photographer"]},{"name":"New York Wedding Vendors","members":"273","link":"https://www.facebook.com/groups/372155669610608/","priority":1,"activity":"low","cities":["New York"],"keywords":["wedding photographer"]},{"name":"All-In Wedding Photographers","members":"901","link":"https://www.facebook.com/groups/beginnerweddingphotographers/","priority":1,"activity":"low","cities":["New York"],"keywords":["wedding photographer"]},{"name":"Western New York Creative Portrait and Wedding photographers","members":"85","link":"https://www.facebook.com/groups/1706821040259953/","priority":1,"activity":"low","cities":["New York"],"keywords":["wedding photographer"]},{"name":"Find a Photographer - Charlotte","members":"577","link":"https://www.facebook.com/groups/319577091814832/","priority":1,"activity":"low","cities":["New York"],"keywords":["wedding photographer"]},{"name":"Omaha Wedding Photographer & Videographer Collaboration Group","members":"101","link":"https://www.facebook.com/groups/1400986087244582/","priority":1,"activity":"low","cities":["New York"],"keywords":["wedding photographer"]},{"name":"Photographer or videographer needed in PA/NJ Area","members":"435","link":"https://www.facebook.com/groups/1126123266094607/","priority":1,"activity":"low","cities":["New York","Los Angeles","Chicago","Philadelphia"],"keywords":["videographer","event photographer","wedding photographer","photographer needed"]},{"name":"Delray Beach Elopements & Intimate Weddings","members":"952","link":"https://www.facebook.com/groups/2686534338242630/","priority":1,"activity":"low","cities":["New York"],"keywords":["wedding services"]},{"name":"Pop-Up Vows LLC ♥️ Small Weddings & Elopements in New York","members":"497","link":"https://www.facebook.com/groups/1013291454158176/","priority":1,"activity":"low","cities":["New York"],"keywords":["wedding services"]},{"name":"New York & Long Island Concert/Event Photographers/Videographers","members":"848","link":"https://www.facebook.com/groups/1174966052589737/","priority":1,"activity":"low","cities":["New York"],"keywords":["event photographer"]},{"name":"Los Angeles Photography Referral Group","members":"103","link":"https://www.facebook.com/groups/25407071878885922/","priority":1,"activity":"low","cities":["Los Angeles"],"keywords":["photographer needed","photography services"]},{"name":"Los Angeles Cinematographer, Photographers, Videographers and talents","members":"48","link":"https://www.facebook.com/groups/1175755603616136/","priority":1,"activity":"low","cities":["Los Angeles"],"keywords":["videographer","event photographer"]},{"name":"Brides & Grooms of Los Angeles, Orange County, and Southern California","members":"78","link":"https://www.facebook.com/groups/7797945656882879/","priority":1,"activity":"low","cities":["Los Angeles"],"keywords":["wedding planning"]},{"name":"LOS ANGELES PHOTOGRAPHY","members":"70","link":"https://www.facebook.com/groups/816884935125056/","priority":1,"activity":"low","cities":["Los Angeles"],"keywords":["photography services"]},{"name":"Los Angeles Photography","members":"28","link":"https://www.facebook.com/groups/4612071039019552/","priority":1,"activity":"low","cities":["Los Angeles"],"keywords":["photography services"]},{"name":"California Queer Weddings, Engagements, Vendors","members":"335","link":"https://www.facebook.com/groups/762444439269113/","priority":1,"activity":"low","cities":["Los Angeles"],"keywords":["wedding services"]},{"name":"BLVPhotos Event Photographer","members":"499","link":"https://www.facebook.com/groups/651423734902831/","priority":1,"activity":"low","cities":["Los Angeles"],"keywords":["event photographer"]},{"name":"Photographers of Chicago","members":"434","link":"https://www.facebook.com/groups/photographersofchicago/","priority":1,"activity":"low","cities":["Chicago"],"keywords":["photographer needed","event photographer"]},{"name":"IL Photographers & Videographers","members":"540","link":"https://www.facebook.com/groups/8979438922090280/","priority":1,"activity":"low","cities":["Chicago"],"keywords":["photographer needed","videographer"]},{"name":"Chicago Wedding Videographers","members":"433","link":"https://www.facebook.com/groups/6351053058256830/","priority":1,"activity":"low","cities":["Chicago"],"keywords":["videographer"]},{"name":"Last Minute Photo & Video - Chicago Area","members":"14","link":"https://www.facebook.com/groups/1530863534834717/","priority":1,"activity":"low","cities":["Chicago"],"keywords":["videographer"]},{"name":"Illinois Wedding Venues","members":"552","link":"https://www.facebook.com/groups/901650106836607/","priority":1,"activity":"low","cities":["Chicago"],"keywords":["wedding services"]},{"name":"Houston Photographer Meet Ups","members":"168","link":"https://www.facebook.com/groups/498664368437649/","priority":1,"activity":"low","cities":["Houston"],"keywords":["photographer needed"]},{"name":"Houston Filmmaking/Videographer Collabs","members":"511","link":"https://www.facebook.com/groups/648868517218262/","priority":1,"activity":"low","cities":["Houston"],"keywords":["videographer"]},{"name":"Houston Wedding and Event Planners","members":"88","link":"https://www.facebook.com/groups/802291455221518/","priority":1,"activity":"low","cities":["Houston"],"keywords":["wedding planning","wedding services"]},{"name":"photographer/videographer for any event... houston and surrounding areas.","members":"58","link":"https://www.facebook.com/groups/1741205032819798/","priority":1,"activity":"low","cities":["Houston"],"keywords":["event photographer"]},{"name":"Phoenix Photographer and Model Network","members":"203","link":"https://www.facebook.com/groups/2778800198840912/","priority":1,"activity":"low","cities":["Phoenix"],"keywords":["wedding photographer","photographer needed"]},{"name":"Photographer needed","members":"61","link":"https://www.facebook.com/groups/855146798280004/","priority":1,"activity":"low","cities":["Phoenix"],"keywords":["photographer needed"]},{"name":"Phoenix Weddings","members":"646","link":"https://www.facebook.com/groups/680346654600731/","priority":1,"activity":"low","cities":["Phoenix"],"keywords":["wedding planning"]},{"name":"South Jersey/Philadelphia Photographers","members":"246","link":"https://www.facebook.com/groups/1059591840906058/","priority":1,"activity":"low","cities":["Philadelphia"],"keywords":["photographer needed","videographer"]},{"name":"Wedding Vendors & Brides of Buck County PA","members":"702","link":"https://www.facebook.com/groups/517225573554070/","priority":1,"activity":"low","cities":["Philadelphia"],"keywords":["wedding vendors"]},{"name":"Philadelphia Commercial Videographer Collective","members":"136","link":"https://www.facebook.com/groups/894265168904489/","priority":1,"activity":"low","cities":["Philadelphia"],"keywords":["videographer"]},{"name":"Philly Brides","members":"985","link":"https://www.facebook.com/groups/1174204477153540/","priority":1,"activity":"low","cities":["Philadelphia"],"keywords":["wedding planning"]},{"name":"Event Photography","members":"138","link":"https://www.facebook.com/groups/812205666659631/","priority":1,"activity":"low","cities":["Philadelphia"],"keywords":["event photographer"]},{"name":"San Antonio Wedding & Event Vendors","members":"704","link":"https://www.facebook.com/groups/709862801418492/","priority":1,"activity":"low","cities":["San Antonio"],"keywords":["wedding photographer"]},{"name":"San Antonio Weddings","members":"730","link":"https://www.facebook.com/groups/sanantonioweddings/","priority":1,"activity":"low","cities":["San Antonio"],"keywords":["wedding photographer"]},{"name":"San Antonio wedding planning","members":"799","link":"https://www.facebook.com/groups/403148882322336/","priority":1,"activity":"low","cities":["San Antonio"],"keywords":["wedding photographer"]},{"name":"San Antonio Photography Exchange","members":"375","link":"https://www.facebook.com/groups/233218500914961/","priority":1,"activity":"low","cities":["San Antonio"],"keywords":["photographer needed"]},{"name":"San Antonio Photography Location Scouting","members":"313","link":"https://www.facebook.com/groups/295363834746223/","priority":1,"activity":"low","cities":["San Antonio"],"keywords":["photographer needed"]},{"name":"Seeking Professional Photographer San Antonio","members":"255","link":"https://www.facebook.com/groups/3915566005407095/","priority":1,"activity":"low","cities":["San Antonio"],"keywords":["photographer needed"]},{"name":"San Antonio Professional Models And Photographers","members":"147","link":"https://www.facebook.com/groups/1796918133713997/","priority":1,"activity":"low","cities":["San Antonio"],"keywords":["photographer needed"]},{"name":"Photography San Antonio","members":"466","link":"https://www.facebook.com/groups/597286257867267/","priority":1,"activity":"low","cities":["San Antonio"],"keywords":["photographer needed"]}],
+  cities: [{"name":"New York","groupCount":85},{"name":"Los Angeles","groupCount":52},{"name":"Chicago","groupCount":51},{"name":"Houston","groupCount":37},{"name":"Phoenix","groupCount":52},{"name":"Philadelphia","groupCount":47},{"name":"San Antonio","groupCount":17},{"name":"San Diego","groupCount":0},{"name":"Dallas","groupCount":0},{"name":"San Jose","groupCount":0}],
+  keywords: [{"name":"wedding photographer","groupCount":85},{"name":"photographer needed","groupCount":52},{"name":"wedding vendors","groupCount":40},{"name":"videographer","groupCount":45},{"name":"wedding planning","groupCount":42},{"name":"photography services","groupCount":47},{"name":"wedding services","groupCount":48},{"name":"event photographer","groupCount":42}],
+  profiles: [{"id":39,"name":"US_WES_WED_05","group":"Weddings","location":"California","proxy_index":0,"isDefault":false},{"id":37,"name":"US_ASH_WED_07","group":"Weddings","location":"California","proxy_index":1,"isDefault":false},{"id":33,"name":"US_RE_WED_12","group":"Weddings","location":"California","proxy_index":2,"isDefault":false},{"id":32,"name":"US_NY_WED_02","group":"Weddings","location":"New York","proxy_index":3,"isDefault":false},{"id":31,"name":"US_NY_WED_06","group":"Weddings","location":"New York","proxy_index":4,"isDefault":false},{"id":30,"name":"US_ASH_WED_08","group":"Weddings","location":"Arizona","proxy_index":5,"isDefault":true},{"id":27,"name":"US_NY_SP_17","group":"Sports","location":"New York","proxy_index":6,"isDefault":false},{"id":26,"name":"US_NY_WED_11","group":"Weddings","location":"New York","proxy_index":7,"isDefault":false}]
+};
+
+function escHtml(s) {
+  return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+const modalRenderers = {
+  groups: (items) => {
+    if (!items.length) return '<div class="empty">Ничего не найдено</div>';
+    const rows = items.map(g => `
+      <tr>
+        <td><a href="${g.link}" target="_blank">${escHtml(g.name)}</a></td>
+        <td>${g.members}</td>
+        <td><span class="pri-badge p${g.priority}">P${g.priority}</span></td>
+        <td class="muted">${escHtml(g.cities.join(', '))}</td>
+        <td class="muted">${escHtml(g.keywords.join(', '))}</td>
+      </tr>`).join('');
+    return `<table><thead><tr><th>Group</th><th>Members</th><th>Pri</th><th>Cities</th><th>Keywords</th></tr></thead><tbody>${rows}</tbody></table>`;
+  },
+  cities: (items) => {
+    if (!items.length) return '<div class="empty">Ничего не найдено</div>';
+    const rows = items.map(c => `<tr><td>${escHtml(c.name)}</td><td><b>${c.groupCount}</b> групп</td></tr>`).join('');
+    return `<table><thead><tr><th>City</th><th>Groups found</th></tr></thead><tbody>${rows}</tbody></table>`;
+  },
+  keywords: (items) => {
+    if (!items.length) return '<div class="empty">Ничего не найдено</div>';
+    const rows = items.map(k => `<tr><td>"${escHtml(k.name)}"</td><td><b>${k.groupCount}</b> групп</td></tr>`).join('');
+    return `<table><thead><tr><th>Keyword</th><th>Groups found</th></tr></thead><tbody>${rows}</tbody></table>`;
+  },
+  profiles: (items) => {
+    if (!items.length) return '<div class="empty">Ничего не найдено</div>';
+    const rows = items.map(p => `
+      <tr style="${p.isDefault ? 'background:rgba(248,81,73,0.08);' : ''}">
+        <td>${p.isDefault ? '⭐' : ''} ${escHtml(p.name)}</td>
+        <td><code>${p.id}</code></td>
+        <td class="muted">${escHtml(p.group)}</td>
+        <td class="muted">${escHtml(p.location)}</td>
+        <td class="muted">proxy #${p.proxy_index}</td>
+        <td>${p.isDefault ? '<span class="pri-badge p5">DEFAULT</span>' : '<span class="muted">disabled</span>'}</td>
+      </tr>`).join('');
+    return `<table><thead><tr><th>Name</th><th>Serial</th><th>Group</th><th>Location</th><th>Proxy</th><th>Status</th></tr></thead><tbody>${rows}</tbody></table>`;
+  }
+};
+const modalTitles = { groups: 'Все собранные группы', cities: 'Целевые города', keywords: 'Ключевые слова поиска', profiles: 'AdsPower профили' };
+
+let currentModalKey = null;
+function openModal(key) {
+  currentModalKey = key;
+  document.getElementById('modal-title').textContent = modalTitles[key];
+  document.getElementById('modal-search-input').value = '';
+  filterAndRender('');
+  document.getElementById('modal-overlay').classList.add('open');
+  setTimeout(() => document.getElementById('modal-search-input').focus(), 50);
+}
+function closeModal() {
+  document.getElementById('modal-overlay').classList.remove('open');
+  currentModalKey = null;
+}
+function filterAndRender(query) {
+  const q = (query || '').toLowerCase().trim();
+  const items = modalData[currentModalKey] || [];
+  const filtered = q ? items.filter(it => JSON.stringify(it).toLowerCase().includes(q)) : items;
+  document.getElementById('modal-count').textContent = filtered.length + ' / ' + items.length;
+  document.getElementById('modal-body').innerHTML = modalRenderers[currentModalKey](filtered);
+}
+document.querySelectorAll('.stat.clickable').forEach(el => el.addEventListener('click', () => openModal(el.dataset.modal)));
+document.getElementById('modal-close').addEventListener('click', closeModal);
+document.getElementById('modal-overlay').addEventListener('click', (e) => { if (e.target.id === 'modal-overlay') closeModal(); });
+document.getElementById('modal-search-input').addEventListener('input', (e) => filterAndRender(e.target.value));
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
+</script>
+</body>
+</html>
