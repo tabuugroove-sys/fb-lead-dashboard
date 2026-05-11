@@ -79,11 +79,6 @@
   .status-idle     { background: rgba(139,148,158,0.15); color: var(--muted); }
   .status-planned  { background: rgba(88,166,255,0.15); color: var(--blue); }
   .status-error    { background: rgba(248,81,73,0.15); color: var(--red); }
-  .status-promising { background: rgba(63,185,80,0.15); color: var(--green); }
-  .status-priority_sample { background: rgba(88,166,255,0.15); color: var(--blue); }
-  .status-needs_sample { background: rgba(210,153,34,0.15); color: var(--yellow); }
-  .status-low_priority { background: rgba(139,148,158,0.15); color: var(--muted); }
-  .status-junk { background: rgba(248,81,73,0.15); color: var(--red); }
 
   /* Activity feed */
   .feed { font-family: "JetBrains Mono", "Consolas", monospace; font-size: 11px; }
@@ -181,13 +176,13 @@
     <div class="token-card">
       <div class="token-stats">
         <div class="label">Сегодня (всего)</div>
-        <div class="big">0</div>
+        <div class="big">3 500</div>
         <div class="trend up">
           ▲ 0.0% vs вчера
         </div>
         <div class="secondary">
           <div>
-            <div class="num" style="color:var(--green)">0</div>
+            <div class="num" style="color:var(--green)">1</div>
             <div class="lbl">CLI calls (free)</div>
           </div>
           <div>
@@ -207,7 +202,7 @@
       <div class="sparkline-wrap"><canvas id="sparkline"></canvas></div>
     </div>
     <div style="margin-top: 12px; font-size: 11px; color: var(--muted);">
-      Источник: <code>data/ai-stats.jsonl (1 calls tracked)</code> ·
+      Источник: <code>data/ai-stats.jsonl (2 calls tracked)</code> ·
       CLI = твоя подписка (free) · API = pay-per-token ·
       Обновить: <code>node build-dashboard.js</code>
     </div>
@@ -235,257 +230,6 @@
       <div class="stage"><div class="v">0</div><div class="l">tier-2 sonnet</div></div>
       <div class="arr">→</div>
       <div class="stage" style="border-color: var(--green);"><div class="v" style="color:var(--green)">0</div><div class="l">delivered</div></div>
-    </div>
-  </div>
-
-  <!-- Group Quality -->
-  <div class="card" style="margin-bottom: 16px;">
-    <h2>Group Quality · clients vs vendor noise</h2>
-    <div class="stat-row" style="grid-template-columns: repeat(6, 1fr);">
-      <div class="stat"><div class="num" style="color:var(--green)">0</div><div class="lbl">Promising</div></div>
-      <div class="stat"><div class="num" style="color:var(--blue)">62</div><div class="lbl">Priority sample</div></div>
-      <div class="stat"><div class="num" style="color:var(--yellow)">35</div><div class="lbl">Needs sample</div></div>
-      <div class="stat"><div class="num" style="color:var(--red)">0</div><div class="lbl">Junk</div></div>
-      <div class="stat"><div class="num">5</div><div class="lbl">Sampled groups</div></div>
-      <div class="stat"><div class="num">11</div><div class="lbl">Posts analyzed</div></div>
-    </div>
-    <p style="font-size: 12px; color: var(--muted); margin: -4px 0 14px;">
-      Правило: группа становится <b>junk</b> только если собрано минимум <code>10</code> постов и найдено <b>0</b> клиентских запросов. До этого статус <b>needs_sample</b>, чтобы не выкинуть хорошую группу слишком рано.
-    </p>
-    <table>
-      <thead><tr><th>Group</th><th>Status</th><th>Sample</th><th>Clients</th><th>Vendors</th><th>Name signal</th><th>Recommendation</th></tr></thead>
-      <tbody>
-        
-          <tr>
-            <td><a href="https://www.facebook.com/groups/dannyphamphotography/" target="_blank">New York Weddings</a><div class="muted">New York</div></td>
-            <td><span class="status-pill status-priority_sample">priority_sample</span></td>
-            <td>0/10</td>
-            <td style="color:var(--green)">0</td>
-            <td style="color:var(--yellow)">0</td>
-            <td class="muted">buyer_like</td>
-            <td class="muted">Priority sample: group name looks buyer-oriented</td>
-          </tr>
-          <tr>
-            <td><a href="https://www.facebook.com/groups/1415985408870764/" target="_blank">New Jersey &amp; New York Weddings &amp; Events</a><div class="muted">New York</div></td>
-            <td><span class="status-pill status-priority_sample">priority_sample</span></td>
-            <td>0/10</td>
-            <td style="color:var(--green)">0</td>
-            <td style="color:var(--yellow)">0</td>
-            <td class="muted">buyer_like</td>
-            <td class="muted">Priority sample: group name looks buyer-oriented</td>
-          </tr>
-          <tr>
-            <td><a href="https://www.facebook.com/groups/newyorkcityweddings/" target="_blank">New York City Weddings</a><div class="muted">New York</div></td>
-            <td><span class="status-pill status-priority_sample">priority_sample</span></td>
-            <td>0/10</td>
-            <td style="color:var(--green)">0</td>
-            <td style="color:var(--yellow)">0</td>
-            <td class="muted">buyer_like</td>
-            <td class="muted">Priority sample: group name looks buyer-oriented</td>
-          </tr>
-          <tr>
-            <td><a href="https://www.facebook.com/groups/NyBridesToBe/" target="_blank">NY Brides to be Wedding Planning Group</a><div class="muted">New York</div></td>
-            <td><span class="status-pill status-priority_sample">priority_sample</span></td>
-            <td>0/10</td>
-            <td style="color:var(--green)">0</td>
-            <td style="color:var(--yellow)">0</td>
-            <td class="muted">buyer_like</td>
-            <td class="muted">Priority sample: group name looks buyer-oriented</td>
-          </tr>
-          <tr>
-            <td><a href="https://www.facebook.com/groups/377680212417415/" target="_blank">BRIDES of New York And Northern NJ</a><div class="muted">New York</div></td>
-            <td><span class="status-pill status-priority_sample">priority_sample</span></td>
-            <td>0/10</td>
-            <td style="color:var(--green)">0</td>
-            <td style="color:var(--yellow)">0</td>
-            <td class="muted">buyer_like</td>
-            <td class="muted">Priority sample: group name looks buyer-oriented</td>
-          </tr>
-          <tr>
-            <td><a href="https://www.facebook.com/groups/787558361345004/" target="_blank">Upstate NY Weddings</a><div class="muted">New York</div></td>
-            <td><span class="status-pill status-priority_sample">priority_sample</span></td>
-            <td>0/10</td>
-            <td style="color:var(--green)">0</td>
-            <td style="color:var(--yellow)">0</td>
-            <td class="muted">buyer_like</td>
-            <td class="muted">Priority sample: group name looks buyer-oriented</td>
-          </tr>
-          <tr>
-            <td><a href="https://www.facebook.com/groups/newjerseybridesweddingplanning/" target="_blank">New Jersey Brides Wedding Planning</a><div class="muted">New York, Philadelphia</div></td>
-            <td><span class="status-pill status-priority_sample">priority_sample</span></td>
-            <td>0/10</td>
-            <td style="color:var(--green)">0</td>
-            <td style="color:var(--yellow)">0</td>
-            <td class="muted">buyer_like</td>
-            <td class="muted">Priority sample: group name looks buyer-oriented</td>
-          </tr>
-          <tr>
-            <td><a href="https://www.facebook.com/groups/newyorkbrideschoice/" target="_blank">New York Wedding Information for Brides and their Bridal Party</a><div class="muted">New York</div></td>
-            <td><span class="status-pill status-priority_sample">priority_sample</span></td>
-            <td>0/10</td>
-            <td style="color:var(--green)">0</td>
-            <td style="color:var(--yellow)">0</td>
-            <td class="muted">buyer_like</td>
-            <td class="muted">Priority sample: group name looks buyer-oriented</td>
-          </tr>
-          <tr>
-            <td><a href="https://www.facebook.com/groups/426864460029408/" target="_blank">Wedding Planning Advice, Tips, Amazon Budget Wedding and Home Deals by Moxx</a><div class="muted">New York, Los Angeles, Chicago, Phoenix, Philadelphia</div></td>
-            <td><span class="status-pill status-priority_sample">priority_sample</span></td>
-            <td>0/10</td>
-            <td style="color:var(--green)">0</td>
-            <td style="color:var(--yellow)">0</td>
-            <td class="muted">buyer_like</td>
-            <td class="muted">Priority sample: group name looks buyer-oriented</td>
-          </tr>
-          <tr>
-            <td><a href="https://www.facebook.com/groups/2686534338242630/" target="_blank">Delray Beach Elopements &amp; Intimate Weddings</a><div class="muted">New York</div></td>
-            <td><span class="status-pill status-priority_sample">priority_sample</span></td>
-            <td>0/10</td>
-            <td style="color:var(--green)">0</td>
-            <td style="color:var(--yellow)">0</td>
-            <td class="muted">buyer_like</td>
-            <td class="muted">Priority sample: group name looks buyer-oriented</td>
-          </tr>
-          <tr>
-            <td><a href="https://www.facebook.com/groups/1013291454158176/" target="_blank">Pop-Up Vows LLC ♥️ Small Weddings &amp; Elopements in New York</a><div class="muted">New York</div></td>
-            <td><span class="status-pill status-priority_sample">priority_sample</span></td>
-            <td>0/10</td>
-            <td style="color:var(--green)">0</td>
-            <td style="color:var(--yellow)">0</td>
-            <td class="muted">buyer_like</td>
-            <td class="muted">Priority sample: group name looks buyer-oriented</td>
-          </tr>
-          <tr>
-            <td><a href="https://www.facebook.com/groups/WeddingsLA/" target="_blank">Weddings in Los Angeles (Share Ideas, Trade/Sell Wedding Items/Services )</a><div class="muted">Los Angeles</div></td>
-            <td><span class="status-pill status-priority_sample">priority_sample</span></td>
-            <td>0/10</td>
-            <td style="color:var(--green)">0</td>
-            <td style="color:var(--yellow)">0</td>
-            <td class="muted">buyer_like</td>
-            <td class="muted">Priority sample: group name looks buyer-oriented</td>
-          </tr>
-          <tr>
-            <td><a href="https://www.facebook.com/groups/347269686683/" target="_blank">Los Angeles California Weddings &amp; Brides On A Budget</a><div class="muted">Los Angeles</div></td>
-            <td><span class="status-pill status-priority_sample">priority_sample</span></td>
-            <td>0/10</td>
-            <td style="color:var(--green)">0</td>
-            <td style="color:var(--yellow)">0</td>
-            <td class="muted">buyer_like</td>
-            <td class="muted">Priority sample: group name looks buyer-oriented</td>
-          </tr>
-          <tr>
-            <td><a href="https://www.facebook.com/groups/1527066700704777/" target="_blank">Quinceañeras and Weddings Los Angeles</a><div class="muted">Los Angeles</div></td>
-            <td><span class="status-pill status-priority_sample">priority_sample</span></td>
-            <td>0/10</td>
-            <td style="color:var(--green)">0</td>
-            <td style="color:var(--yellow)">0</td>
-            <td class="muted">buyer_like</td>
-            <td class="muted">Priority sample: group name looks buyer-oriented</td>
-          </tr>
-          <tr>
-            <td><a href="https://www.facebook.com/groups/7797945656882879/" target="_blank">Brides &amp; Grooms of Los Angeles, Orange County, and Southern California</a><div class="muted">Los Angeles</div></td>
-            <td><span class="status-pill status-priority_sample">priority_sample</span></td>
-            <td>0/10</td>
-            <td style="color:var(--green)">0</td>
-            <td style="color:var(--yellow)">0</td>
-            <td class="muted">buyer_like</td>
-            <td class="muted">Priority sample: group name looks buyer-oriented</td>
-          </tr>
-          <tr>
-            <td><a href="https://www.facebook.com/groups/608154082716119/" target="_blank">Weddings &amp; Events Sell &amp; Swap - Los Angeles</a><div class="muted">Los Angeles</div></td>
-            <td><span class="status-pill status-priority_sample">priority_sample</span></td>
-            <td>0/10</td>
-            <td style="color:var(--green)">0</td>
-            <td style="color:var(--yellow)">0</td>
-            <td class="muted">buyer_like</td>
-            <td class="muted">Priority sample: group name looks buyer-oriented</td>
-          </tr>
-          <tr>
-            <td><a href="https://www.facebook.com/groups/210858355920303/" target="_blank">ISO Wedding and Events 916 &amp; 530</a><div class="muted">Los Angeles</div></td>
-            <td><span class="status-pill status-priority_sample">priority_sample</span></td>
-            <td>0/10</td>
-            <td style="color:var(--green)">0</td>
-            <td style="color:var(--yellow)">0</td>
-            <td class="muted">buyer_like</td>
-            <td class="muted">Priority sample: group name looks buyer-oriented</td>
-          </tr>
-          <tr>
-            <td><a href="https://www.facebook.com/groups/111050779414653/" target="_blank">Brides of Chicago</a><div class="muted">Chicago</div></td>
-            <td><span class="status-pill status-priority_sample">priority_sample</span></td>
-            <td>0/10</td>
-            <td style="color:var(--green)">0</td>
-            <td style="color:var(--yellow)">0</td>
-            <td class="muted">buyer_like</td>
-            <td class="muted">Priority sample: group name looks buyer-oriented</td>
-          </tr>
-          <tr>
-            <td><a href="https://www.facebook.com/groups/868758136612171/" target="_blank">CHICAGOLAND &amp; SUBURBAN WEDDINGS &amp; SPECIAL EVENTS!!</a><div class="muted">Chicago</div></td>
-            <td><span class="status-pill status-priority_sample">priority_sample</span></td>
-            <td>0/10</td>
-            <td style="color:var(--green)">0</td>
-            <td style="color:var(--yellow)">0</td>
-            <td class="muted">buyer_like</td>
-            <td class="muted">Priority sample: group name looks buyer-oriented</td>
-          </tr>
-          <tr>
-            <td><a href="https://www.facebook.com/groups/362120577889420/" target="_blank">BRIDES ON A BUDGET</a><div class="muted">Chicago</div></td>
-            <td><span class="status-pill status-priority_sample">priority_sample</span></td>
-            <td>0/10</td>
-            <td style="color:var(--green)">0</td>
-            <td style="color:var(--yellow)">0</td>
-            <td class="muted">buyer_like</td>
-            <td class="muted">Priority sample: group name looks buyer-oriented</td>
-          </tr>
-          <tr>
-            <td><a href="https://www.facebook.com/groups/774263665197712/" target="_blank">Wedding Planning 2026-2029❤️</a><div class="muted">Chicago, Phoenix</div></td>
-            <td><span class="status-pill status-priority_sample">priority_sample</span></td>
-            <td>0/10</td>
-            <td style="color:var(--green)">0</td>
-            <td style="color:var(--yellow)">0</td>
-            <td class="muted">buyer_like</td>
-            <td class="muted">Priority sample: group name looks buyer-oriented</td>
-          </tr>
-          <tr>
-            <td><a href="https://www.facebook.com/groups/453052061521245/" target="_blank">Houston Wedding Brides</a><div class="muted">Houston</div></td>
-            <td><span class="status-pill status-priority_sample">priority_sample</span></td>
-            <td>0/10</td>
-            <td style="color:var(--green)">0</td>
-            <td style="color:var(--yellow)">0</td>
-            <td class="muted">buyer_like</td>
-            <td class="muted">Priority sample: group name looks buyer-oriented</td>
-          </tr>
-          <tr>
-            <td><a href="https://www.facebook.com/groups/1360786180614572/" target="_blank">Bride to Bride North Houston</a><div class="muted">Houston</div></td>
-            <td><span class="status-pill status-priority_sample">priority_sample</span></td>
-            <td>0/10</td>
-            <td style="color:var(--green)">0</td>
-            <td style="color:var(--yellow)">0</td>
-            <td class="muted">buyer_like</td>
-            <td class="muted">Priority sample: group name looks buyer-oriented</td>
-          </tr>
-          <tr>
-            <td><a href="https://www.facebook.com/groups/houstonweddingrecycle/" target="_blank">Houston Brides on a Budget</a><div class="muted">Houston</div></td>
-            <td><span class="status-pill status-priority_sample">priority_sample</span></td>
-            <td>0/10</td>
-            <td style="color:var(--green)">0</td>
-            <td style="color:var(--yellow)">0</td>
-            <td class="muted">buyer_like</td>
-            <td class="muted">Priority sample: group name looks buyer-oriented</td>
-          </tr>
-          <tr>
-            <td><a href="https://www.facebook.com/groups/houstonquincesandweddings/" target="_blank">Houston Quinces,Weddings and Events</a><div class="muted">Houston</div></td>
-            <td><span class="status-pill status-priority_sample">priority_sample</span></td>
-            <td>0/10</td>
-            <td style="color:var(--green)">0</td>
-            <td style="color:var(--yellow)">0</td>
-            <td class="muted">buyer_like</td>
-            <td class="muted">Priority sample: group name looks buyer-oriented</td>
-          </tr>
-      </tbody>
-    </table>
-    <div style="margin-top: 12px; font-size: 11px; color: var(--muted);">
-      Обновить: <code>npm run group-quality && npm run dashboard</code> ·
-      файл: <code>data/group-quality.json</code>
     </div>
   </div>
 
@@ -943,13 +687,8 @@ graph LR
         
           <div class="line">
             <div class="name ">📄 build-dashboard.js</div>
-            <div class="size">43.5 KB</div>
-            <div class="modified">2026-05-10 23:27</div>
-          </div>
-          <div class="line">
-            <div class="name ">📄 dashboard-quality.html</div>
-            <div class="size">161.0 KB</div>
-            <div class="modified">2026-05-10 23:48</div>
+            <div class="size">40.2 KB</div>
+            <div class="modified">2026-05-11 06:56</div>
           </div>
           <div class="line">
             <div class="name ">📄 dashboard-tokens.json</div>
@@ -958,28 +697,23 @@ graph LR
           </div>
           <div class="line">
             <div class="name ">📄 dashboard.html</div>
-            <div class="size">119.1 KB</div>
-            <div class="modified">2026-05-10 23:48</div>
+            <div class="size">102.6 KB</div>
+            <div class="modified">2026-05-11 06:56</div>
           </div>
           <div class="line">
             <div class="name dir">📁 data</div>
             <div class="size"></div>
-            <div class="modified">2026-05-11 05:50</div>
+            <div class="modified">2026-05-11 06:56</div>
           </div>
           <div class="line">
             <div class="name dir">📁 dictionaries</div>
             <div class="size"></div>
-            <div class="modified">2026-05-10 03:29</div>
+            <div class="modified">2026-05-10 22:22</div>
           </div>
           <div class="line">
             <div class="name dir">📁 docs</div>
             <div class="size"></div>
-            <div class="modified">2026-05-10 03:29</div>
-          </div>
-          <div class="line">
-            <div class="name ">📄 groups.classified.json</div>
-            <div class="size">139.0 KB</div>
-            <div class="modified">2026-05-10 23:39</div>
+            <div class="modified">2026-05-10 22:22</div>
           </div>
           <div class="line">
             <div class="name ">📄 groups.json</div>
@@ -989,17 +723,17 @@ graph LR
           <div class="line">
             <div class="name ">📄 package-lock.json</div>
             <div class="size">129.9 KB</div>
-            <div class="modified">2026-05-10 03:30</div>
+            <div class="modified">2026-05-10 22:22</div>
           </div>
           <div class="line">
             <div class="name ">📄 package.json</div>
-            <div class="size">925 B</div>
-            <div class="modified">2026-05-10 23:27</div>
+            <div class="size">983 B</div>
+            <div class="modified">2026-05-10 23:13</div>
           </div>
           <div class="line">
             <div class="name ">📄 parser.js</div>
             <div class="size">13.5 KB</div>
-            <div class="modified">2026-05-10 03:29</div>
+            <div class="modified">2026-05-10 22:22</div>
           </div>
           <div class="line">
             <div class="name ">📄 project_config.json</div>
@@ -1007,34 +741,14 @@ graph LR
             <div class="modified">2026-05-10 03:29</div>
           </div>
           <div class="line">
-            <div class="name ">📄 quality.html</div>
-            <div class="size">157.8 KB</div>
-            <div class="modified">2026-05-11 01:28</div>
-          </div>
-          <div class="line">
-            <div class="name ">📄 run-phase2.bat</div>
-            <div class="size">140 B</div>
-            <div class="modified">2026-05-10 23:42</div>
-          </div>
-          <div class="line">
-            <div class="name ">📄 run-pipeline.bat</div>
-            <div class="size">110 B</div>
-            <div class="modified">2026-05-11 05:55</div>
-          </div>
-          <div class="line">
-            <div class="name ">📄 run-scraper.bat</div>
-            <div class="size">99 B</div>
-            <div class="modified">2026-05-10 23:42</div>
-          </div>
-          <div class="line">
             <div class="name dir">📁 scripts</div>
             <div class="size"></div>
-            <div class="modified">2026-05-11 01:29</div>
+            <div class="modified">2026-05-10 23:12</div>
           </div>
           <div class="line">
             <div class="name dir">📁 src</div>
             <div class="size"></div>
-            <div class="modified">2026-05-10 23:59</div>
+            <div class="modified">2026-05-10 22:22</div>
           </div>
       </div>
     </div>
@@ -1083,7 +797,7 @@ graph LR
 </div>
 
 <footer>
-  Сгенерировано: 11.05.2026, 08:04:58 ·
+  Сгенерировано: 11.05.2026, 08:57:15 ·
   Последний прогон парсера: 05.05.2026, 01:40:11 ·
   Обновить: <code>node build-dashboard.js</code>
 </footer>
@@ -1106,7 +820,7 @@ const initial = (location.hash.match(/^#\/(\w+)/) || [])[1] || 'leads';
 if (['leads','parser','system'].includes(initial)) showPage(initial);
 
 // ===== CLI vs API split chart =====
-const aiDaily = [{"date":"вт","iso":"2026-05-04","cli_calls":0,"api_calls":0,"cli_tokens":0,"api_tokens":0,"cost_usd":0},{"date":"ср","iso":"2026-05-05","cli_calls":0,"api_calls":1,"cli_tokens":0,"api_tokens":1144,"cost_usd":0.00184},{"date":"чт","iso":"2026-05-06","cli_calls":0,"api_calls":0,"cli_tokens":0,"api_tokens":0,"cost_usd":0},{"date":"пт","iso":"2026-05-07","cli_calls":0,"api_calls":0,"cli_tokens":0,"api_tokens":0,"cost_usd":0},{"date":"сб","iso":"2026-05-08","cli_calls":0,"api_calls":0,"cli_tokens":0,"api_tokens":0,"cost_usd":0},{"date":"вс","iso":"2026-05-09","cli_calls":0,"api_calls":0,"cli_tokens":0,"api_tokens":0,"cost_usd":0},{"date":"пн","iso":"2026-05-10","cli_calls":0,"api_calls":0,"cli_tokens":0,"api_tokens":0,"cost_usd":0}];
+const aiDaily = [{"date":"вт","iso":"2026-05-05","cli_calls":0,"api_calls":1,"cli_tokens":0,"api_tokens":1144,"cost_usd":0.00184},{"date":"ср","iso":"2026-05-06","cli_calls":0,"api_calls":0,"cli_tokens":0,"api_tokens":0,"cost_usd":0},{"date":"чт","iso":"2026-05-07","cli_calls":0,"api_calls":0,"cli_tokens":0,"api_tokens":0,"cost_usd":0},{"date":"пт","iso":"2026-05-08","cli_calls":0,"api_calls":0,"cli_tokens":0,"api_tokens":0,"cost_usd":0},{"date":"сб","iso":"2026-05-09","cli_calls":0,"api_calls":0,"cli_tokens":0,"api_tokens":0,"cost_usd":0},{"date":"вс","iso":"2026-05-10","cli_calls":0,"api_calls":0,"cli_tokens":0,"api_tokens":0,"cost_usd":0},{"date":"пн","iso":"2026-05-11","cli_calls":1,"api_calls":0,"cli_tokens":3500,"api_tokens":0,"cost_usd":0}];
 const ctx = document.getElementById('sparkline').getContext('2d');
 new Chart(ctx, {
   type: 'line',
