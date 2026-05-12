@@ -170,6 +170,7 @@
   <button class="tab active" data-page="leads">📡 Lead Pipeline</button>
   <button class="tab" data-page="parser">⚙️ Parser</button>
   <button class="tab" data-page="system">🔧 System</button>
+  <button class="tab" data-page="safety">🛡 Safety</button>
   <button class="tab" data-page="handbook">📖 Handbook</button>
 </nav>
 
@@ -1034,8 +1035,8 @@ graph LR
         
           <div class="line">
             <div class="name ">📄 build-dashboard.js</div>
-            <div class="size">51.8 KB</div>
-            <div class="modified">2026-05-12 08:38</div>
+            <div class="size">60.9 KB</div>
+            <div class="modified">2026-05-12 08:40</div>
           </div>
           <div class="line">
             <div class="name ">📄 check-env.mjs</div>
@@ -1059,8 +1060,8 @@ graph LR
           </div>
           <div class="line">
             <div class="name ">📄 dashboard.html</div>
-            <div class="size">128.8 KB</div>
-            <div class="modified">2026-05-12 08:38</div>
+            <div class="size">138.0 KB</div>
+            <div class="modified">2026-05-12 08:40</div>
           </div>
           <div class="line">
             <div class="name dir">📁 data</div>
@@ -1174,6 +1175,142 @@ graph LR
         </ol>
       </div>
     </div>
+  </div>
+
+</div>
+
+<!-- ====================== PAGE: SAFETY ====================== -->
+<div class="page" data-page="safety">
+
+  <div class="card" style="margin-bottom:16px">
+    <h2>🛡 FB Outreach — карта рисков & стратегия</h2>
+    <div style="color:var(--muted);margin-bottom:8px">
+      Аналогично WA safety breakdown — переложено на Facebook. У FB лимиты не Graph-API,
+      а собственный spam-detection + правила групп.
+    </div>
+  </div>
+
+  <!-- TIER 1 -->
+  <div class="card" style="border-left:4px solid var(--red);margin-bottom:16px">
+    <h2>🔴 Tier 1 · Puppeteer + FB Web для SEND DM</h2>
+    <div style="margin:8px 0"><b style="color:var(--red)">Самый рискованный — не делаем</b></div>
+    <p style="line-height:1.6"><b>Что бы делал:</b> AdsPower → messenger.com → набор → Send.</p>
+    <p style="line-height:1.6"><b>Почему рискованно:</b></p>
+    <ul style="line-height:1.7">
+      <li>FB Web детектит автоматизацию <b>сильнее WA Web</b> — старая система, больше инвестиций в anti-bot</li>
+      <li><code>navigator.webdriver</code>, mouse-patterns, keystroke timing, scroll velocity — всё под прицелом</li>
+      <li>Send через скрипт = <b>instant pattern</b>. Один заскриптованный send хуже 100 чтений.</li>
+      <li>Banned profile = теряем outreach-канал + риск каскадного бана связанных профилей</li>
+    </ul>
+    <div style="background:#3a1a1a;border-radius:4px;padding:10px 14px;margin-top:10px">
+      <b>Риск если включим:</b> 50-70% бан за 2 месяца активной рассылки
+    </div>
+  </div>
+
+  <!-- TIER 2 -->
+  <div class="card" style="border-left:4px solid var(--yellow);margin-bottom:16px">
+    <h2>🟡 Tier 2 · Puppeteer + AdsPower (то что у нас уже стоит)</h2>
+    <div style="margin:8px 0"><b style="color:var(--green)">Сейчас работает в продакшене — только read</b></div>
+    <p style="line-height:1.6"><b>Что делаем:</b> скрапим группы, читаем посты, переходим по permalinks. Только read.</p>
+    <p style="line-height:1.6"><b>Защита:</b></p>
+    <ul style="line-height:1.7">
+      <li>AdsPower fingerprint isolation (Canvas, WebGL, WebRTC, IP)</li>
+      <li>US_ASH_WED_08 — реальный профиль с историей</li>
+      <li>Темп: 25 групп / запуск, 15-30s между, перерывы 60s каждые 10</li>
+      <li>1 запуск в сутки (можно нарастить до 2-3 безопасно)</li>
+    </ul>
+    <div style="background:#3a3a1a;border-radius:4px;padding:10px 14px;margin-top:10px">
+      <b>Текущий риск:</b> 5-10% бан в год при текущем режиме
+    </div>
+    <p style="margin-top:10px;color:var(--muted)"><b>Что бы сильно поднял риск</b> (не делаем): запуски чаще раза в 4 часа · &gt;25 групп за раз · параллельные сессии · любой send</p>
+  </div>
+
+  <!-- TIER 3 -->
+  <div class="card" style="border-left:4px solid var(--green);margin-bottom:16px">
+    <h2>🟢 Tier 3 · computer-use + FB Desktop / личный браузер на Mac</h2>
+    <div style="margin:8px 0"><b style="color:var(--green)">Низкий риск — рекомендую для outreach</b></div>
+    <p style="line-height:1.6"><b>Что делаем:</b> AI кликает мышью через computer-use. FB видит <b>системный input event от macOS</b> — не отличить от ручных кликов пользователя.</p>
+    <p style="line-height:1.6"><b>Остаточные риски:</b></p>
+    <ul style="line-height:1.7">
+      <li>50+ DM/час с одного аккаунта → поведенческий ML заметит</li>
+      <li>Copy-paste одинакового текста → spam-detection</li>
+      <li>Sessión должна быть открыта на Mac → ты видишь что я делаю</li>
+    </ul>
+    <div style="background:#1a3a1a;border-radius:4px;padding:10px 14px;margin-top:10px">
+      <b>Риск:</b> 2-5% бан в год при темпе 10-30 действий/сутки с уникальными текстами
+    </div>
+  </div>
+
+  <!-- TIER 4 -->
+  <div class="card" style="border-left:4px solid var(--green);margin-bottom:16px">
+    <h2>🟢 Tier 4 · Page Messenger API (Meta official)</h2>
+    <p style="line-height:1.6"><b>Plus:</b> официальный путь, FB не банит за использование своего API.</p>
+    <p style="line-height:1.6"><b>Minus:</b></p>
+    <ul style="line-height:1.7">
+      <li>Только conversations где клиент написал <b>ПЕРВЫМ</b> в твою Page</li>
+      <li>Cold outreach к незнакомым через API нельзя — instant suspension</li>
+      <li>Need: верифицированный Business Manager + Page + связанный номер</li>
+    </ul>
+    <p style="color:var(--muted)"><b>Применимо когда:</b> соберём leads через комментарий "DM me" в твою Page → ответ через API безопасно. На cold outreach из FB Groups — не подходит.</p>
+  </div>
+
+  <!-- TIER 5 -->
+  <div class="card" style="border-left:4px solid var(--green);margin-bottom:16px">
+    <h2>🟢 Tier 5 · Outside-FB · Email / IG / WA</h2>
+    <div style="margin:8px 0"><b style="color:var(--green)">0% риска для FB — золотой путь</b></div>
+    <p style="line-height:1.6"><b>Что можно вытащить:</b></p>
+    <ul style="line-height:1.7">
+      <li>В постах — иногда email/phone/IG handle (доскрапивать "See more")</li>
+      <li>В FB-профиле автора bio — часто IG / WA / phone</li>
+      <li>У нас 24 IG-аккаунта в AdsPower-профилях → DM через свою IG-инфру</li>
+    </ul>
+    <div style="background:#1a3a1a;border-radius:4px;padding:10px 14px;margin-top:10px">
+      <b>Это самый ценный путь</b> — отвечаем клиенту из канала где нас не банят за outreach
+    </div>
+  </div>
+
+  <!-- Scenarios -->
+  <div class="card" style="margin-bottom:16px">
+    <h2>📋 Конкретные сценарии потери FB-аккаунта</h2>
+    <table style="width:100%">
+      <thead>
+        <tr>
+          <th style="color:var(--muted);text-align:left;font-weight:600">Сценарий</th>
+          <th style="color:var(--muted);text-align:left;font-weight:600">Вероятность</th>
+          <th style="color:var(--muted);text-align:left;font-weight:600">Что теряем</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>FB sweep ботов в группах</td><td>~15% за год</td><td>scrape-аккаунт + groups membership</td></tr>
+        <tr><td>Клиент жмёт «Spam» на DM</td><td>~5% per 100 cold DMs</td><td>24-72ч restriction, не permanent</td></tr>
+        <tr><td>FB обновил DOM → scraper сломался</td><td>~70% хотя бы раз/год</td><td>не ban, починим</td></tr>
+        <tr><td style="color:var(--red)">Mass-send через Puppeteer (Tier 1)</td><td style="color:var(--red)">резко вверх ~50%/2 мес</td><td style="color:var(--red)">permanent ban</td></tr>
+        <tr><td>Computer-use умеренно (Tier 3)</td><td>~2-5% в год</td><td>можно appeal через FB Business</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Architecture recommendation -->
+  <div class="card" style="margin-bottom:16px">
+    <h2>🏗 Рекомендуемая архитектура outreach</h2>
+    <pre style="background:#0d1117;padding:14px 16px;border-radius:6px;border:1px solid var(--border);overflow-x:auto;color:var(--fg);line-height:1.5">для каждого нового лида:
+  if email      → отправить через SMTP             (Tier 5, 0% риск)
+  elif IG handle→ через 24 IG-аккаунта (ротация)   (Tier 5, наша инфра)
+  elif WhatsApp → через wa_export-аналог           (Tier 5)
+  elif только FB DM →
+    Tier 3 (computer-use под твой надзор) ← рекомендую
+    либо Tier 2 + warmed acc</pre>
+  </div>
+
+  <!-- Defenses -->
+  <div class="card">
+    <h2>🔒 Защита данных (по аналогии с WA setup)</h2>
+    <ol style="line-height:1.8">
+      <li><b>Daily backup</b> <code>leads-new.jsonl</code> → <code>data/backups/leads-YYYY-MM-DD.jsonl</code></li>
+      <li><b>Snapshot контактов</b> в SQLite <code>leads.db</code> с extracted email/phone/IG</li>
+      <li><b>Резервный AdsPower-профиль</b> прогретый (через AI-warmer)</li>
+      <li><b>Kill-switch</b> в скрапере — FB checkpoint / "unusual activity" → halt + Telegram alert</li>
+    </ol>
   </div>
 
 </div>
@@ -1300,7 +1437,7 @@ graph LR
 </div>
 
 <footer>
-  Сгенерировано: 12.05.2026, 10:38:19 ·
+  Сгенерировано: 12.05.2026, 10:40:11 ·
   Последний прогон парсера: 05.05.2026, 01:40:11 ·
   Обновить: <code>node build-dashboard.js</code>
 </footer>
