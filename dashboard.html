@@ -216,10 +216,10 @@
   <!-- Funnel stats -->
   <div class="stat-row">
     <div class="stat"><div class="num" style="color:var(--blue)">20</div><div class="lbl">Posts collected</div></div>
-    <div class="stat"><div class="num">180</div><div class="lbl">After lex filter</div></div>
-    <div class="stat"><div class="num">40</div><div class="lbl">Tier-1 pass (Haiku)</div></div>
-    <div class="stat"><div class="num" style="color:var(--green)">39</div><div class="lbl">Tier-2 confirmed</div></div>
-    <div class="stat"><div class="num" style="color:var(--yellow)">36</div><div class="lbl">Sent to Telegram</div></div>
+    <div class="stat"><div class="num">238</div><div class="lbl">After lex filter</div></div>
+    <div class="stat"><div class="num">57</div><div class="lbl">Tier-1 pass (Haiku)</div></div>
+    <div class="stat"><div class="num" style="color:var(--green)">56</div><div class="lbl">Tier-2 confirmed</div></div>
+    <div class="stat"><div class="num" style="color:var(--yellow)">52</div><div class="lbl">Sent to Telegram</div></div>
   </div>
 
   <!-- Funnel viz -->
@@ -228,16 +228,16 @@
     <div class="funnel">
       <div class="stage"><div class="v">20</div><div class="l">posts</div></div>
       <div class="arr">→</div>
-      <div class="stage"><div class="v">180</div><div class="l">lex filter</div></div>
+      <div class="stage"><div class="v">238</div><div class="l">lex filter</div></div>
       <div class="arr">→</div>
-      <div class="stage"><div class="v">40</div><div class="l">tier-1 haiku</div></div>
+      <div class="stage"><div class="v">57</div><div class="l">tier-1 haiku</div></div>
       <div class="arr">→</div>
-      <div class="stage"><div class="v">39</div><div class="l">tier-2 sonnet</div></div>
+      <div class="stage"><div class="v">56</div><div class="l">tier-2 sonnet</div></div>
       <div class="arr">→</div>
-      <div class="stage" style="border-color: var(--green);"><div class="v" style="color:var(--green)">36</div><div class="l">delivered</div></div>
+      <div class="stage" style="border-color: var(--green);"><div class="v" style="color:var(--green)">52</div><div class="l">delivered</div></div>
     </div>
     <div style="margin-top: 12px; font-size: 11px; color: var(--muted);">
-      Source: <code>data/dash-state2.json</code> · leads file: <code>data/leads-new.jsonl</code> · unique leads: <b>37</b> of 40 raw
+      Source: <code>data/dash-state2.json</code> · leads file: <code>data/leads-new.jsonl</code> · unique leads: <b>53</b> of 57 raw
     </div>
   </div>
 
@@ -508,7 +508,7 @@
           <div class="desc"></div>
           <div class="footer">
             <span class="lbl"></span>
-            <span><b>75</b></span>
+            <span><b>58</b></span>
           </div>
         </div>
         <div class="agent">
@@ -522,7 +522,7 @@
           <div class="desc"></div>
           <div class="footer">
             <span class="lbl"></span>
-            <span><b>28</b></span>
+            <span><b>17</b></span>
           </div>
         </div>
         <div class="agent">
@@ -564,7 +564,7 @@
           <div class="desc"></div>
           <div class="footer">
             <span class="lbl"></span>
-            <span><b>28</b></span>
+            <span><b>17</b></span>
           </div>
         </div>
         <div class="agent">
@@ -578,7 +578,7 @@
           <div class="desc"></div>
           <div class="footer">
             <span class="lbl"></span>
-            <span><b>25</b></span>
+            <span><b>16</b></span>
           </div>
         </div>
         <div class="agent">
@@ -587,12 +587,12 @@
               <div class="name">Scraper</div>
               <div class="model"></div>
             </div>
-            <span class="status-pill status-idle">idle</span>
+            <span class="status-pill status-running">running</span>
           </div>
           <div class="desc"></div>
           <div class="footer">
             <span class="lbl"></span>
-            <span><b>7</b></span>
+            <span><b>0</b></span>
           </div>
         </div>
         <div class="agent">
@@ -601,12 +601,12 @@
               <div class="name">FB Search</div>
               <div class="model"></div>
             </div>
-            <span class="status-pill status-running">running</span>
+            <span class="status-pill status-idle">idle</span>
           </div>
           <div class="desc"></div>
           <div class="footer">
             <span class="lbl"></span>
-            <span><b>92</b></span>
+            <span><b>100</b></span>
           </div>
         </div>
     </div>
@@ -640,6 +640,46 @@ graph TB
       <h2>Recent Activity</h2>
       <div class="feed">
         
+          <div class="row">
+            <div class="ts">07:32</div>
+            <div class="agent-tag">SCRAPER</div>
+            <div class="msg">Session start — 25 groups (skip: b2b,mixed,unknown)</div>
+          </div>
+          <div class="row">
+            <div class="ts">07:32</div>
+            <div class="agent-tag">PIPELINE</div>
+            <div class="msg">smart pipeline start, skip=b2b</div>
+          </div>
+          <div class="row">
+            <div class="ts">07:32</div>
+            <div class="agent-tag">PIPELINE</div>
+            <div class="msg">search pipeline done</div>
+          </div>
+          <div class="row">
+            <div class="ts">07:32</div>
+            <div class="agent-tag">TELEGRAM</div>
+            <div class="msg">16 leads sent</div>
+          </div>
+          <div class="row">
+            <div class="ts">07:32</div>
+            <div class="agent-tag">TIER-2</div>
+            <div class="msg">17 potentials → 17 real leads</div>
+          </div>
+          <div class="row">
+            <div class="ts">07:31</div>
+            <div class="agent-tag">TIER-1</div>
+            <div class="msg">58 candidates → 17 potentials</div>
+          </div>
+          <div class="row">
+            <div class="ts">07:30</div>
+            <div class="agent-tag">LEX</div>
+            <div class="msg">324 posts → 58 new candidates</div>
+          </div>
+          <div class="row">
+            <div class="ts">07:30</div>
+            <div class="agent-tag">SEARCH</div>
+            <div class="msg">Done — 100 posts from 20 queries</div>
+          </div>
           <div class="row">
             <div class="ts">07:00</div>
             <div class="agent-tag">SEARCH</div>
@@ -749,46 +789,6 @@ graph TB
             <div class="ts">19:58</div>
             <div class="agent-tag">TIER-1</div>
             <div class="msg">1 candidates → 0 potentials</div>
-          </div>
-          <div class="row">
-            <div class="ts">19:57</div>
-            <div class="agent-tag">LEX</div>
-            <div class="msg">114 posts → 0 new candidates</div>
-          </div>
-          <div class="row">
-            <div class="ts">19:57</div>
-            <div class="agent-tag">PIPELINE</div>
-            <div class="msg">smart pipeline start, skip=b2b</div>
-          </div>
-          <div class="row">
-            <div class="ts">19:56</div>
-            <div class="agent-tag">PIPELINE</div>
-            <div class="msg">smart pipeline done</div>
-          </div>
-          <div class="row">
-            <div class="ts">19:56</div>
-            <div class="agent-tag">TIER-1</div>
-            <div class="msg">1 candidates → 0 potentials</div>
-          </div>
-          <div class="row">
-            <div class="ts">19:56</div>
-            <div class="agent-tag">TIER-1</div>
-            <div class="msg">batch error: CLI exit 1: </div>
-          </div>
-          <div class="row">
-            <div class="ts">19:56</div>
-            <div class="agent-tag">LEX</div>
-            <div class="msg">114 posts → 0 new candidates</div>
-          </div>
-          <div class="row">
-            <div class="ts">19:56</div>
-            <div class="agent-tag">PIPELINE</div>
-            <div class="msg">smart pipeline start, skip=b2b</div>
-          </div>
-          <div class="row">
-            <div class="ts">08:31</div>
-            <div class="agent-tag">PIPELINE</div>
-            <div class="msg">smart pipeline done</div>
           </div>
       </div>
     </div>
@@ -1059,7 +1059,7 @@ graph LR
           <div class="line">
             <div class="name ">📄 dashboard.html</div>
             <div class="size">122.5 KB</div>
-            <div class="modified">2026-05-12 07:26</div>
+            <div class="modified">2026-05-12 07:31</div>
           </div>
           <div class="line">
             <div class="name dir">📁 data</div>
@@ -1078,8 +1078,8 @@ graph LR
           </div>
           <div class="line">
             <div class="name ">📄 groups.classified.json</div>
-            <div class="size">179.2 KB</div>
-            <div class="modified">2026-05-12 04:31</div>
+            <div class="size">179.9 KB</div>
+            <div class="modified">2026-05-12 07:32</div>
           </div>
           <div class="line">
             <div class="name ">📄 groups.json</div>
@@ -1113,8 +1113,8 @@ graph LR
           </div>
           <div class="line">
             <div class="name ">📄 quality.html</div>
-            <div class="size">162.2 KB</div>
-            <div class="modified">2026-05-12 04:13</div>
+            <div class="size">168.4 KB</div>
+            <div class="modified">2026-05-12 07:32</div>
           </div>
           <div class="line">
             <div class="name ">📄 run-phase2.bat</div>
@@ -1188,7 +1188,7 @@ graph LR
 </div>
 
 <footer>
-  Сгенерировано: 12.05.2026, 09:28:41 ·
+  Сгенерировано: 12.05.2026, 09:33:41 ·
   Последний прогон парсера: 05.05.2026, 01:40:11 ·
   Обновить: <code>node build-dashboard.js</code>
 </footer>
