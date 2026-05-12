@@ -177,6 +177,51 @@
 <!-- ====================== PAGE: LEADS (главная) ====================== -->
 <div class="page active" data-page="leads">
 
+  <!-- 📊 FB Project quota — what THIS project burns of your Max plan -->
+  <div class="card" style="margin-bottom: 16px; border-left: 3px solid var(--accent);">
+    <h2>📊 Расход лимита — только FB Project</h2>
+    <div style="color:var(--muted);font-size:12px;margin-bottom:12px">
+      Из <code>data/ai-stats-new.jsonl</code> · только вызовы этого проекта · не суммировано с твоей Mac-активностью
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3, 1fr);gap:12px;margin-bottom:8px">
+      <div style="background:var(--bg);padding:14px 16px;border-radius:6px;border:1px solid var(--border)">
+        <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px">Последние 5 часов</div>
+        <div style="font-size:24px;font-weight:700;color:var(--green);margin:4px 0">
+          0.0K
+        </div>
+        <div style="font-size:12px;color:var(--muted)">
+          9 calls · CLI 0.0K · API 0.0K
+        </div>
+      </div>
+      <div style="background:var(--bg);padding:14px 16px;border-radius:6px;border:1px solid var(--border)">
+        <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px">Последние 24 часа</div>
+        <div style="font-size:24px;font-weight:700;color:var(--yellow);margin:4px 0">
+          0.0K
+        </div>
+        <div style="font-size:12px;color:var(--muted)">
+          11 calls · CLI 0.0K · API 0.0K
+        </div>
+      </div>
+      <div style="background:var(--bg);padding:14px 16px;border-radius:6px;border:1px solid var(--border)">
+        <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px">Последние 7 дней</div>
+        <div style="font-size:24px;font-weight:700;color:var(--accent);margin:4px 0">
+          1.1K
+        </div>
+        <div style="font-size:12px;color:var(--muted)">
+          17 calls · CLI 0.0K · API 1.1K
+        </div>
+      </div>
+    </div>
+    <div style="font-size:12px;color:var(--muted);margin-top:8px">
+      По моделям за 7д: <b style="color:var(--fg)">haiku-4-5-20251001</b> 1.1K · <b style="color:var(--fg)">sonnet-4-6</b> 0.0K
+    </div>
+    <div style="background:#1c2128;border-left:3px solid var(--accent);padding:8px 12px;border-radius:4px;margin-top:12px;font-size:12px;line-height:1.5">
+      💡 <b>Note:</b> Contabo CLI авторизован тем же <code>CLAUDE_CODE_OAUTH_TOKEN</code>, что и твой Mac.
+      Эти токены жгут <b>общий weekly limit</b> Max plan'a, плюс твоя работа на Mac. Чтобы увидеть % реального лимита →
+      на Mac <code>claude</code> → <code>/usage</code>.
+    </div>
+  </div>
+
   <!-- Token widget с CLI/API split -->
   <div class="card" style="margin-bottom: 16px;">
     <h2>Token Usage — CLI vs API · Weekly Trend</h2>
@@ -612,7 +657,7 @@
           <div class="desc"></div>
           <div class="footer">
             <span class="lbl"></span>
-            <span><b>4</b></span>
+            <span><b>20</b></span>
           </div>
         </div>
     </div>
@@ -1039,8 +1084,8 @@ graph LR
         
           <div class="line">
             <div class="name ">📄 build-dashboard.js</div>
-            <div class="size">70.6 KB</div>
-            <div class="modified">2026-05-12 08:58</div>
+            <div class="size">75.1 KB</div>
+            <div class="modified">2026-05-12 09:03</div>
           </div>
           <div class="line">
             <div class="name ">📄 check-env.mjs</div>
@@ -1064,8 +1109,8 @@ graph LR
           </div>
           <div class="line">
             <div class="name ">📄 dashboard.html</div>
-            <div class="size">147.6 KB</div>
-            <div class="modified">2026-05-12 08:58</div>
+            <div class="size">150.3 KB</div>
+            <div class="modified">2026-05-12 09:03</div>
           </div>
           <div class="line">
             <div class="name dir">📁 data</div>
@@ -1604,7 +1649,7 @@ graph LR
 </div>
 
 <footer>
-  Сгенерировано: 12.05.2026, 10:58:40 ·
+  Сгенерировано: 12.05.2026, 11:03:23 ·
   Последний прогон парсера: 05.05.2026, 01:40:11 ·
   Обновить: <code>node build-dashboard.js</code>
 </footer>
