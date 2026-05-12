@@ -170,6 +170,7 @@
   <button class="tab active" data-page="leads">📡 Lead Pipeline</button>
   <button class="tab" data-page="parser">⚙️ Parser</button>
   <button class="tab" data-page="system">🔧 System</button>
+  <button class="tab" data-page="handbook">📖 Handbook</button>
 </nav>
 
 <!-- ====================== PAGE: LEADS (главная) ====================== -->
@@ -1033,8 +1034,8 @@ graph LR
         
           <div class="line">
             <div class="name ">📄 build-dashboard.js</div>
-            <div class="size">45.5 KB</div>
-            <div class="modified">2026-05-12 03:39</div>
+            <div class="size">51.5 KB</div>
+            <div class="modified">2026-05-12 08:32</div>
           </div>
           <div class="line">
             <div class="name ">📄 check-env.mjs</div>
@@ -1058,8 +1059,8 @@ graph LR
           </div>
           <div class="line">
             <div class="name ">📄 dashboard.html</div>
-            <div class="size">122.6 KB</div>
-            <div class="modified">2026-05-12 08:16</div>
+            <div class="size">128.8 KB</div>
+            <div class="modified">2026-05-12 08:32</div>
           </div>
           <div class="line">
             <div class="name dir">📁 data</div>
@@ -1177,6 +1178,112 @@ graph LR
 
 </div>
 
+<!-- ====================== PAGE: HANDBOOK ====================== -->
+<div class="page" data-page="handbook">
+
+  <div class="grid cols-2">
+    <div class="card">
+      <h2>🎯 Цель проекта</h2>
+      <ul style="line-height:1.8;color:var(--fg)">
+        <li>Искать Facebook-посты, где реальные клиенты ищут фото/видео съёмку</li>
+        <li>Отправлять подтверждённые лиды в Telegram bot <code>@FB_Production_Leads_bot</code></li>
+        <li>Публичный dashboard показывает актуальные данные</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h2>🖥 Сервер & доступ</h2>
+      <table style="width:100%">
+        <tr><td style="color:var(--muted);width:140px">Платформа</td><td>Contabo Windows VPS</td></tr>
+        <tr><td style="color:var(--muted)">IP</td><td><code>66.94.105.200</code></td></tr>
+        <tr><td style="color:var(--muted)">SSH user</td><td><code>Administrator</code></td></tr>
+        <tr><td style="color:var(--muted)">SSH key</td><td><code>~/.ssh/contabo_fb_pipeline</code></td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:16px">
+    <h2>🔑 AdsPower Profile (single source of truth)</h2>
+    <div style="background:#3a1a1a;border-left:3px solid var(--red);padding:12px 16px;margin-bottom:12px;border-radius:4px">
+      <b style="color:var(--red)">⚠️ Не запускать другие FB-профили.</b> Только этот для FB-операций.
+    </div>
+    <table style="width:100%">
+      <tr><td style="color:var(--muted);width:140px">Имя</td><td><code>US_ASH_WED_08</code></td></tr>
+      <tr><td style="color:var(--muted)">Serial</td><td><code>30</code></td></tr>
+      <tr><td style="color:var(--muted)">User ID</td><td><code>k1appfuo</code></td></tr>
+      <tr><td style="color:var(--muted)">Custom No</td><td>8 <span style="color:var(--muted)">— «8-й профиль» в UI AdsPower</span></td></tr>
+      <tr><td style="color:var(--muted)">Прокси IP</td><td><code>84.37.40.81</code> (USA / Virginia)</td></tr>
+    </table>
+  </div>
+
+  <div class="grid cols-2" style="margin-top:16px">
+    <div class="card">
+      <h2>📁 Пути</h2>
+      <table style="width:100%">
+        <tr><td style="color:var(--muted);width:140px">Проект</td><td><code>C:\fb-lead-pipeline</code></td></tr>
+        <tr><td style="color:var(--muted)">GitHub</td><td><a href="https://github.com/tabuugroove-sys/fb-lead-pipeline" style="color:var(--accent)">repo</a></td></tr>
+        <tr><td style="color:var(--muted)">Dashboard Pages</td><td><code>C:\fb-lead-dashboard</code></td></tr>
+        <tr><td style="color:var(--muted)">Public</td><td><a href="https://tabuugroove-sys.github.io/fb-lead-dashboard/" style="color:var(--accent)">GitHub Pages</a></td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <h2>🔄 Два контура данных</h2>
+      <div style="margin-bottom:10px">
+        <span style="background:#3a2a1a;color:var(--yellow);padding:2px 8px;border-radius:12px;font-size:11px;font-weight:600">LEGACY</span>
+        <code>posts.jsonl · candidates.jsonl · potentials.jsonl</code>
+      </div>
+      <div>
+        <span style="background:#1a3a1a;color:var(--green);padding:2px 8px;border-radius:12px;font-size:11px;font-weight:600">ACTIVE</span>
+        <code>posts-new.jsonl · candidates-new.jsonl · leads-new.jsonl · dash-state2.json</code>
+      </div>
+      <div style="margin-top:12px;background:#3a3a1a;border-left:3px solid var(--yellow);padding:10px 12px;border-radius:4px;font-size:13px">
+        Реальные свежие лиды живут в <code>data/leads-new.jsonl</code>.
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:16px">
+    <h2>⚙️ Процессы</h2>
+    <h3 style="color:var(--accent);margin:8px 0 4px;font-size:14px">PM2</h3>
+    <table style="width:100%">
+      <tr><th style="color:var(--muted);text-align:left;font-weight:600">Name</th><th style="color:var(--muted);text-align:left;font-weight:600">File</th><th style="color:var(--muted);text-align:left;font-weight:600">Port</th></tr>
+      <tr><td>fb-dashboard</td><td><code>C:\fb-transfer\dashboard_server.cjs</code></td><td>8088</td></tr>
+      <tr><td>fb-dashboard-pages-sync</td><td>sync to GitHub Pages</td><td>—</td></tr>
+      <tr><td>fb-quality-dash</td><td><code>scripts/serve-public.js</code></td><td>8787</td></tr>
+    </table>
+    <h3 style="color:var(--accent);margin:12px 0 4px;font-size:14px">Scheduled Tasks</h3>
+    <ul style="margin:0">
+      <li><b>FB-Pipeline-Full</b> — daily 10:00 server time → search + smart pipelines</li>
+      <li><b>FB Lead Dashboard Pages Sync</b> — every 5 min, push to Pages</li>
+    </ul>
+  </div>
+
+  <div class="grid cols-2" style="margin-top:16px">
+    <div class="card">
+      <h2>🚫 Что НЕ делать</h2>
+      <div style="background:#3a1a1a;border-left:3px solid var(--red);padding:12px 16px;border-radius:4px">
+        <ul style="margin:0;line-height:1.8">
+          <li>Не делать <code>git clean</code></li>
+          <li>Не удалять untracked файлы без просмотра</li>
+          <li>Не force push</li>
+          <li>Не запускать другой AdsPower-профиль (только #30)</li>
+          <li>Не печатать <code>.env</code> или токены</li>
+        </ul>
+      </div>
+    </div>
+    <div class="card">
+      <h2>🔧 TODO</h2>
+      <ul style="line-height:1.7">
+        <li>Доскрапивать "See more" (IG/email/phone скрыты там)</li>
+        <li>Парсить FB-таймстамп поста из DOM (raw + tooltip)</li>
+        <li>Дедуплицировать лиды по author+text+group</li>
+        <li>Outreach через 24 IG-аккаунта (AdsPower-профили)</li>
+        <li>AI-warmer для прогрева outreach IG</li>
+      </ul>
+    </div>
+  </div>
+
+</div>
+
 <!-- ====================== MODAL ====================== -->
 <div id="modal-overlay" class="modal-overlay">
   <div class="modal">
@@ -1193,7 +1300,7 @@ graph LR
 </div>
 
 <footer>
-  Сгенерировано: 12.05.2026, 10:18:41 ·
+  Сгенерировано: 12.05.2026, 10:32:33 ·
   Последний прогон парсера: 05.05.2026, 01:40:11 ·
   Обновить: <code>node build-dashboard.js</code>
 </footer>
