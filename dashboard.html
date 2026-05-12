@@ -1035,8 +1035,8 @@ graph LR
         
           <div class="line">
             <div class="name ">📄 build-dashboard.js</div>
-            <div class="size">60.9 KB</div>
-            <div class="modified">2026-05-12 08:40</div>
+            <div class="size">70.4 KB</div>
+            <div class="modified">2026-05-12 08:43</div>
           </div>
           <div class="line">
             <div class="name ">📄 check-env.mjs</div>
@@ -1060,8 +1060,8 @@ graph LR
           </div>
           <div class="line">
             <div class="name ">📄 dashboard.html</div>
-            <div class="size">138.0 KB</div>
-            <div class="modified">2026-05-12 08:40</div>
+            <div class="size">147.4 KB</div>
+            <div class="modified">2026-05-12 08:44</div>
           </div>
           <div class="line">
             <div class="name dir">📁 data</div>
@@ -1303,7 +1303,7 @@ graph LR
   </div>
 
   <!-- Defenses -->
-  <div class="card">
+  <div class="card" style="margin-bottom:16px">
     <h2>🔒 Защита данных (по аналогии с WA setup)</h2>
     <ol style="line-height:1.8">
       <li><b>Daily backup</b> <code>leads-new.jsonl</code> → <code>data/backups/leads-YYYY-MM-DD.jsonl</code></li>
@@ -1311,6 +1311,169 @@ graph LR
       <li><b>Резервный AdsPower-профиль</b> прогретый (через AI-warmer)</li>
       <li><b>Kill-switch</b> в скрапере — FB checkpoint / "unusual activity" → halt + Telegram alert</li>
     </ol>
+  </div>
+
+  <!-- ======================= MULTI-ACCOUNT STATUS ======================= -->
+  <div class="card" style="margin-bottom:16px">
+    <h2>👥 Текущее состояние FB / IG аккаунтов</h2>
+    <table style="width:100%;margin-bottom:12px">
+      <thead>
+        <tr>
+          <th style="color:var(--muted);text-align:left;font-weight:600">Тип</th>
+          <th style="color:var(--muted);text-align:left;font-weight:600">Кол-во</th>
+          <th style="color:var(--muted);text-align:left;font-weight:600">Где</th>
+          <th style="color:var(--muted);text-align:left;font-weight:600">Роль</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span style="color:var(--accent)">FB-аккаунт</span></td>
+          <td><b>1</b></td>
+          <td>AdsPower #30 (US_ASH_WED_08)</td>
+          <td>Scraper (read-only, не трогать)</td>
+        </tr>
+        <tr>
+          <td><span style="color:var(--green)">IG-аккаунты</span></td>
+          <td><b style="color:var(--green)">24</b></td>
+          <td>AdsPower #23–53 (без #30)</td>
+          <td>Свободны для outreach (после прогрева)</td>
+        </tr>
+        <tr>
+          <td><span style="color:var(--yellow)">Запасной FB</span></td>
+          <td>0</td>
+          <td>—</td>
+          <td>Нужен если хотим FB DM outreach</td>
+        </tr>
+      </tbody>
+    </table>
+    <div style="background:#3a2a1a;border-left:3px solid var(--yellow);padding:12px 16px;border-radius:4px;line-height:1.6">
+      <b>⚠ Принцип разделения:</b> один аккаунт не может быть И скрапером, И outreach-сендером.
+      Scrape = passive (читает 25+ групп/день) + Send = active (DM 10-30/день) на одном профиле → удвоенная активность → FB видит подозрительный паттерн.
+    </div>
+  </div>
+
+  <!-- ======================= ACCOUNT CREATION ======================= -->
+  <div class="card" style="margin-bottom:16px">
+    <h2>📱 Что нужно чтобы добавить новый FB-аккаунт</h2>
+    <p style="line-height:1.6;color:var(--muted)">Регистрация — manual. Скриптом не сделать (есть SMS-верификация, иногда селфи с ID).</p>
+    <ol style="line-height:1.8">
+      <li><b>SIM-карта с US-номером</b> (~$5-15 за prepaid) для SMS-верификации</li>
+      <li><b>Зарегистрировать FB вручную</b> — 5-10 минут (email, имя, дата рождения, фото)</li>
+      <li><b>AdsPower-профиль</b> назначить под этого нового FB (взять из 24 свободных или создать новый)</li>
+      <li><b>Войти через AdsPower</b> на нужном профиле, чтобы Chromium-history записалась</li>
+      <li><b>Прогрев</b> AI-warmer'ом 3-4 недели <span style="color:var(--muted)">(см. ниже)</span></li>
+    </ol>
+    <div style="background:#3a1a1a;border-left:3px solid var(--red);padding:10px 14px;border-radius:4px;margin-top:10px">
+      <b>🛑 Что НЕ автоматизируется:</b> создание аккаунта · решение security checkpoints (SMS, видео-селфи) · реальные друзья
+    </div>
+  </div>
+
+  <!-- ======================= WARMUP SCHEDULE ======================= -->
+  <div class="card" style="margin-bottom:16px">
+    <h2>🔥 Прогрев аккаунта — расписание</h2>
+    <p style="line-height:1.6">Без прогрева 30 DM/день из нулевого FB-аккаунта = <b style="color:var(--red)">90% бан за 2 недели</b>. Поэтому 21-30 дней пассивной активности перед outreach.</p>
+    <table style="width:100%;margin:12px 0">
+      <thead>
+        <tr>
+          <th style="color:var(--muted);text-align:left;font-weight:600">Период</th>
+          <th style="color:var(--muted);text-align:left;font-weight:600">DM/день</th>
+          <th style="color:var(--muted);text-align:left;font-weight:600">Действий/день</th>
+          <th style="color:var(--muted);text-align:left;font-weight:600">Что делаем</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>1-7 дней</td>
+          <td>0</td>
+          <td>10-25</td>
+          <td>scroll feed · 5-10 friend req · заполнить профиль фото</td>
+        </tr>
+        <tr>
+          <td>7-14 дней</td>
+          <td>0-3 (warm only)</td>
+          <td>15-35</td>
+          <td>+ AI-комментарии · join groups · watch reels</td>
+        </tr>
+        <tr>
+          <td>14-21 дней</td>
+          <td>5-10</td>
+          <td>20-40</td>
+          <td>осторожный cold DM с уникальным AI-текстом</td>
+        </tr>
+        <tr>
+          <td><b>21+ дней</b></td>
+          <td><b style="color:var(--green)">25-30</b></td>
+          <td>25-50</td>
+          <td>целевой outreach-режим</td>
+        </tr>
+      </tbody>
+    </table>
+    <p style="line-height:1.6;color:var(--muted)">Между сессиями <b>30 мин - 4 часа</b> рандом. 5% шанс <b>whole day off</b> — как у настоящих людей.</p>
+  </div>
+
+  <!-- ======================= AI WARMER STATUS ======================= -->
+  <div class="card" style="margin-bottom:16px">
+    <h2>🤖 AI Warmer — что уже построено</h2>
+    <p style="line-height:1.6"><b>Статус:</b> <span style="background:#1a3a1a;color:var(--green);padding:2px 8px;border-radius:12px;font-size:11px;font-weight:600">CODE READY</span> · ждёт назначения профиля и FB-аккаунта</p>
+    <p style="line-height:1.6;color:var(--muted)">Файлы в <code>scripts/warmer/</code>:</p>
+    <ul style="line-height:1.7">
+      <li><code>warmer-daemon.js</code> — session-based loop (20-50 мин сессии, 30-120 мин между)</li>
+      <li><code>strategy.js</code> — picker действий по возрасту профиля + времени US East</li>
+      <li><code>actions.js</code> — scroll · like · comment (AI-generated) · watch_reel</li>
+      <li><code>state.js</code> — per-profile state в <code>data/warmer-state.json</code></li>
+    </ul>
+    <p style="line-height:1.6;margin-top:10px">Защита:</p>
+    <ul style="line-height:1.7">
+      <li>✅ <code>puppeteer-extra-plugin-stealth</code> + <code>ghost-cursor</code> (реалистичная мышь)</li>
+      <li>✅ Checkpoint detector — FB security check → halt + Telegram alert</li>
+      <li>✅ Daily caps по возрасту (scroll 30→60, like 15→50, comment 0→20)</li>
+      <li>✅ US East timezone (ночью 23:00-07:00 ничего не делает)</li>
+      <li>✅ AI-комментатор через Claude CLI (casual style, без самопромо)</li>
+    </ul>
+    <div style="background:#1a3a1a;border-left:3px solid var(--green);padding:10px 14px;border-radius:4px;margin-top:10px">
+      <b>Запуск:</b> <code>pm2 start scripts/warmer/warmer-daemon.js --name fb-warmer-X -- env WARMER_PROFILE_SERIAL=X</code>
+    </div>
+    <p style="line-height:1.6;margin-top:10px;color:var(--muted)">Риск AI-warmer'а: 10-15% бан за 3 мес (vs 5% manual, vs 40-60% без stealth-mode).</p>
+  </div>
+
+  <!-- ======================= PIVOT: IG INSTEAD OF FB ======================= -->
+  <div class="card">
+    <h2>💡 Альтернатива: outreach через IG, не FB</h2>
+    <p style="line-height:1.6">У нас <b style="color:var(--green)">24 IG-аккаунта</b> в AdsPower-профилях. FB-акк только 1 (scraper). Реалистичная стратегия:</p>
+    <table style="width:100%;margin:10px 0">
+      <thead>
+        <tr>
+          <th style="color:var(--muted);text-align:left;font-weight:600">Канал</th>
+          <th style="color:var(--muted);text-align:left;font-weight:600">Profile pool</th>
+          <th style="color:var(--muted);text-align:left;font-weight:600">Когда применимо</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span style="color:var(--green)">IG DM</span></td>
+          <td>24 аккаунта</td>
+          <td>если в посте/bio есть IG handle</td>
+        </tr>
+        <tr>
+          <td>Email</td>
+          <td>1 SMTP</td>
+          <td>если в посте email (доскрапить "see more")</td>
+        </tr>
+        <tr>
+          <td><span style="color:var(--yellow)">FB DM</span></td>
+          <td>0 ready</td>
+          <td>нужен новый FB-акк + 21 день прогрев</td>
+        </tr>
+        <tr>
+          <td>Manual FB</td>
+          <td>через computer-use на Mac</td>
+          <td>топовые лиды, твой supervision</td>
+        </tr>
+      </tbody>
+    </table>
+    <div style="background:#1a3a1a;border-left:3px solid var(--green);padding:10px 14px;border-radius:4px;margin-top:8px">
+      <b>Преимущества IG-пути:</b> wedding-клиенты <b>часто предпочитают IG</b> для общения с фотографами; IG менее агрессивен к outreach чем FB Messenger; не рискуем scraper-FB; уже есть LCB-инфра <code>ig_responder</code> / <code>ig_followup</code>.
+    </div>
   </div>
 
 </div>
@@ -1437,7 +1600,7 @@ graph LR
 </div>
 
 <footer>
-  Сгенерировано: 12.05.2026, 10:40:11 ·
+  Сгенерировано: 12.05.2026, 10:44:03 ·
   Последний прогон парсера: 05.05.2026, 01:40:11 ·
   Обновить: <code>node build-dashboard.js</code>
 </footer>
