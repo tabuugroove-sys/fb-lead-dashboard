@@ -158,7 +158,7 @@
 <header>
   <div>
     <h1>Facebook Lead Pipeline</h1>
-    <div class="subtitle">Photographer outreach lead generation • Phase 1 (parser) ready · Phase 2 (AI pipeline) in plan</div>
+    <div class="subtitle">Photographer outreach lead generation • Phase 1 (parser) ready · Phase 2 live from new contour</div>
   </div>
   <div class="badges">
     <span class="badge"><span class="dot"></span>Operational</span>
@@ -215,26 +215,29 @@
 
   <!-- Funnel stats -->
   <div class="stat-row">
-    <div class="stat"><div class="num" style="color:var(--blue)">21</div><div class="lbl">Posts collected</div></div>
-    <div class="stat"><div class="num">5</div><div class="lbl">After lex filter</div></div>
-    <div class="stat"><div class="num">0</div><div class="lbl">Tier-1 pass (Haiku)</div></div>
-    <div class="stat"><div class="num" style="color:var(--green)">0</div><div class="lbl">Tier-2 confirmed</div></div>
-    <div class="stat"><div class="num" style="color:var(--yellow)">0</div><div class="lbl">Sent to Telegram</div></div>
+    <div class="stat"><div class="num" style="color:var(--blue)">20</div><div class="lbl">Posts collected</div></div>
+    <div class="stat"><div class="num">105</div><div class="lbl">After lex filter</div></div>
+    <div class="stat"><div class="num">12</div><div class="lbl">Tier-1 pass (Haiku)</div></div>
+    <div class="stat"><div class="num" style="color:var(--green)">11</div><div class="lbl">Tier-2 confirmed</div></div>
+    <div class="stat"><div class="num" style="color:var(--yellow)">11</div><div class="lbl">Sent to Telegram</div></div>
   </div>
 
   <!-- Funnel viz -->
   <div class="card" style="margin-bottom: 16px;">
     <h2>Lead Funnel</h2>
     <div class="funnel">
-      <div class="stage"><div class="v">21</div><div class="l">posts</div></div>
+      <div class="stage"><div class="v">20</div><div class="l">posts</div></div>
       <div class="arr">→</div>
-      <div class="stage"><div class="v">5</div><div class="l">lex filter</div></div>
+      <div class="stage"><div class="v">105</div><div class="l">lex filter</div></div>
       <div class="arr">→</div>
-      <div class="stage"><div class="v">0</div><div class="l">tier-1 haiku</div></div>
+      <div class="stage"><div class="v">12</div><div class="l">tier-1 haiku</div></div>
       <div class="arr">→</div>
-      <div class="stage"><div class="v">0</div><div class="l">tier-2 sonnet</div></div>
+      <div class="stage"><div class="v">11</div><div class="l">tier-2 sonnet</div></div>
       <div class="arr">→</div>
-      <div class="stage" style="border-color: var(--green);"><div class="v" style="color:var(--green)">0</div><div class="l">delivered</div></div>
+      <div class="stage" style="border-color: var(--green);"><div class="v" style="color:var(--green)">11</div><div class="l">delivered</div></div>
+    </div>
+    <div style="margin-top: 12px; font-size: 11px; color: var(--muted);">
+      Source: <code>data/dash-state2.json</code> · leads file: <code>data/leads-new.jsonl</code> · unique leads: <b>10</b> of 12 raw
     </div>
   </div>
 
@@ -497,56 +500,42 @@
         <div class="agent">
           <div class="head">
             <div>
-              <div class="name">Scraper v2</div>
-              <div class="model">Puppeteer + AdsPower P#8</div>
-            </div>
-            <span class="status-pill status-idle">idle</span>
-          </div>
-          <div class="desc">3 сессии/сутки, 25-30 групп/сессия, cursor-based по last_post_id</div>
-          <div class="footer">
-            <span class="lbl">posts/day</span>
-            <span><b>9</b></span>
-          </div>
-        </div>
-        <div class="agent">
-          <div class="head">
-            <div>
               <div class="name">Lex Filter</div>
-              <div class="model">regex / V1+V2 dictionary</div>
+              <div class="model"></div>
             </div>
             <span class="status-pill status-idle">idle</span>
           </div>
-          <div class="desc">Срез 70-85% мусора без расхода токенов AI</div>
+          <div class="desc"></div>
           <div class="footer">
-            <span class="lbl">vocab size</span>
-            <span><b>218</b></span>
+            <span class="lbl"></span>
+            <span><b>4</b></span>
           </div>
         </div>
         <div class="agent">
           <div class="head">
             <div>
               <div class="name">Tier-1 Classifier</div>
-              <div class="model">Haiku 4.5</div>
+              <div class="model"></div>
             </div>
             <span class="status-pill status-idle">idle</span>
           </div>
-          <div class="desc">Broad sweep, batch-50, prompt cache (rules + few-shot)</div>
+          <div class="desc"></div>
           <div class="footer">
-            <span class="lbl">batches/day</span>
-            <span><b>5</b></span>
+            <span class="lbl"></span>
+            <span><b>0</b></span>
           </div>
         </div>
         <div class="agent">
           <div class="head">
             <div>
               <div class="name">Tier-2 Classifier</div>
-              <div class="model">Sonnet 4.6</div>
+              <div class="model"></div>
             </div>
             <span class="status-pill status-idle">idle</span>
           </div>
-          <div class="desc">Precision pass, structured output, только borderline (T1 conf 40-70)</div>
+          <div class="desc"></div>
           <div class="footer">
-            <span class="lbl">leads/day</span>
+            <span class="lbl"></span>
             <span><b>0</b></span>
           </div>
         </div>
@@ -554,14 +543,70 @@
           <div class="head">
             <div>
               <div class="name">Lead Delivery</div>
-              <div class="model">Telegram Bot</div>
+              <div class="model"></div>
             </div>
             <span class="status-pill status-idle">idle</span>
           </div>
-          <div class="desc">Карточка: post text + author profile + contact methods</div>
+          <div class="desc"></div>
           <div class="footer">
-            <span class="lbl">sent/day</span>
+            <span class="lbl"></span>
             <span><b>0</b></span>
+          </div>
+        </div>
+        <div class="agent">
+          <div class="head">
+            <div>
+              <div class="name">Tier-2 Verifier</div>
+              <div class="model"></div>
+            </div>
+            <span class="status-pill status-idle">idle</span>
+          </div>
+          <div class="desc"></div>
+          <div class="footer">
+            <span class="lbl"></span>
+            <span><b>12</b></span>
+          </div>
+        </div>
+        <div class="agent">
+          <div class="head">
+            <div>
+              <div class="name">Telegram Delivery</div>
+              <div class="model"></div>
+            </div>
+            <span class="status-pill status-idle">idle</span>
+          </div>
+          <div class="desc"></div>
+          <div class="footer">
+            <span class="lbl"></span>
+            <span><b>0</b></span>
+          </div>
+        </div>
+        <div class="agent">
+          <div class="head">
+            <div>
+              <div class="name">Scraper</div>
+              <div class="model"></div>
+            </div>
+            <span class="status-pill status-idle">idle</span>
+          </div>
+          <div class="desc"></div>
+          <div class="footer">
+            <span class="lbl"></span>
+            <span><b>7</b></span>
+          </div>
+        </div>
+        <div class="agent">
+          <div class="head">
+            <div>
+              <div class="name">FB Search</div>
+              <div class="model"></div>
+            </div>
+            <span class="status-pill status-idle">idle</span>
+          </div>
+          <div class="desc"></div>
+          <div class="footer">
+            <span class="lbl"></span>
+            <span><b>91</b></span>
           </div>
         </div>
     </div>
@@ -574,13 +619,13 @@
       <div class="mermaid">
 graph TB
   SCRAPER[Scraper v2<br/>Puppeteer + AdsPower P#8<br/>3 sessions/day]
-  POSTS[(posts.jsonl)]
+  POSTS[(posts-new.jsonl)]
   LEX[Lex Filter<br/>regex / V1+V2 dictionary]
-  CAND[(candidates.jsonl)]
+  CAND[(candidates-new.jsonl)]
   T1[AI Tier-1<br/>Haiku 4.5 batch-50<br/>broad sweep]
-  POT[(potentials.jsonl)]
+  POT[(potentials-new.jsonl)]
   T2[AI Tier-2<br/>Sonnet 4.6<br/>precision pass]
-  LEADS[(leads.jsonl)]
+  LEADS[(leads-new.jsonl)]
   TG[Telegram Bot<br/>card delivery]
   TS{Test set 100 posts<br/>single H / single S / cascade}
 
@@ -596,109 +641,154 @@ graph TB
       <div class="feed">
         
           <div class="row">
-            <div class="ts">05:50</div>
-            <div class="agent-tag">SCRAPER</div>
-            <div class="msg">Done — 6 posts from 25 groups</div>
+            <div class="ts">02:10</div>
+            <div class="agent-tag">PIPELINE</div>
+            <div class="msg">smart pipeline done</div>
           </div>
           <div class="row">
-            <div class="ts">05:30</div>
-            <div class="agent-tag">SCRAPER</div>
-            <div class="msg">Session start — 25 groups (121 b2b skipped)</div>
+            <div class="ts">02:10</div>
+            <div class="agent-tag">TIER-1</div>
+            <div class="msg">4 candidates → 0 potentials</div>
           </div>
           <div class="row">
-            <div class="ts">05:29</div>
+            <div class="ts">02:10</div>
+            <div class="agent-tag">LEX</div>
+            <div class="msg">121 posts → 4 new candidates</div>
+          </div>
+          <div class="row">
+            <div class="ts">02:10</div>
+            <div class="agent-tag">SCRAPER</div>
+            <div class="msg">Done — 7 posts from 25 groups</div>
+          </div>
+          <div class="row">
+            <div class="ts">01:39</div>
+            <div class="agent-tag">SCRAPER</div>
+            <div class="msg">Session start — 25 groups (skip: b2b,mixed,unknown)</div>
+          </div>
+          <div class="row">
+            <div class="ts">01:39</div>
+            <div class="agent-tag">PIPELINE</div>
+            <div class="msg">smart pipeline start, skip=b2b</div>
+          </div>
+          <div class="row">
+            <div class="ts">19:58</div>
+            <div class="agent-tag">PIPELINE</div>
+            <div class="msg">smart pipeline done</div>
+          </div>
+          <div class="row">
+            <div class="ts">19:58</div>
+            <div class="agent-tag">TIER-1</div>
+            <div class="msg">1 candidates → 0 potentials</div>
+          </div>
+          <div class="row">
+            <div class="ts">19:57</div>
+            <div class="agent-tag">LEX</div>
+            <div class="msg">114 posts → 0 new candidates</div>
+          </div>
+          <div class="row">
+            <div class="ts">19:57</div>
+            <div class="agent-tag">PIPELINE</div>
+            <div class="msg">smart pipeline start, skip=b2b</div>
+          </div>
+          <div class="row">
+            <div class="ts">19:56</div>
+            <div class="agent-tag">PIPELINE</div>
+            <div class="msg">smart pipeline done</div>
+          </div>
+          <div class="row">
+            <div class="ts">19:56</div>
+            <div class="agent-tag">TIER-1</div>
+            <div class="msg">1 candidates → 0 potentials</div>
+          </div>
+          <div class="row">
+            <div class="ts">19:56</div>
+            <div class="agent-tag">TIER-1</div>
+            <div class="msg">batch error: CLI exit 1: </div>
+          </div>
+          <div class="row">
+            <div class="ts">19:56</div>
+            <div class="agent-tag">LEX</div>
+            <div class="msg">114 posts → 0 new candidates</div>
+          </div>
+          <div class="row">
+            <div class="ts">19:56</div>
+            <div class="agent-tag">PIPELINE</div>
+            <div class="msg">smart pipeline start, skip=b2b</div>
+          </div>
+          <div class="row">
+            <div class="ts">08:31</div>
+            <div class="agent-tag">PIPELINE</div>
+            <div class="msg">smart pipeline done</div>
+          </div>
+          <div class="row">
+            <div class="ts">08:31</div>
+            <div class="agent-tag">TIER-1</div>
+            <div class="msg">1 candidates → 0 potentials</div>
+          </div>
+          <div class="row">
+            <div class="ts">08:31</div>
+            <div class="agent-tag">TIER-1</div>
+            <div class="msg">batch error: CLI exit 1: </div>
+          </div>
+          <div class="row">
+            <div class="ts">08:31</div>
+            <div class="agent-tag">LEX</div>
+            <div class="msg">114 posts → 1 new candidates</div>
+          </div>
+          <div class="row">
+            <div class="ts">08:31</div>
             <div class="agent-tag">SCRAPER</div>
             <div class="msg">Done — 4 posts from 25 groups</div>
           </div>
           <div class="row">
-            <div class="ts">05:09</div>
+            <div class="ts">08:00</div>
             <div class="agent-tag">SCRAPER</div>
-            <div class="msg">Session start — 25 groups (121 b2b skipped)</div>
+            <div class="msg">Session start — 25 groups (skip: b2b,mixed,unknown)</div>
           </div>
           <div class="row">
-            <div class="ts">07:01</div>
+            <div class="ts">08:00</div>
             <div class="agent-tag">PIPELINE</div>
-            <div class="msg">run-phase2 finished</div>
+            <div class="msg">smart pipeline start, skip=b2b</div>
           </div>
           <div class="row">
-            <div class="ts">07:01</div>
-            <div class="agent-tag">TIER-1</div>
-            <div class="msg">5 candidates → 0 leads (cli=0, api=1, tokens i=970 o=174)</div>
-          </div>
-          <div class="row">
-            <div class="ts">07:01</div>
-            <div class="agent-tag">LEX FILTER</div>
-            <div class="msg">11 → 0 (55% dropped, vocab=218)</div>
-          </div>
-          <div class="row">
-            <div class="ts">07:01</div>
+            <div class="ts">07:47</div>
             <div class="agent-tag">PIPELINE</div>
-            <div class="msg">run-phase2 start</div>
+            <div class="msg">search pipeline done</div>
           </div>
           <div class="row">
-            <div class="ts">06:03</div>
-            <div class="agent-tag">LEX FILTER</div>
-            <div class="msg">11 → 5 (55% dropped, vocab=218)</div>
-          </div>
-          <div class="row">
-            <div class="ts">06:02</div>
-            <div class="agent-tag">SCRAPER</div>
-            <div class="msg">Session done — 9 posts from 3 groups</div>
-          </div>
-          <div class="row">
-            <div class="ts">06:00</div>
-            <div class="agent-tag">SCRAPER</div>
-            <div class="msg">Session start — 3 groups, profile #30</div>
-          </div>
-          <div class="row">
-            <div class="ts">05:28</div>
-            <div class="agent-tag">SCRAPER</div>
-            <div class="msg">Session done — 2 posts from 3 groups</div>
-          </div>
-          <div class="row">
-            <div class="ts">05:26</div>
-            <div class="agent-tag">SCRAPER</div>
-            <div class="msg">Session start — 3 groups, profile #30</div>
-          </div>
-          <div class="row">
-            <div class="ts">05:21</div>
-            <div class="agent-tag">SCRAPER</div>
-            <div class="msg">Session done — 0 posts from 0 groups</div>
-          </div>
-          <div class="row">
-            <div class="ts">05:20</div>
-            <div class="agent-tag">SCRAPER</div>
-            <div class="msg">⚠ FB block detected (&quot;captcha&quot;) on 530720422544477 — abort session</div>
-          </div>
-          <div class="row">
-            <div class="ts">05:20</div>
-            <div class="agent-tag">SCRAPER</div>
-            <div class="msg">Session start — 25 groups, profile #30</div>
-          </div>
-          <div class="row">
-            <div class="ts">scheduled</div>
-            <div class="agent-tag">SCRAPER</div>
-            <div class="msg">Будет запускаться 3×/сутки: 09:00, 13:00, 18:00</div>
-          </div>
-          <div class="row">
-            <div class="ts">scheduled</div>
-            <div class="agent-tag">LEX FILTER</div>
-            <div class="msg">Применяется к posts.jsonl сразу после каждой сессии scraper</div>
-          </div>
-          <div class="row">
-            <div class="ts">scheduled</div>
-            <div class="agent-tag">TIER-1</div>
-            <div class="msg">Промпт-кэшинг: rules + 5 few-shot. Batch=50 постов/запрос</div>
-          </div>
-          <div class="row">
-            <div class="ts">scheduled</div>
-            <div class="agent-tag">TIER-2</div>
-            <div class="msg">Активируется только на borderline. Output: structured JSON с extracted fields</div>
-          </div>
-          <div class="row">
-            <div class="ts">scheduled</div>
+            <div class="ts">07:47</div>
             <div class="agent-tag">TELEGRAM</div>
-            <div class="msg">BotFather → token в .env (TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID)</div>
+            <div class="msg">11 leads sent</div>
+          </div>
+          <div class="row">
+            <div class="ts">07:47</div>
+            <div class="agent-tag">TIER-2</div>
+            <div class="msg">12 potentials → 11 real leads</div>
+          </div>
+          <div class="row">
+            <div class="ts">07:46</div>
+            <div class="agent-tag">TIER-1</div>
+            <div class="msg">90 candidates → 12 potentials</div>
+          </div>
+          <div class="row">
+            <div class="ts">07:44</div>
+            <div class="agent-tag">LEX</div>
+            <div class="msg">110 posts → 90 new candidates</div>
+          </div>
+          <div class="row">
+            <div class="ts">07:44</div>
+            <div class="agent-tag">SEARCH</div>
+            <div class="msg">Done — 91 posts from 20 queries</div>
+          </div>
+          <div class="row">
+            <div class="ts">07:15</div>
+            <div class="agent-tag">SEARCH</div>
+            <div class="msg">Session start — 20 queries</div>
+          </div>
+          <div class="row">
+            <div class="ts">07:15</div>
+            <div class="agent-tag">PIPELINE</div>
+            <div class="msg">search pipeline start</div>
           </div>
       </div>
     </div>
@@ -943,8 +1033,18 @@ graph LR
         
           <div class="line">
             <div class="name ">📄 build-dashboard.js</div>
-            <div class="size">43.5 KB</div>
-            <div class="modified">2026-05-10 23:27</div>
+            <div class="size">44.9 KB</div>
+            <div class="modified">2026-05-12 03:14</div>
+          </div>
+          <div class="line">
+            <div class="name ">📄 check-env.mjs</div>
+            <div class="size">444 B</div>
+            <div class="modified">2026-05-11 19:55</div>
+          </div>
+          <div class="line">
+            <div class="name ">📄 check-prefer-cli.mjs</div>
+            <div class="size">800 B</div>
+            <div class="modified">2026-05-11 19:55</div>
           </div>
           <div class="line">
             <div class="name ">📄 dashboard-quality.html</div>
@@ -959,12 +1059,12 @@ graph LR
           <div class="line">
             <div class="name ">📄 dashboard.html</div>
             <div class="size">119.6 KB</div>
-            <div class="modified">2026-05-11 06:04</div>
+            <div class="modified">2026-05-11 07:03</div>
           </div>
           <div class="line">
             <div class="name dir">📁 data</div>
             <div class="size"></div>
-            <div class="modified">2026-05-11 07:02</div>
+            <div class="modified">2026-05-12 02:10</div>
           </div>
           <div class="line">
             <div class="name dir">📁 dictionaries</div>
@@ -978,13 +1078,18 @@ graph LR
           </div>
           <div class="line">
             <div class="name ">📄 groups.classified.json</div>
-            <div class="size">139.0 KB</div>
-            <div class="modified">2026-05-10 23:39</div>
+            <div class="size">175.4 KB</div>
+            <div class="modified">2026-05-12 02:10</div>
           </div>
           <div class="line">
             <div class="name ">📄 groups.json</div>
             <div class="size">137.5 KB</div>
             <div class="modified">2026-05-10 03:29</div>
+          </div>
+          <div class="line">
+            <div class="name ">📄 groups.regex-classified.bak.json</div>
+            <div class="size">139.0 KB</div>
+            <div class="modified">2026-05-10 23:39</div>
           </div>
           <div class="line">
             <div class="name ">📄 package-lock.json</div>
@@ -1008,8 +1113,8 @@ graph LR
           </div>
           <div class="line">
             <div class="name ">📄 quality.html</div>
-            <div class="size">157.8 KB</div>
-            <div class="modified">2026-05-11 01:28</div>
+            <div class="size">162.2 KB</div>
+            <div class="modified">2026-05-12 02:10</div>
           </div>
           <div class="line">
             <div class="name ">📄 run-phase2.bat</div>
@@ -1029,7 +1134,7 @@ graph LR
           <div class="line">
             <div class="name dir">📁 scripts</div>
             <div class="size"></div>
-            <div class="modified">2026-05-11 06:38</div>
+            <div class="modified">2026-05-11 20:17</div>
           </div>
           <div class="line">
             <div class="name dir">📁 src</div>
@@ -1083,7 +1188,7 @@ graph LR
 </div>
 
 <footer>
-  Сгенерировано: 11.05.2026, 09:03:43 ·
+  Сгенерировано: 12.05.2026, 05:14:45 ·
   Последний прогон парсера: 05.05.2026, 01:40:11 ·
   Обновить: <code>node build-dashboard.js</code>
 </footer>
@@ -1106,7 +1211,7 @@ const initial = (location.hash.match(/^#\/(\w+)/) || [])[1] || 'leads';
 if (['leads','parser','system'].includes(initial)) showPage(initial);
 
 // ===== CLI vs API split chart =====
-const aiDaily = [{"date":"вт","iso":"2026-05-04","cli_calls":0,"api_calls":0,"cli_tokens":0,"api_tokens":0,"cost_usd":0},{"date":"ср","iso":"2026-05-05","cli_calls":0,"api_calls":1,"cli_tokens":0,"api_tokens":1144,"cost_usd":0.00184},{"date":"чт","iso":"2026-05-06","cli_calls":0,"api_calls":0,"cli_tokens":0,"api_tokens":0,"cost_usd":0},{"date":"пт","iso":"2026-05-07","cli_calls":0,"api_calls":0,"cli_tokens":0,"api_tokens":0,"cost_usd":0},{"date":"сб","iso":"2026-05-08","cli_calls":0,"api_calls":0,"cli_tokens":0,"api_tokens":0,"cost_usd":0},{"date":"вс","iso":"2026-05-09","cli_calls":0,"api_calls":0,"cli_tokens":0,"api_tokens":0,"cost_usd":0},{"date":"пн","iso":"2026-05-10","cli_calls":0,"api_calls":0,"cli_tokens":0,"api_tokens":0,"cost_usd":0}];
+const aiDaily = [{"date":"ср","iso":"2026-05-05","cli_calls":0,"api_calls":1,"cli_tokens":0,"api_tokens":1144,"cost_usd":0.00184},{"date":"чт","iso":"2026-05-06","cli_calls":0,"api_calls":0,"cli_tokens":0,"api_tokens":0,"cost_usd":0},{"date":"пт","iso":"2026-05-07","cli_calls":0,"api_calls":0,"cli_tokens":0,"api_tokens":0,"cost_usd":0},{"date":"сб","iso":"2026-05-08","cli_calls":0,"api_calls":0,"cli_tokens":0,"api_tokens":0,"cost_usd":0},{"date":"вс","iso":"2026-05-09","cli_calls":0,"api_calls":0,"cli_tokens":0,"api_tokens":0,"cost_usd":0},{"date":"пн","iso":"2026-05-10","cli_calls":0,"api_calls":0,"cli_tokens":0,"api_tokens":0,"cost_usd":0},{"date":"вт","iso":"2026-05-11","cli_calls":0,"api_calls":0,"cli_tokens":0,"api_tokens":0,"cost_usd":0}];
 const ctx = document.getElementById('sparkline').getContext('2d');
 new Chart(ctx, {
   type: 'line',
