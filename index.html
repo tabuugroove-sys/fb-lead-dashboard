@@ -138,6 +138,24 @@
   .modal-header h2 { font-size: 16px; text-transform: none; letter-spacing: 0; color: var(--text); margin: 0; }
   #modal-close { background: none; border: none; color: var(--muted); font-size: 28px; cursor: pointer; line-height: 1; padding: 0 4px; }
   #modal-close:hover { color: var(--text); }
+  /* ── Conversations table + slide-out ── */
+  .conv-table-wrap { max-height: 460px; overflow-y: auto; border: 1px solid var(--border); border-radius: 6px; }
+  .conv-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .conv-table thead th { background: var(--bg); color: var(--muted); text-align: left; padding: 8px 12px; border-bottom: 1px solid var(--border); position: sticky; top: 0; font-weight: 500; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .conv-table tbody td { padding: 10px 12px; border-bottom: 1px solid var(--border); }
+  .conv-table tbody tr.conv-row { cursor: pointer; transition: background 0.15s; }
+  .conv-table tbody tr.conv-row:hover { background: rgba(88, 166, 255, 0.08); }
+  .conv-panel { position: fixed; top: 0; right: 0; width: 480px; max-width: 90vw; height: 100vh; background: var(--card); border-left: 1px solid var(--border); box-shadow: -8px 0 24px rgba(0,0,0,0.4); transform: translateX(100%); transition: transform 0.25s ease; z-index: 900; display: flex; flex-direction: column; }
+  .conv-panel.open { transform: translateX(0); }
+  .conv-panel-head { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: flex-start; justify-content: space-between; }
+  .conv-panel-body { flex: 1; overflow-y: auto; padding: 16px 20px; }
+  .conv-msg { padding: 10px 14px; border-radius: 8px; margin-bottom: 12px; font-size: 13px; line-height: 1.4; max-width: 90%; }
+  .conv-msg.post { background: rgba(255,255,255,0.04); border-left: 3px solid var(--muted); margin-right: auto; }
+  .conv-msg.our_comment { background: rgba(88, 166, 255, 0.1); border-left: 3px solid var(--blue); margin-left: auto; }
+  .conv-msg.our_dm { background: rgba(63, 185, 80, 0.1); border-left: 3px solid var(--green); margin-left: auto; }
+  .conv-msg.failed { opacity: 0.55; border-left-color: var(--red); }
+  .conv-msg .meta { color: var(--muted); font-size: 11px; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .conv-panel-foot { padding: 12px 20px; border-top: 1px solid var(--border); font-size: 12px; color: var(--muted); }
   .modal-search { padding: 12px 24px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; }
   .modal-search input { flex: 1; background: var(--bg); border: 1px solid var(--border); border-radius: 6px; padding: 8px 12px; color: var(--text); font-size: 13px; outline: none; }
   .modal-search input:focus { border-color: var(--blue); }
@@ -935,6 +953,234 @@ graph TB
     </div>
   </div>
 
+  <!-- Conversations: leads with comment/DM history; hover row → right slide-out -->
+  <div class="card" style="margin-bottom: 16px;">
+    <h2>💬 Conversations <span style="color:var(--muted);font-size:13px;font-weight:normal">(hover row to view full thread →)</span></h2>
+    <div class="conv-table-wrap">
+      <table class="conv-table">
+        <thead><tr><th>When</th><th>Author</th><th>Group</th><th>Conf</th><th>Touches</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr class="conv-row" data-cidx="0">
+              <td style="color:var(--muted);font-size:12px">May 14, 11:51 PM</td>
+              <td>Omar Castillo</td>
+              <td style="color:var(--muted);font-size:12px">Search: &quot;any photographers&quot; wedding</td>
+              <td style="color:var(--accent)">95</td>
+              <td style="font-size:12px">💬1 📨1 <span style="color:var(--red)">×2</span></td>
+              <td><span style="color:var(--green)">✅ DM</span></td>
+            </tr><tr class="conv-row" data-cidx="1">
+              <td style="color:var(--muted);font-size:12px">May 14, 11:46 PM</td>
+              <td>unknown</td>
+              <td style="color:var(--muted);font-size:12px">SoCal Weddings &amp; Events (Vendors &amp; </td>
+              <td style="color:var(--accent)">75</td>
+              <td style="font-size:12px">💬1 <span style="color:var(--red)">×1</span></td>
+              <td><span style="color:var(--blue)">💬 commented</span></td>
+            </tr><tr class="conv-row" data-cidx="2">
+              <td style="color:var(--muted);font-size:12px">May 14, 11:41 PM</td>
+              <td>unknown</td>
+              <td style="color:var(--muted);font-size:12px">San Antonio Photographers</td>
+              <td style="color:var(--accent)">85</td>
+              <td style="font-size:12px"> <span style="color:var(--red)">×4</span></td>
+              <td><span style="color:var(--red)">❌ failed</span></td>
+            </tr><tr class="conv-row" data-cidx="3">
+              <td style="color:var(--muted);font-size:12px">May 14, 10:18 PM</td>
+              <td>MovebyKatie</td>
+              <td style="color:var(--muted);font-size:12px">I Need A Photographer or Videograph</td>
+              <td style="color:var(--accent)">90</td>
+              <td style="font-size:12px"></td>
+              <td><span style="color:var(--muted)">— pending</span></td>
+            </tr><tr class="conv-row" data-cidx="4">
+              <td style="color:var(--muted);font-size:12px">May 14, 10:15 PM</td>
+              <td>Chelsea Amber Abdo</td>
+              <td style="color:var(--muted);font-size:12px">San Diego Photographers</td>
+              <td style="color:var(--accent)">95</td>
+              <td style="font-size:12px"></td>
+              <td><span style="color:var(--muted)">— pending</span></td>
+            </tr><tr class="conv-row" data-cidx="5">
+              <td style="color:var(--muted);font-size:12px">May 14, 10:13 PM</td>
+              <td>unknown</td>
+              <td style="color:var(--muted);font-size:12px">Wedding Videographer Network</td>
+              <td style="color:var(--accent)">90</td>
+              <td style="font-size:12px"></td>
+              <td><span style="color:var(--muted)">— pending</span></td>
+            </tr><tr class="conv-row" data-cidx="6">
+              <td style="color:var(--muted);font-size:12px">May 14, 10:13 PM</td>
+              <td>unknown</td>
+              <td style="color:var(--muted);font-size:12px">Search: &quot;need a videographer&quot;</td>
+              <td style="color:var(--accent)">90</td>
+              <td style="font-size:12px"></td>
+              <td><span style="color:var(--muted)">— pending</span></td>
+            </tr><tr class="conv-row" data-cidx="7">
+              <td style="color:var(--muted);font-size:12px">May 14, 10:11 PM</td>
+              <td>unknown</td>
+              <td style="color:var(--muted);font-size:12px">Philadelphia Brides</td>
+              <td style="color:var(--accent)">95</td>
+              <td style="font-size:12px"></td>
+              <td><span style="color:var(--muted)">— pending</span></td>
+            </tr><tr class="conv-row" data-cidx="8">
+              <td style="color:var(--muted);font-size:12px">May 14, 10:05 PM</td>
+              <td>unknown</td>
+              <td style="color:var(--muted);font-size:12px">New York Wedding Elopement</td>
+              <td style="color:var(--accent)">95</td>
+              <td style="font-size:12px"></td>
+              <td><span style="color:var(--muted)">— pending</span></td>
+            </tr><tr class="conv-row" data-cidx="9">
+              <td style="color:var(--muted);font-size:12px">May 14, 06:32 PM</td>
+              <td>Josue Zalmeron</td>
+              <td style="color:var(--muted);font-size:12px">I Need A Photographer or Videograph</td>
+              <td style="color:var(--accent)">95</td>
+              <td style="font-size:12px"></td>
+              <td><span style="color:var(--muted)">— pending</span></td>
+            </tr><tr class="conv-row" data-cidx="10">
+              <td style="color:var(--muted);font-size:12px">May 14, 06:32 PM</td>
+              <td>Josue Zalmeron</td>
+              <td style="color:var(--muted);font-size:12px">Southern California Photographer Se</td>
+              <td style="color:var(--accent)">95</td>
+              <td style="font-size:12px"></td>
+              <td><span style="color:var(--muted)">— pending</span></td>
+            </tr><tr class="conv-row" data-cidx="11">
+              <td style="color:var(--muted);font-size:12px">May 14, 06:30 PM</td>
+              <td>JustHappyToBeHere💕</td>
+              <td style="color:var(--muted);font-size:12px">Brides of Chicago</td>
+              <td style="color:var(--accent)">95</td>
+              <td style="font-size:12px"></td>
+              <td><span style="color:var(--muted)">— pending</span></td>
+            </tr><tr class="conv-row" data-cidx="12">
+              <td style="color:var(--muted);font-size:12px">May 14, 06:30 PM</td>
+              <td>Maya H-b</td>
+              <td style="color:var(--muted);font-size:12px">Brides of Chicago</td>
+              <td style="color:var(--accent)">95</td>
+              <td style="font-size:12px"></td>
+              <td><span style="color:var(--muted)">— pending</span></td>
+            </tr><tr class="conv-row" data-cidx="13">
+              <td style="color:var(--muted);font-size:12px">May 14, 06:27 PM</td>
+              <td>Diana Guillen</td>
+              <td style="color:var(--muted);font-size:12px">Photographers of Houston</td>
+              <td style="color:var(--accent)">95</td>
+              <td style="font-size:12px"></td>
+              <td><span style="color:var(--muted)">— pending</span></td>
+            </tr><tr class="conv-row" data-cidx="14">
+              <td style="color:var(--muted);font-size:12px">May 14, 06:23 PM</td>
+              <td>ThrillingPoodle3218</td>
+              <td style="color:var(--muted);font-size:12px">Chicago Wedding Photographers</td>
+              <td style="color:var(--accent)">95</td>
+              <td style="font-size:12px"></td>
+              <td><span style="color:var(--muted)">— pending</span></td>
+            </tr><tr class="conv-row" data-cidx="15">
+              <td style="color:var(--muted);font-size:12px">May 14, 06:19 PM</td>
+              <td>Aspet Manukyan</td>
+              <td style="color:var(--muted);font-size:12px">I Need A Photographer or Videograph</td>
+              <td style="color:var(--accent)">90</td>
+              <td style="font-size:12px"></td>
+              <td><span style="color:var(--muted)">— pending</span></td>
+            </tr><tr class="conv-row" data-cidx="16">
+              <td style="color:var(--muted);font-size:12px">May 14, 06:19 PM</td>
+              <td>unknown</td>
+              <td style="color:var(--muted);font-size:12px">Search: &quot;need a videographer&quot;</td>
+              <td style="color:var(--accent)">95</td>
+              <td style="font-size:12px"></td>
+              <td><span style="color:var(--muted)">— pending</span></td>
+            </tr><tr class="conv-row" data-cidx="17">
+              <td style="color:var(--muted);font-size:12px">May 14, 06:11 PM</td>
+              <td>Antonio Pelullo</td>
+              <td style="color:var(--muted);font-size:12px">Philadelphia Brides</td>
+              <td style="color:var(--accent)">99</td>
+              <td style="font-size:12px"></td>
+              <td><span style="color:var(--muted)">— pending</span></td>
+            </tr><tr class="conv-row" data-cidx="18">
+              <td style="color:var(--muted);font-size:12px">May 14, 06:11 PM</td>
+              <td>Alexandria Larson</td>
+              <td style="color:var(--muted);font-size:12px">Philadelphia Weddings</td>
+              <td style="color:var(--accent)">98</td>
+              <td style="font-size:12px"></td>
+              <td><span style="color:var(--muted)">— pending</span></td>
+            </tr><tr class="conv-row" data-cidx="19">
+              <td style="color:var(--muted);font-size:12px">May 14, 06:11 PM</td>
+              <td>EfficientTurtle7276</td>
+              <td style="color:var(--muted);font-size:12px">Philadelphia Brides</td>
+              <td style="color:var(--accent)">98</td>
+              <td style="font-size:12px"></td>
+              <td><span style="color:var(--muted)">— pending</span></td>
+            </tr><tr class="conv-row" data-cidx="20">
+              <td style="color:var(--muted);font-size:12px">May 14, 06:04 PM</td>
+              <td>Robin Glenn</td>
+              <td style="color:var(--muted);font-size:12px">Texas Brides On A Budget</td>
+              <td style="color:var(--accent)">98</td>
+              <td style="font-size:12px"></td>
+              <td><span style="color:var(--muted)">— pending</span></td>
+            </tr><tr class="conv-row" data-cidx="21">
+              <td style="color:var(--muted);font-size:12px">May 14, 06:03 PM</td>
+              <td>Liz Green</td>
+              <td style="color:var(--muted);font-size:12px">Brides Houston Area</td>
+              <td style="color:var(--accent)">95</td>
+              <td style="font-size:12px"></td>
+              <td><span style="color:var(--muted)">— pending</span></td>
+            </tr><tr class="conv-row" data-cidx="22">
+              <td style="color:var(--muted);font-size:12px">May 14, 04:26 PM</td>
+              <td>unknown</td>
+              <td style="color:var(--muted);font-size:12px">San Antonio - Ask A Local (Not a pl</td>
+              <td style="color:var(--accent)">95</td>
+              <td style="font-size:12px"></td>
+              <td><span style="color:var(--muted)">— pending</span></td>
+            </tr><tr class="conv-row" data-cidx="23">
+              <td style="color:var(--muted);font-size:12px">May 14, 04:23 PM</td>
+              <td>Eden Piskhakov</td>
+              <td style="color:var(--muted);font-size:12px">San Diego Wedding Photographers and</td>
+              <td style="color:var(--accent)">95</td>
+              <td style="font-size:12px"></td>
+              <td><span style="color:var(--muted)">— pending</span></td>
+            </tr><tr class="conv-row" data-cidx="24">
+              <td style="color:var(--muted);font-size:12px">May 14, 04:22 PM</td>
+              <td>unknown</td>
+              <td style="color:var(--muted);font-size:12px">DFW Wedding Vendors - For Couples t</td>
+              <td style="color:var(--accent)">95</td>
+              <td style="font-size:12px"></td>
+              <td><span style="color:var(--muted)">— pending</span></td>
+            </tr><tr class="conv-row" data-cidx="25">
+              <td style="color:var(--muted);font-size:12px">May 14, 04:20 PM</td>
+              <td>Cora Holbrook</td>
+              <td style="color:var(--muted);font-size:12px">ARIZONA Photographers</td>
+              <td style="color:var(--accent)">95</td>
+              <td style="font-size:12px"></td>
+              <td><span style="color:var(--muted)">— pending</span></td>
+            </tr><tr class="conv-row" data-cidx="26">
+              <td style="color:var(--muted);font-size:12px">May 14, 04:12 PM</td>
+              <td>Carol Valdez</td>
+              <td style="color:var(--muted);font-size:12px">ISO Budget Friendly Wedding Photogr</td>
+              <td style="color:var(--accent)">95</td>
+              <td style="font-size:12px"></td>
+              <td><span style="color:var(--muted)">— pending</span></td>
+            </tr><tr class="conv-row" data-cidx="27">
+              <td style="color:var(--muted);font-size:12px">May 14, 04:04 PM</td>
+              <td>JustHappyToBeHere💕</td>
+              <td style="color:var(--muted);font-size:12px">Brides of Chicago</td>
+              <td style="color:var(--accent)">92</td>
+              <td style="font-size:12px"></td>
+              <td><span style="color:var(--muted)">— pending</span></td>
+            </tr><tr class="conv-row" data-cidx="28">
+              <td style="color:var(--muted);font-size:12px">May 14, 04:04 PM</td>
+              <td>Olaseni Olaniyi</td>
+              <td style="color:var(--muted);font-size:12px">Brides of Chicago</td>
+              <td style="color:var(--accent)">95</td>
+              <td style="font-size:12px"></td>
+              <td><span style="color:var(--muted)">— pending</span></td>
+            </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Conversations slide-out panel -->
+  <div id="conv-panel" class="conv-panel">
+    <div class="conv-panel-head">
+      <div>
+        <div id="conv-panel-author" style="font-weight:600;font-size:16px"></div>
+        <div id="conv-panel-group" style="color:var(--muted);font-size:12px;margin-top:4px"></div>
+      </div>
+      <button id="conv-panel-close" style="background:none;border:0;color:var(--muted);font-size:24px;cursor:pointer">×</button>
+    </div>
+    <div id="conv-panel-body" class="conv-panel-body"></div>
+  </div>
+
   <!-- Configuration -->
   <div class="grid cols-2">
     <div class="card">
@@ -1179,8 +1425,8 @@ graph LR
           </div>
           <div class="line">
             <div class="name ">📄 build-dashboard.js</div>
-            <div class="size">96.7 KB</div>
-            <div class="modified">2026-05-14 16:59</div>
+            <div class="size">106.2 KB</div>
+            <div class="modified">2026-05-14 21:59</div>
           </div>
           <div class="line">
             <div class="name ">📄 check-env.mjs</div>
@@ -1209,8 +1455,8 @@ graph LR
           </div>
           <div class="line">
             <div class="name ">📄 dashboard.html</div>
-            <div class="size">157.7 KB</div>
-            <div class="modified">2026-05-14 21:56</div>
+            <div class="size">194.4 KB</div>
+            <div class="modified">2026-05-14 21:59</div>
           </div>
           <div class="line">
             <div class="name dir">📁 data</div>
@@ -1777,7 +2023,7 @@ graph LR
 </div>
 
 <footer>
-  Сгенерировано: 14.05.2026, 23:58:41 ·
+  Сгенерировано: 14.05.2026, 23:59:15 ·
   Последний прогон парсера: 05.05.2026, 01:40:11 ·
   Обновить: <code>node build-dashboard.js</code>
 </footer>
@@ -1928,6 +2174,43 @@ document.getElementById('modal-close').addEventListener('click', closeModal);
 document.getElementById('modal-overlay').addEventListener('click', (e) => { if (e.target.id === 'modal-overlay') closeModal(); });
 document.getElementById('modal-search-input').addEventListener('input', (e) => filterAndRender(e.target.value));
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
+
+// ─── Conversations slide-out panel ─────────────────────────────────────────
+const CONVERSATIONS = [{"id":"1482746556625582","author":"Omar Castillo","groupName":"Search: \"any photographers\" wedding","postUrl":"https://www.facebook.com/groups/432583404975241/posts/1482746556625582/","postText":"Omar Castillo\nHello everyone!\nI’m looking to hire 3 videographers + 1 Drone/FPV op for a shoot this Saturday May 16\nRaw footage only! No editing.\nIt’ll be a soccer game, need shots of players controlling the ball, emotions, goals, saves.\nSee more\n16\n10\nView more answers\nGeorge Cruz\nAwesome man what’s your budget for the shooters? ￼\n18h\nAnswer as Cheryl","scrapedAt":"2026-05-14T12:21:10.299Z","confidence":95,"touches":[{"type":"our_comment","at":"2026-05-14T17:52:52.066Z","text":"We've got videographers + a drone operator — multiple-camera soccer coverage is exactly what we do. Would love to chat!","ok":false,"reason":"no_input"},{"type":"our_comment","at":"2026-05-14T17:52:56.170Z","text":"Hey! Saw the soccer shoot Saturday — DM'd you about our video, photo, and drone work","ok":false,"reason":"no_input"},{"type":"our_comment","at":"2026-05-14T21:51:55.201Z","text":"hi! i do photo & video freelance — just dm'd you about saturday 📸","ok":true,"reason":null},{"type":"our_dm","at":"2026-05-14T21:51:55.201Z","text":"hey Omar! saw your post looking for videographers for the soccer shoot this Saturday — I'm Stephanie, a freelance videographer based in the US, and I've got a small production crew so we can easily cover multiple operators if needed 🎥 we charge $120/hr per operator (photo or video), and $800 flat for editing/post if you ever need it — flexible packages available. check out our work at dreamcrewproductions.us — happy to send specific samples for sports/soccer shoots if that helps. just lmk the format and we can lock something in!","ok":true,"reason":null}],"hasOutbound":true,"lastTouchAt":"2026-05-14T21:51:55.201Z"},{"id":"4491554111077954","author":"unknown","groupName":"SoCal Weddings & Events (Vendors & Discussion)","postUrl":"https://www.facebook.com/groups/3061008987465814/posts/4491554111077954/","postText":"Saucedo ValeriaOmggggg  your work is so beautiful love! I always need artists for my team  I’m going to follow you!6dLikeReplyShare2","scrapedAt":"2026-05-14T12:59:42.946Z","confidence":75,"touches":[{"type":"our_comment","at":"2026-05-14T21:46:23.134Z","text":"love your work! just dm'd you — i do photo + video freelance and would love to connect 📸","ok":true,"reason":null},{"type":"our_dm","at":"2026-05-14T21:46:23.134Z","text":"hey Saucedo! saw your post in the group — i'm Stephanie, a freelance photographer based in the US 📸 i cover photo and video, and if you need multiple operators i work with a small production crew so we can handle bigger shoots too. rates are $120/hr per operator and $800 flat for editing/post — flexible packages depending on what you need. portfolio: https://dreamcrewproductions.us/ — happy to send specific samples for your event type, just let me know the date and format!","ok":false,"reason":"no Message button"}],"hasOutbound":true,"lastTouchAt":"2026-05-14T21:46:23.134Z"},{"id":"27010565955241684","author":"unknown","groupName":"San Antonio Photographers","postUrl":"https://www.facebook.com/groups/486102838114690/posts/27010565955241684/","postText":"Megan Erbe\nEmpowered Lens Photography hey there I would love to talk my son is autistic \n1d\nLike\nReply\nShare\n1","scrapedAt":"2026-05-14T14:56:18.124Z","confidence":85,"touches":[{"type":"our_comment","at":"2026-05-14T18:04:54.224Z","text":"Hey! Just sent over our portfolio via DM — local San Antonio photo + video team 📸","ok":false,"reason":"click_failed"},{"type":"our_comment","at":"2026-05-14T18:04:56.893Z","text":"hey! san antonio team doing photo + video — would love to chat about your family shoot","ok":false,"reason":"exception"},{"type":"our_comment","at":"2026-05-14T21:41:02.135Z","text":"hey megan! just dm'd you 🤍 i do photo & video freelance and would love to chat about capturing something special for your son","ok":false,"reason":"comment not visible after Enter"},{"type":"our_dm","at":"2026-05-14T21:41:02.135Z","text":"hey Megan! saw your post in Empowered Lens Photography — i'd love to help capture something meaningful for your son 📸 i shoot photo and video, and if you need multiple operators i work with a small crew so we can cover all angles. rates are $120/hr per operator (photo or video), $800 flat for editing & post — flexible packages available depending on what you need. portfolio: https://dreamcrewproductions.us/ happy to send specific samples for your event type — what's the date and format? ✨","ok":false,"reason":"no Message button on profile"}],"hasOutbound":false,"lastTouchAt":"2026-05-14T21:41:02.135Z"},{"id":"s_tijtie","author":"MovebyKatie","groupName":"I Need A Photographer or Videographer in Los Angeles California - LA - Jobs","postUrl":"","postText":"I Need A Photographer or Videographer in Los Angeles California - LA - Jobs\nMovebyKatie\nHi everyone!!\nI’m a personal trainer and nutrition coach based in Los Angeles (San Fernando Valley), and I primarily work with women who want to build muscle, lose fat, and feel more confident in their bodies.\nI started my business about a year ago, and recently began creating content to grow my personal brand. I currently post videos 2–3 times a week, and I’m looking for someone who can help film and possibly edit short-form Instag… See more","scrapedAt":"2026-05-14T20:18:02.071Z","confidence":90,"touches":[],"hasOutbound":false,"lastTouchAt":null},{"id":"s_s3899i","author":"Chelsea Amber Abdo","groupName":"San Diego Photographers","postUrl":"","postText":"San Diego Photographers\nChelsea Amber Abdo\nISO photographer to do some romantic vintage cinematic photos of me and my husband. We got married last year but I was postpartum and finally my actual wedding dress fits! I am looking at June or July in balboa park but open to other locations. Please include what you charge. \njust some ideas of the vibe but truly want a creative unique touch\n41\n79","scrapedAt":"2026-05-14T20:15:50.967Z","confidence":95,"touches":[],"hasOutbound":false,"lastTouchAt":null},{"id":"s_yl1t9o","author":"unknown","groupName":"Wedding Videographer Network","postUrl":"","postText":"Wedding Videographer Network\nAnonymous participant\nI need a second shooter for video for a wedding this Saturday in San Jose.\nShow me your portfolio and share your IG and rate please !\n10\n16","scrapedAt":"2026-05-14T20:13:08.377Z","confidence":90,"touches":[],"hasOutbound":false,"lastTouchAt":null},{"id":"s_f3btth","author":"unknown","groupName":"Search: \"need a videographer\"","postUrl":"","postText":"Ephriam Ahmed\nI am in need of a Photographer/videographer. \nYou don't need to edit.\nI only need raw footage. Just the have your own equipment and know  how to shoot from angles.… See more","scrapedAt":"2026-05-14T20:13:08.377Z","confidence":90,"touches":[],"hasOutbound":false,"lastTouchAt":null},{"id":"s_5fy26a","author":"unknown","groupName":"Philadelphia Brides","postUrl":"","postText":"Philadelphia Brides\nAnonymous participant\nLooking for *glowing* recommendations for wedding photographers. If you worked with a documentary style photographer who you LOVED, please share!! \nThe wedding is May 2027 at The Highlands. We want to capture what the day really feels like, while enjoying our party and not stressing about cameras. A mix of documentary & traditional, and a team of two photographers would be amazing.\nThank you!!\n37","scrapedAt":"2026-05-14T20:11:48.282Z","confidence":95,"touches":[],"hasOutbound":false,"lastTouchAt":null},{"id":"s_thlz73","author":"unknown","groupName":"New York Wedding Elopement","postUrl":"","postText":"New York Wedding Elopement\nAnonymous participant\nPosting anonymously due to family issues.\nMy fiancé and I are planning to elope 10/31/26 and we are looking for an affordable photographer. Our budget is tight, but having our photos taken is such an important thing to me so that we can have some beautiful memories of our special day. It would just be the two of us, maybe a few photos with our parents. I don’t think we’d need more than two hours. Please give me suggestions or self recommendations! Thanks in advance \n34","scrapedAt":"2026-05-14T20:05:04.409Z","confidence":95,"touches":[],"hasOutbound":false,"lastTouchAt":null},{"id":"s_q9jvpa","author":"Josue Zalmeron","groupName":"I Need A Photographer or Videographer in Los Angeles California - LA - Jobs","postUrl":"","postText":"I Need A Photographer or Videographer in Los Angeles California - LA - Jobs\nJosue Zalmeron\nHi everyone!\nI’m currently looking for a Second Shooter Photographer available on May 23rd for a wedding in Los Angeles.\nCoverage would only be for 4 hours.\nSee more","scrapedAt":"2026-05-14T16:32:11.548Z","confidence":95,"touches":[],"hasOutbound":false,"lastTouchAt":null},{"id":"s_bbiqp2","author":"Josue Zalmeron","groupName":"Southern California Photographer Search","postUrl":"","postText":"Southern California Photographer Search\nJosue Zalmeron\nLooking Second Photographer for May  23 , 2026 wedding in Los Ángeles \nHello,\nI’m looking for a second photographer to join my team for an 4-hour wedding in Los Ángeles … See more","scrapedAt":"2026-05-14T16:32:11.548Z","confidence":95,"touches":[],"hasOutbound":false,"lastTouchAt":null},{"id":"s_9kah7r","author":"JustHappyToBeHere💕","groupName":"Brides of Chicago","postUrl":"","postText":"Brides of Chicago\nJustHappyToBeHere💕\nWedding Videographer Needed \nVideographer is next on the vendor list!\nBudget: $3500 and under\nSee more\n21\n54","scrapedAt":"2026-05-14T16:30:48.542Z","confidence":95,"touches":[],"hasOutbound":false,"lastTouchAt":null},{"id":"s_s7ipvz","author":"Maya H-b","groupName":"Brides of Chicago","postUrl":"","postText":"Brides of Chicago\nMaya H-b\nI have a client looking for a cinematic documentary style videographer for her July 7, 2028 wedding. Looking for possible leads to recommend to her. Leave packages and websites below! Getting ready and reception in Aurora, IL and ceremony in Manooka.\n27","scrapedAt":"2026-05-14T16:30:48.541Z","confidence":95,"touches":[],"hasOutbound":false,"lastTouchAt":null},{"id":"s_t5b0u8","author":"Diana Guillen","groupName":"Photographers of Houston","postUrl":"","postText":"Photographers of Houston\nDiana Guillen\nHiii, any wedding photographer in Houston that can cover a wedding 5/24? Please send your website/social\n23\n86","scrapedAt":"2026-05-14T16:27:44.045Z","confidence":95,"touches":[],"hasOutbound":false,"lastTouchAt":null},{"id":"s_atlmmg","author":"ThrillingPoodle3218","groupName":"Chicago Wedding Photographers","postUrl":"","postText":"Chicago Wedding Photographers\nThrillingPoodle3218\nHello Everyone !!\nLooking for a female Photographer & Videographer in Chicago for a Wedding.\nPlease drop a message in the comment section and i directly message you. Share your Instagram links as well & your hourly rate.\n37","scrapedAt":"2026-05-14T16:23:08.870Z","confidence":95,"touches":[],"hasOutbound":false,"lastTouchAt":null},{"id":"s_6yu2dk","author":"Aspet Manukyan","groupName":"I Need A Photographer or Videographer in New York City - NYC - Paid Jobs","postUrl":"","postText":"I Need A Photographer or Videographer in New York City - NYC - Paid Jobs\nAspet Manukyan\nEVENT PHOTOGRAPHER (NYC) - Job application form\nPlease find below the structure of the event:\nSee more\n13","scrapedAt":"2026-05-14T16:19:40.100Z","confidence":90,"touches":[],"hasOutbound":false,"lastTouchAt":null},{"id":"s_rllzvi","author":"unknown","groupName":"Search: \"need a videographer\"","postUrl":"","postText":"Online status indicator\nActive\nPop The Balloon NYC is with LOVE IS LOVE: POP THE BALLOON OR FIND LOVE CLIP PAGE in New York, NY.\n· Follow\nNEED A VIDEOGRAPHER TODAY .. DM ME ASAP!!!\nComment as Cheryl Smith","scrapedAt":"2026-05-14T16:19:40.100Z","confidence":95,"touches":[],"hasOutbound":false,"lastTouchAt":null},{"id":"s_54enlr","author":"Antonio Pelullo","groupName":"Philadelphia Brides","postUrl":"","postText":"Philadelphia Brides\nAntonio Pelullo\nHello, my fiancé and I are looking for a photographer for 4 hours for our wedding ceremony at Abington Arts Center on August 8th, 2026 and wanted to see if anyone has recommendations. We like wedding photography that feels light, romantic and is true to color. We need a photographer from 10am to 2pm for a noon ceremony. Our max budget is $2,000.\n25\n93","scrapedAt":"2026-05-14T16:11:07.605Z","confidence":99,"touches":[],"hasOutbound":false,"lastTouchAt":null},{"id":"s_4r7s66","author":"Alexandria Larson","groupName":"Philadelphia Weddings","postUrl":"","postText":"Philadelphia Weddings\nAlexandria Larson\nHey everyone, I'm a local wedding planner and need a photographer for a local party. Are there any photographers in here that are just getting started, or able to photograph a backyard party for a lower budget for 2-3 hours in Cheltenham PA on 10/17/26?\n12\n39","scrapedAt":"2026-05-14T16:11:07.605Z","confidence":98,"touches":[],"hasOutbound":false,"lastTouchAt":null},{"id":"s_8s3wfz","author":"EfficientTurtle7276","groupName":"Philadelphia Brides","postUrl":"","postText":"Philadelphia Brides\nEfficientTurtle7276\nLast minute planing. Please help!\nISO a photographer available for my backyard wedding reception on June 6, 2026 in Middletown, Delaware. I don’t think I need full day coverage since it will only be the reception.\nI’m hoping to find someone who is comfortable sharing all of the raw photos as well. I’m happy to sign anything that says I’ll only post the edited ones but I’d love to have them all.\nSee more\n41","scrapedAt":"2026-05-14T16:11:07.605Z","confidence":98,"touches":[],"hasOutbound":false,"lastTouchAt":null},{"id":"s_p9g5bw","author":"Robin Glenn","groupName":"Texas Brides On A Budget","postUrl":"","postText":"Texas Brides On A Budget\nRobin Glenn\nAny recommendations for a wedding photographer in Dallas on July 4, 2026?  I’m looking for 4-6 hours for a small backyard ceremony. Really trying to keep it $2,000 or less.\n13\n35","scrapedAt":"2026-05-14T16:04:41.748Z","confidence":98,"touches":[],"hasOutbound":false,"lastTouchAt":null},{"id":"s_p03ihp","author":"Liz Green","groupName":"Brides Houston Area","postUrl":"","postText":"Brides Houston Area\nLiz Green\nHi, looking for a photographer and/or videographer to take pictures and video of my bridal party in our suite and outside prior to the wedding only. It would only be for a couple of hours.\n20\n44","scrapedAt":"2026-05-14T16:03:23.452Z","confidence":95,"touches":[],"hasOutbound":false,"lastTouchAt":null},{"id":"s_ruydu","author":"unknown","groupName":"San Antonio - Ask A Local (Not a place to sell things!)","postUrl":"","postText":"San Antonio - Ask A Local (Not a place to sell things!)\nAnonymous participant\nLooking for recommendations for a wedding photographer. Hoping for someone with good portfolio who isn’t crazy expensive.\n11\n69","scrapedAt":"2026-05-14T14:26:46.071Z","confidence":95,"touches":[],"hasOutbound":false,"lastTouchAt":null},{"id":"s_fqop01","author":"Eden Piskhakov","groupName":"San Diego Wedding Photographers and other Vendors","postUrl":"","postText":"San Diego Wedding Photographers and other Vendors\nEden Piskhakov\nHi everyone \nI’m looking for a photographer/videographer for my wedding \nMy budget is up to $400, or I’d also be happy to do a service exchange — I can make 2 custom cakes and cupcakes in exchange for the photography service \nSee more\n12","scrapedAt":"2026-05-14T14:23:54.234Z","confidence":95,"touches":[],"hasOutbound":false,"lastTouchAt":null},{"id":"s_dao8jp","author":"unknown","groupName":"DFW Wedding Vendors - For Couples to Find You!","postUrl":"","postText":"DFW Wedding Vendors - For Couples to Find You!\nAnonymous participant\nLooking for a videographer for 3/21/2026.\nDallas, TX\nDrop your website/IG below! … See more\n22\n70","scrapedAt":"2026-05-14T14:22:14.575Z","confidence":95,"touches":[],"hasOutbound":false,"lastTouchAt":null},{"id":"s_yccrmi","author":"Cora Holbrook","groupName":"ARIZONA Photographers","postUrl":"","postText":"ARIZONA Photographers\nCora Holbrook\nHello all! I am a May 2026 bride and looking for a photographer for my smaller sized wedding who is wanting wedding photography experience for free.\nI have several photographers that I could pay for but my budget is tighter than I expected and this can help someone develop their wedding portfolio. \nIt would be limited to only ceremony photos with 15min of couple/family photos post ceremony and some major reception moments photos lik… See more\n23","scrapedAt":"2026-05-14T14:20:28.067Z","confidence":95,"touches":[],"hasOutbound":false,"lastTouchAt":null},{"id":"s_2xueuk","author":"Carol Valdez","groupName":"ISO Budget Friendly Wedding Photographer- No Ads","postUrl":"","postText":"ISO Budget Friendly Wedding Photographer- No Ads\nCarol Valdez\nHello everyone!\nISO photographer in the Mesa/Phoenix area who’d be available to photography our small March 15 ceremony. We are going next week to check Riparian Preserve. Basically eloping as no reception. There will be roughly 12 people there including me any my fiance. Ceremony maybe 20-30 minutes with some photos after.\nWould be great we can communicate between now and then ideas on posing and who’d be in what photos. Ideally wouldn’t mind being a returning client with the… See more\n23\nCarol Valdez turned off commenting for this post.","scrapedAt":"2026-05-14T14:12:10.404Z","confidence":95,"touches":[],"hasOutbound":false,"lastTouchAt":null},{"id":"s_9kah7q","author":"JustHappyToBeHere💕","groupName":"Brides of Chicago","postUrl":"","postText":"Brides of Chicago\nJustHappyToBeHere💕\nWedding Videographer Needed \nVideographer is next on the vendor list!\nBudget: $3500 and under\nSee more\n21\n53","scrapedAt":"2026-05-14T14:04:46.267Z","confidence":92,"touches":[],"hasOutbound":false,"lastTouchAt":null},{"id":"s_gf00kh","author":"Olaseni Olaniyi","groupName":"Brides of Chicago","postUrl":"","postText":"Brides of Chicago\nOlaseni Olaniyi\nHello, please I need a videographer who can record us decorating the venue and also capture the final look of the decoration. Our budget is limited, so we are looking for a videographer who is just starting out or building their portfolio.\nAlso, we need ushers/servers who can assist with decoration setup and event support.\nPlease send your rates, and any sample of your work.","scrapedAt":"2026-05-14T14:04:46.267Z","confidence":95,"touches":[],"hasOutbound":false,"lastTouchAt":null}];
+function fmtConvDate(s) { if (!s) return ''; try { return new Date(s).toLocaleString('en-US', { month:'short', day:'numeric', hour:'2-digit', minute:'2-digit' }); } catch { return s; } }
+function openConvPanel(idx) {
+  const c = CONVERSATIONS[idx]; if (!c) return;
+  document.getElementById('conv-panel-author').textContent = c.author || 'unknown';
+  const groupBits = [c.groupName, c.confidence ? 'conf '+c.confidence : null, c.postUrl ? '<a href="'+c.postUrl+'" target="_blank" style="color:var(--accent)">post ↗</a>' : null].filter(Boolean).join(' · ');
+  document.getElementById('conv-panel-group').innerHTML = groupBits;
+  const body = document.getElementById('conv-panel-body');
+  let html = '';
+  if (c.postText) {
+    html += '<div class="conv-msg post"><div class="meta">📝 Original post · '+fmtConvDate(c.scrapedAt)+'</div>'+escapeHtml(c.postText)+'</div>';
+  }
+  for (const t of (c.touches || [])) {
+    const cls = t.type + (t.ok ? '' : ' failed');
+    const label = t.type === 'our_comment' ? '💬 Our comment' : t.type === 'our_dm' ? '📨 Our DM' : t.type;
+    const fail = t.ok ? '' : ' <span style="color:var(--red)">[failed: '+escapeHtml(t.reason || 'unknown')+']</span>';
+    html += '<div class="conv-msg '+cls+'"><div class="meta">'+label+' · '+fmtConvDate(t.at)+fail+'</div>'+escapeHtml(t.text || '')+'</div>';
+  }
+  if (!c.touches || !c.touches.length) html += '<div style="color:var(--muted);text-align:center;padding:20px">No outbound touches yet</div>';
+  body.innerHTML = html;
+  document.getElementById('conv-panel').classList.add('open');
+}
+function closeConvPanel() { document.getElementById('conv-panel').classList.remove('open'); }
+function escapeHtml(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+let convHoverTimer = null;
+document.querySelectorAll('.conv-row').forEach(row => {
+  row.addEventListener('mouseenter', () => {
+    clearTimeout(convHoverTimer);
+    convHoverTimer = setTimeout(() => openConvPanel(parseInt(row.dataset.cidx)), 300);
+  });
+  row.addEventListener('mouseleave', () => clearTimeout(convHoverTimer));
+  row.addEventListener('click', () => { clearTimeout(convHoverTimer); openConvPanel(parseInt(row.dataset.cidx)); });
+});
+document.getElementById('conv-panel-close')?.addEventListener('click', closeConvPanel);
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeConvPanel(); });
 </script>
 </body>
 </html>
