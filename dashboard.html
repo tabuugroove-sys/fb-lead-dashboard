@@ -336,17 +336,17 @@
     <div class="token-card">
       <div class="token-stats">
         <div class="label">Сегодня (всего)</div>
-        <div class="big">38 500</div>
-        <div class="trend down">
-          ▼ 74.4% vs вчера
+        <div class="big">147 000</div>
+        <div class="trend up">
+          ▲ 281.8% vs вчера
         </div>
         <div class="secondary">
           <div>
-            <div class="num" style="color:var(--green)">60</div>
+            <div class="num" style="color:var(--green)">102</div>
             <div class="lbl">CLI calls (free)</div>
           </div>
           <div>
-            <div class="num" style="color:var(--green)">210.0K</div>
+            <div class="num" style="color:var(--green)">357.0K</div>
             <div class="lbl">CLI tokens (7d)</div>
           </div>
           <div>
@@ -2023,7 +2023,7 @@ graph LR
 </div>
 
 <footer>
-  Сгенерировано: 14.05.2026, 23:59:15 ·
+  Сгенерировано: 15.05.2026, 00:03:41 ·
   Последний прогон парсера: 05.05.2026, 01:40:11 ·
   Обновить: <code>node build-dashboard.js</code>
 </footer>
@@ -2046,7 +2046,7 @@ const initial = (location.hash.match(/^#\/(\w+)/) || [])[1] || 'leads';
 if (['leads','parser','system'].includes(initial)) showPage(initial);
 
 // ===== CLI vs API split chart =====
-const aiDaily = [{"date":"пт","iso":"2026-05-07","cli_calls":0,"api_calls":0,"cli_tokens":0,"api_tokens":0,"cost_usd":0},{"date":"сб","iso":"2026-05-08","cli_calls":0,"api_calls":0,"cli_tokens":0,"api_tokens":0,"cost_usd":0},{"date":"вс","iso":"2026-05-09","cli_calls":0,"api_calls":0,"cli_tokens":0,"api_tokens":0,"cost_usd":0},{"date":"пн","iso":"2026-05-10","cli_calls":0,"api_calls":0,"cli_tokens":0,"api_tokens":0,"cost_usd":0},{"date":"вт","iso":"2026-05-11","cli_calls":6,"api_calls":0,"cli_tokens":21000,"api_tokens":0,"cost_usd":0},{"date":"ср","iso":"2026-05-12","cli_calls":43,"api_calls":0,"cli_tokens":150500,"api_tokens":0,"cost_usd":0},{"date":"чт","iso":"2026-05-13","cli_calls":11,"api_calls":0,"cli_tokens":38500,"api_tokens":0,"cost_usd":0}];
+const aiDaily = [{"date":"сб","iso":"2026-05-08","cli_calls":0,"api_calls":0,"cli_tokens":0,"api_tokens":0,"cost_usd":0},{"date":"вс","iso":"2026-05-09","cli_calls":0,"api_calls":0,"cli_tokens":0,"api_tokens":0,"cost_usd":0},{"date":"пн","iso":"2026-05-10","cli_calls":0,"api_calls":0,"cli_tokens":0,"api_tokens":0,"cost_usd":0},{"date":"вт","iso":"2026-05-11","cli_calls":6,"api_calls":0,"cli_tokens":21000,"api_tokens":0,"cost_usd":0},{"date":"ср","iso":"2026-05-12","cli_calls":43,"api_calls":0,"cli_tokens":150500,"api_tokens":0,"cost_usd":0},{"date":"чт","iso":"2026-05-13","cli_calls":11,"api_calls":0,"cli_tokens":38500,"api_tokens":0,"cost_usd":0},{"date":"пт","iso":"2026-05-14","cli_calls":42,"api_calls":0,"cli_tokens":147000,"api_tokens":0,"cost_usd":0}];
 const ctx = document.getElementById('sparkline').getContext('2d');
 new Chart(ctx, {
   type: 'line',
