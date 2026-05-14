@@ -138,6 +138,11 @@
   .modal-header h2 { font-size: 16px; text-transform: none; letter-spacing: 0; color: var(--text); margin: 0; }
   #modal-close { background: none; border: none; color: var(--muted); font-size: 28px; cursor: pointer; line-height: 1; padding: 0 4px; }
   #modal-close:hover { color: var(--text); }
+  /* ── DM Stress Test stat tiles ── */
+  .stress-stat { background: var(--bg); border: 1px solid var(--border); border-radius: 6px; padding: 12px 14px; }
+  .stress-stat .num { font-size: 24px; font-weight: 600; line-height: 1.1; }
+  .stress-stat .lbl { color: var(--muted); font-size: 12px; margin-top: 4px; }
+  .stress-stat .sub { color: var(--muted); font-size: 10px; margin-top: 2px; opacity: 0.7; }
   /* ── Conversations table + slide-out ── */
   .conv-table-wrap { max-height: 460px; overflow-y: auto; border: 1px solid var(--border); border-radius: 6px; }
   .conv-table { width: 100%; border-collapse: collapse; font-size: 13px; }
@@ -953,6 +958,28 @@ graph TB
     </div>
   </div>
 
+  <!-- DM Stress Test results: live throughput + block detection -->
+  
+  <div class="card" style="margin-bottom: 16px;">
+    <h2>🧪 DM Stress Test — Profile #24 (Stephanie)
+      <span style="color:var(--green);margin-left:12px;font-size:14px;font-weight:normal">🟢 RUNNING — no block yet</span>
+    </h2>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-top:14px">
+      <div class="stress-stat"><div class="num" style="color:var(--blue)">0</div><div class="lbl">💬 Comments delivered</div><div class="sub">0 attempts · 0%</div></div>
+      <div class="stress-stat"><div class="num" style="color:var(--green)">0</div><div class="lbl">📨 DMs delivered</div><div class="sub">0 attempts · 0%</div></div>
+      <div class="stress-stat"><div class="num" style="color:var(--yellow)">0</div><div class="lbl">Leads processed</div><div class="sub">full-funnel</div></div>
+      <div class="stress-stat"><div class="num" style="color:var(--accent)">—</div><div class="lbl">Elapsed</div><div class="sub">1 session</div></div>
+      <div class="stress-stat"><div class="num">—</div><div class="lbl">DMs / hour</div><div class="sub">throughput rate</div></div>
+    </div>
+    
+    <div style="margin-top:12px;color:var(--muted);font-size:12px">
+      First action: —<br>
+      Latest action: —<br>
+      Stops automatically when FB returns any rate-limit / action-block signal.
+    </div>
+  </div>
+  
+
   <!-- Conversations: leads with comment/DM history; hover row → right slide-out -->
   <div class="card" style="margin-bottom: 16px;">
     <h2>💬 Conversations <span style="color:var(--muted);font-size:13px;font-weight:normal">(hover row to view full thread →)</span></h2>
@@ -1432,8 +1459,8 @@ graph LR
           </div>
           <div class="line">
             <div class="name ">📄 build-dashboard.js</div>
-            <div class="size">106.2 KB</div>
-            <div class="modified">2026-05-14 21:59</div>
+            <div class="size">110.9 KB</div>
+            <div class="modified">2026-05-14 22:14</div>
           </div>
           <div class="line">
             <div class="name ">📄 check-env.mjs</div>
@@ -1462,13 +1489,13 @@ graph LR
           </div>
           <div class="line">
             <div class="name ">📄 dashboard.html</div>
-            <div class="size">194.0 KB</div>
-            <div class="modified">2026-05-14 22:11</div>
+            <div class="size">195.8 KB</div>
+            <div class="modified">2026-05-14 22:14</div>
           </div>
           <div class="line">
             <div class="name dir">📁 data</div>
             <div class="size"></div>
-            <div class="modified">2026-05-14 21:42</div>
+            <div class="modified">2026-05-14 22:13</div>
           </div>
           <div class="line">
             <div class="name dir">📁 dictionaries</div>
@@ -2030,7 +2057,7 @@ graph LR
 </div>
 
 <footer>
-  Сгенерировано: 15.05.2026, 00:13:41 ·
+  Сгенерировано: 15.05.2026, 00:14:56 ·
   Последний прогон парсера: 05.05.2026, 01:40:11 ·
   Обновить: <code>node build-dashboard.js</code>
 </footer>
