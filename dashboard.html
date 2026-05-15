@@ -380,7 +380,7 @@
   <!-- Funnel stats -->
   <div class="stat-row">
     <div class="stat"><div class="num" style="color:var(--blue)">66</div><div class="lbl">Posts collected</div></div>
-    <div class="stat"><div class="num">712</div><div class="lbl">After lex filter</div></div>
+    <div class="stat"><div class="num">721</div><div class="lbl">After lex filter</div></div>
     <div class="stat"><div class="num">176</div><div class="lbl">Tier-1 pass (Haiku)</div></div>
     <div class="stat"><div class="num" style="color:var(--green)">163</div><div class="lbl">Tier-2 confirmed</div></div>
     <div class="stat"><div class="num" style="color:var(--yellow)">145</div><div class="lbl">Sent to Telegram</div></div>
@@ -392,7 +392,7 @@
     <div class="funnel">
       <div class="stage"><div class="v">66</div><div class="l">posts</div></div>
       <div class="arr">→</div>
-      <div class="stage"><div class="v">712</div><div class="l">lex filter</div></div>
+      <div class="stage"><div class="v">721</div><div class="l">lex filter</div></div>
       <div class="arr">→</div>
       <div class="stage"><div class="v">176</div><div class="l">tier-1 haiku</div></div>
       <div class="arr">→</div>
@@ -672,7 +672,7 @@
           <div class="desc"></div>
           <div class="footer">
             <span class="lbl"></span>
-            <span><b>0</b></span>
+            <span><b>9</b></span>
           </div>
         </div>
         <div class="agent">
@@ -681,12 +681,12 @@
               <div class="name">Tier-1 Classifier</div>
               <div class="model"></div>
             </div>
-            <span class="status-pill status-idle">idle</span>
+            <span class="status-pill status-running">running</span>
           </div>
           <div class="desc"></div>
           <div class="footer">
             <span class="lbl"></span>
-            <span><b>818</b></span>
+            <span><b>0</b></span>
           </div>
         </div>
         <div class="agent">
@@ -804,6 +804,16 @@ graph TB
       <h2>Recent Activity</h2>
       <div class="feed">
         
+          <div class="row">
+            <div class="ts">04:08</div>
+            <div class="agent-tag">LEX</div>
+            <div class="msg">1874 posts → 9 new candidates</div>
+          </div>
+          <div class="row">
+            <div class="ts">04:08</div>
+            <div class="agent-tag">PIPELINE</div>
+            <div class="msg">search pipeline start</div>
+          </div>
           <div class="row">
             <div class="ts">03:56</div>
             <div class="agent-tag">PIPELINE</div>
@@ -943,16 +953,6 @@ graph TB
             <div class="ts">02:15</div>
             <div class="agent-tag">TIER-2</div>
             <div class="msg">4 potentials → 4 real leads</div>
-          </div>
-          <div class="row">
-            <div class="ts">02:14</div>
-            <div class="agent-tag">TIER-1</div>
-            <div class="msg">15 candidates → 4 potentials</div>
-          </div>
-          <div class="row">
-            <div class="ts">02:14</div>
-            <div class="agent-tag">LEX</div>
-            <div class="msg">1824 posts → 15 new candidates</div>
           </div>
       </div>
     </div>
@@ -1490,12 +1490,12 @@ graph LR
           <div class="line">
             <div class="name ">📄 dashboard.html</div>
             <div class="size">194.3 KB</div>
-            <div class="modified">2026-05-15 04:01</div>
+            <div class="modified">2026-05-15 04:06</div>
           </div>
           <div class="line">
             <div class="name dir">📁 data</div>
             <div class="size"></div>
-            <div class="modified">2026-05-15 03:16</div>
+            <div class="modified">2026-05-15 04:04</div>
           </div>
           <div class="line">
             <div class="name dir">📁 dictionaries</div>
@@ -1570,7 +1570,7 @@ graph LR
           <div class="line">
             <div class="name dir">📁 scripts</div>
             <div class="size"></div>
-            <div class="modified">2026-05-14 21:34</div>
+            <div class="modified">2026-05-15 04:04</div>
           </div>
           <div class="line">
             <div class="name dir">📁 src</div>
@@ -2057,7 +2057,7 @@ graph LR
 </div>
 
 <footer>
-  Сгенерировано: 15.05.2026, 06:03:41 ·
+  Сгенерировано: 15.05.2026, 06:08:41 ·
   Последний прогон парсера: 05.05.2026, 01:40:11 ·
   Обновить: <code>node build-dashboard.js</code>
 </footer>
