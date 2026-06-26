@@ -70,6 +70,34 @@
   .ops-event .main { font-size: 12px; }
   .ops-event .snippet { color: var(--muted); font-size: 11px; margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 420px; }
   .ops-table td, .ops-table th { font-size: 12px; }
+
+  .groups-hero { position: relative; overflow:hidden; display:flex; justify-content:space-between; gap:18px; align-items:flex-end; margin-bottom:16px; padding:24px; border:1px solid rgba(88,166,255,.28); border-radius:18px; background: radial-gradient(circle at 15% 0%, rgba(88,166,255,.22), transparent 32%), radial-gradient(circle at 92% 30%, rgba(63,185,80,.15), transparent 28%), linear-gradient(135deg, #071019, #101722 60%, #0d1117); }
+  .groups-hero:before { content:''; position:absolute; inset:0; pointer-events:none; opacity:.38; background-image: linear-gradient(rgba(255,255,255,.045) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.045) 1px, transparent 1px); background-size: 28px 28px; mask-image: linear-gradient(90deg, #000, transparent 82%); }
+  .groups-hero > * { position:relative; }
+  .groups-kicker { color:var(--blue); font-size:11px; text-transform:uppercase; letter-spacing:.14em; font-weight:800; }
+  .groups-hero h1 { margin-top:4px; font-size:34px; line-height:1; letter-spacing:-.04em; color:#f2f8ff; }
+  .groups-hero p { color:#9aa9b8; margin-top:8px; max-width:760px; font-size:13px; }
+  .groups-legend { display:flex; flex-wrap:wrap; gap:8px; font-size:11px; color:var(--muted); }
+  .groups-legend span { display:inline-flex; align-items:center; gap:6px; border:1px solid var(--border); border-radius:999px; padding:5px 9px; background:rgba(5,9,14,.7); }
+  .legend-dot { width:8px; height:8px; border-radius:50%; display:inline-block; }
+  .legend-dot.ok { background:var(--green); } .legend-dot.warn { background:var(--yellow); } .legend-dot.idle { background:var(--muted); }
+  .city-group-card { margin-bottom:14px; border:1px solid var(--border); border-radius:16px; background:linear-gradient(180deg, rgba(255,255,255,.034), rgba(255,255,255,.014)); overflow:hidden; }
+  .city-group-head { display:flex; justify-content:space-between; gap:16px; align-items:center; padding:16px 18px; border-bottom:1px solid var(--border); background:rgba(8,13,18,.5); }
+  .city-group-head h2 { font-size:22px; letter-spacing:-.02em; color:#e8f1fa; margin:0; }
+  .city-group-stats { display:flex; gap:10px; }
+  .city-group-stats div { min-width:74px; text-align:center; border:1px solid rgba(255,255,255,.08); border-radius:12px; padding:8px 10px; background:#0b1016; }
+  .city-group-stats b { display:block; font-size:20px; color:var(--blue); line-height:1; }
+  .city-group-stats span { display:block; margin-top:3px; color:var(--muted); font-size:9px; text-transform:uppercase; letter-spacing:.08em; }
+  .groups-table-wrap { overflow-x:auto; }
+  .groups-table { width:100%; border-collapse:collapse; font-size:12px; }
+  .groups-table th { color:var(--muted); text-align:left; text-transform:uppercase; letter-spacing:.06em; font-size:10px; padding:10px 14px; background:#0d1117; border-bottom:1px solid var(--border); }
+  .groups-table td { padding:10px 14px; border-bottom:1px solid rgba(48,54,61,.75); vertical-align:top; }
+  .groups-table tr:hover td { background:rgba(88,166,255,.045); }
+  .groups-table a { color:#dceaff; text-decoration:none; font-weight:700; }
+  .groups-table a:hover { color:var(--blue); }
+  .ops-groups-pointer { border-style:dashed; background:linear-gradient(180deg, rgba(88,166,255,.06), rgba(88,166,255,.015)); }
+  @media (max-width: 900px) { .groups-hero, .city-group-head, .city-group-stats { flex-direction:column; align-items:flex-start; } .city-group-stats { width:100%; } .city-group-stats div { flex:1; } }
+
   @media (max-width: 900px) { .ops-layout, .ops-sla, .account-grid { grid-template-columns: 1fr; } .ops-event { grid-template-columns: 1fr; } }
 
   .tab:hover:not(.active) { color: var(--text); }
@@ -237,6 +265,7 @@
 
 <nav class="tabs">
   <button class="tab active" data-page="liveops">Live Ops</button>
+  <button class="tab" data-page="groups">Groups</button>
   <button class="tab" data-page="leads">Lead Pipeline</button>
   <button class="tab" data-page="parser">Parser</button>
   <button class="tab" data-page="system">System</button>
@@ -645,72 +674,1374 @@ Share</div></div>
       </div>
     </div>
 
-    <div class="ops-card">
-      <h2>City SLA board</h2>
-      <table class="ops-table">
-        <thead><tr><th>City</th><th>Groups</th><th>Fresh</th><th>Last age</th><th>Status</th></tr></thead>
+    <div class="ops-card ops-groups-pointer">
+      <h2>Groups directory moved</h2>
+      <div style="font-size:13px;color:var(--text);line-height:1.6">City coverage and group membership status are now on the separate <b>Groups</b> tab.</div>
+      <button class="tab" data-page="groups" style="margin-top:12px;border:1px solid var(--border);border-radius:10px;background:#0b1016">Open Groups</button>
+    </div>
+  </div>
+</div>
+
+
+
+<!-- ====================== PAGE: GROUPS ====================== -->
+<div class="page" data-page="groups">
+  <section class="groups-hero">
+    <div>
+      <div class="groups-kicker">City coverage map</div>
+      <h1>Groups by city</h1>
+      <p>One operating list: city first, then Facebook groups. Use this page to see what the parser should watch and where membership/subscription state still needs confirmation.</p>
+    </div>
+    <div class="groups-legend">
+      <span><i class="legend-dot ok"></i>boosted/tracked</span>
+      <span><i class="legend-dot warn"></i>join may be needed</span>
+      <span><i class="legend-dot idle"></i>unknown data</span>
+    </div>
+  </section>
+  
+  <section class="city-group-card">
+    <div class="city-group-head">
+      <div>
+        <h2>New York</h2>
+        <div class="muted">Groups watched for this city. Subscribed is unknown until we add an explicit membership check/file; tracking profile shows which account is assigned in project data.</div>
+      </div>
+      <div class="city-group-stats">
+        <div><b>18</b><span>groups</span></div>
+        <div><b>7</b><span>boosted</span></div>
+        <div><b>18</b><span>tracked</span></div>
+      </div>
+    </div>
+    <div class="groups-table-wrap">
+      <table class="groups-table">
+        <thead><tr><th>Group</th><th>Status</th><th>Priority</th><th>Need join</th><th>Subscribed</th><th>Tracking profile</th><th>Quality</th></tr></thead>
         <tbody>
           <tr>
-            <td>Los Angeles</td><td>52</td><td>3</td><td>22h</td><td><span class="sla-pill fail">fail</span></td>
-          </tr><tr>
-            <td>Houston</td><td>37</td><td>5</td><td>13m</td><td><span class="sla-pill warn">warn</span></td>
-          </tr><tr>
-            <td>New York</td><td>85</td><td>0</td><td>unknown</td><td><span class="sla-pill idle">idle</span></td>
-          </tr><tr>
-            <td>San Antonio</td><td>17</td><td>0</td><td>5h</td><td><span class="sla-pill fail">fail</span></td>
-          </tr><tr>
-            <td>Chicago</td><td>51</td><td>0</td><td>4h</td><td><span class="sla-pill fail">fail</span></td>
-          </tr><tr>
-            <td>Phoenix</td><td>52</td><td>0</td><td>48h</td><td><span class="sla-pill fail">fail</span></td>
-          </tr><tr>
-            <td>Philadelphia</td><td>47</td><td>0</td><td>unknown</td><td><span class="sla-pill idle">idle</span></td>
-          </tr><tr>
-            <td>San Diego</td><td>0</td><td>0</td><td>unknown</td><td><span class="sla-pill idle">idle</span></td>
-          </tr><tr>
-            <td>Dallas</td><td>0</td><td>0</td><td>unknown</td><td><span class="sla-pill idle">idle</span></td>
-          </tr><tr>
-            <td>San Jose</td><td>0</td><td>0</td><td>unknown</td><td><span class="sla-pill idle">idle</span></td>
+            <td><a href="https://www.facebook.com/groups/623845381027124/" target="_blank">NYC Photographers</a><div class="muted">41K · 623845381027124</div></td>
+            <td><span class="sla-pill idle">low_priority</span></td>
+            <td><span class="sla-pill ok">boosted</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-b2b">b2b</span></td>
           </tr>
-        </tbody>
-      </table>
-      <div style="height:14px"></div>
-      <h2>Latest groups touched</h2>
-      <table class="ops-table">
-        <thead><tr><th>Group</th><th>City</th><th>Q</th><th>Age</th></tr></thead>
-        <tbody>
           <tr>
-            <td><a href="https://www.facebook.com/groups/389879199853276/" target="_blank">I Need A Photographer or Videographer in L</a></td><td>Los Angeles</td><td><span class="status-pill status-unknown">unknown</span></td><td><span class="sla-pill fail">22h</span></td>
-          </tr><tr>
-            <td><a href="https://www.facebook.com/groups/3434522096784677/" target="_blank">looking for affordable photographer</a></td><td>Los Angeles</td><td><span class="status-pill status-unknown">unknown</span></td><td><span class="sla-pill fail">2h</span></td>
-          </tr><tr>
-            <td><a href="https://www.facebook.com/groups/weddingphotographerclub/" target="_blank">wedding photographer</a></td><td>New York</td><td><span class="status-pill status-unknown">unknown</span></td><td><span class="sla-pill warn">13m</span></td>
-          </tr><tr>
-            <td><a href="https://www.facebook.com/groups/623845381027124/" target="_blank">NYC Photographers</a></td><td>New York</td><td><span class="status-pill status-unknown">unknown</span></td><td><span class="sla-pill fail">144h</span></td>
-          </tr><tr>
-            <td><a href="https://www.facebook.com/groups/nycphotographersusa/" target="_blank">NYC Photographers</a></td><td>New York</td><td><span class="status-pill status-unknown">unknown</span></td><td><span class="sla-pill fail">144h</span></td>
-          </tr><tr>
-            <td><a href="https://www.facebook.com/groups/1765590277249860/" target="_blank">ISO Budget Friendly Wedding Photographer- </a></td><td>New York</td><td><span class="status-pill status-unknown">unknown</span></td><td><span class="sla-pill fail">2h</span></td>
-          </tr><tr>
-            <td><a href="https://www.facebook.com/groups/jurufoto.perkahwinan/" target="_blank">Wedding Photographer</a></td><td>New York</td><td><span class="status-pill status-unknown">unknown</span></td><td><span class="sla-pill fail">2h</span></td>
-          </tr><tr>
-            <td><a href="https://www.facebook.com/groups/PhoenixPhotographers/" target="_blank">ARIZONA Photographers</a></td><td>Phoenix</td><td><span class="status-pill status-unknown">unknown</span></td><td><span class="sla-pill fail">4h</span></td>
-          </tr><tr>
-            <td><a href="https://www.facebook.com/groups/PhiladelphiaBrides/" target="_blank">Philadelphia Brides</a></td><td>Philadelphia</td><td><span class="status-pill status-unknown">unknown</span></td><td><span class="sla-pill fail">4h</span></td>
-          </tr><tr>
-            <td><a href="https://www.facebook.com/groups/ericaberger/" target="_blank">New York Photography Referral Group!</a></td><td>New York</td><td><span class="status-pill status-unknown">unknown</span></td><td><span class="sla-pill fail">120h</span></td>
-          </tr><tr>
-            <td><a href="https://www.facebook.com/groups/NYSPG/" target="_blank">New York Photography</a></td><td>New York</td><td><span class="status-pill status-unknown">unknown</span></td><td><span class="sla-pill fail">120h</span></td>
-          </tr><tr>
-            <td><a href="https://www.facebook.com/groups/486102838114690/" target="_blank">San Antonio Photographers</a></td><td>San Antonio</td><td><span class="status-pill status-unknown">unknown</span></td><td><span class="sla-pill fail">5h</span></td>
-          </tr><tr>
-            <td><a href="https://www.facebook.com/groups/993553661240694/" target="_blank">Houston Videographers</a></td><td>Houston</td><td><span class="status-pill status-unknown">unknown</span></td><td><span class="sla-pill ok">1m</span></td>
-          </tr><tr>
-            <td><a href="https://www.facebook.com/groups/453052061521245/" target="_blank">Houston Wedding Brides</a></td><td>Houston</td><td><span class="status-pill status-unknown">unknown</span></td><td><span class="sla-pill fail">15h</span></td>
+            <td><a href="https://www.facebook.com/groups/419714976656539/" target="_blank">I Need A Photographer or Videographer in New York City - NYC - Paid Jobs</a><div class="muted">14K · 419714976656539</div></td>
+            <td><span class="sla-pill idle">low_priority</span></td>
+            <td><span class="sla-pill ok">boosted</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-client">client</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/1765590277249860/" target="_blank">ISO Budget Friendly Wedding Photographer- No Ads</a><div class="muted">28K · 1765590277249860</div></td>
+            <td><span class="sla-pill ok">priority_sample</span></td>
+            <td><span class="sla-pill ok">boosted</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-client">client</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/897642666928981/" target="_blank">New York Photographers &amp; Videographers Network</a><div class="muted">13K · 897642666928981</div></td>
+            <td><span class="sla-pill idle">low_priority</span></td>
+            <td><span class="sla-pill ok">boosted</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-b2b">b2b</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/596371002346098/" target="_blank">Chicago Wedding Photographers</a><div class="muted">2.6K · 596371002346098</div></td>
+            <td><span class="sla-pill idle">low_priority</span></td>
+            <td><span class="sla-pill ok">boosted</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-b2b">b2b</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/1363091461326360/" target="_blank">I need a professional Photographer or Videographer in NYC - New York CIty</a><div class="muted">3.8K · 1363091461326360</div></td>
+            <td><span class="sla-pill idle">low_priority</span></td>
+            <td><span class="sla-pill ok">boosted</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-client">client</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/2438441013067377/" target="_blank">New York Wedding Elopement</a><div class="muted">6.1K · 2438441013067377</div></td>
+            <td><span class="sla-pill warn">needs_sample</span></td>
+            <td><span class="sla-pill ok">boosted</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-client">client</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/386521125929053/" target="_blank">Affordable Photographer/Videographer Group (budget meal)</a><div class="muted">228K · 386521125929053</div></td>
+            <td><span class="sla-pill idle">low_priority</span></td>
+            <td><span class="sla-pill idle">normal</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-client">client</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/theweddinghacker/" target="_blank">Budget Wedding Planning Community</a><div class="muted">197K · theweddinghacker</div></td>
+            <td><span class="sla-pill ok">priority_sample</span></td>
+            <td><span class="sla-pill idle">normal</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-client">client</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/newyorkcityphotographers/" target="_blank">New York City Photography</a><div class="muted">551K · newyorkcityphotographers</div></td>
+            <td><span class="sla-pill idle">low_priority</span></td>
+            <td><span class="sla-pill idle">normal</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-mixed">mixed</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/426864460029408/" target="_blank">Wedding Planning Advice, Tips, Amazon Budget Wedding and Home Deals by Moxx</a><div class="muted">108K · 426864460029408</div></td>
+            <td><span class="sla-pill ok">priority_sample</span></td>
+            <td><span class="sla-pill idle">normal</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-client">client</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/1070592286415617/" target="_blank">DMV Wedding Directory</a><div class="muted">40K · 1070592286415617</div></td>
+            <td><span class="sla-pill warn">needs_sample</span></td>
+            <td><span class="sla-pill idle">normal</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-client">client</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/277471346190369/" target="_blank">Kolkata Wedding Photographer</a><div class="muted">43K · 277471346190369</div></td>
+            <td><span class="sla-pill idle">low_priority</span></td>
+            <td><span class="sla-pill idle">normal</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-b2b">b2b</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/352527064790380/" target="_blank">NC Photographers &amp; Videographers</a><div class="muted">41K · 352527064790380</div></td>
+            <td><span class="sla-pill idle">low_priority</span></td>
+            <td><span class="sla-pill idle">normal</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-b2b">b2b</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/NYCFilmProduction/" target="_blank">NYC Film Production</a><div class="muted">63K · NYCFilmProduction</div></td>
+            <td><span class="sla-pill warn">needs_sample</span></td>
+            <td><span class="sla-pill idle">normal</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-b2b">b2b</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/NYCFilmGigs/" target="_blank">NYC Film/TV Gigs (PAID)</a><div class="muted">45K · NYCFilmGigs</div></td>
+            <td><span class="sla-pill warn">needs_sample</span></td>
+            <td><span class="sla-pill idle">normal</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-b2b">b2b</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/1346089515925020/" target="_blank">Upstate New York Photography</a><div class="muted">45K · 1346089515925020</div></td>
+            <td><span class="sla-pill idle">low_priority</span></td>
+            <td><span class="sla-pill idle">normal</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-mixed">mixed</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/433363276700217/" target="_blank">Wedding Suppliers Freelance Photographer Videographer of the PHILIPPINES</a><div class="muted">60K · 433363276700217</div></td>
+            <td><span class="sla-pill idle">low_priority</span></td>
+            <td><span class="sla-pill idle">normal</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-b2b">b2b</span></td>
           </tr>
         </tbody>
       </table>
     </div>
-  </div>
+  </section>
+
+  <section class="city-group-card">
+    <div class="city-group-head">
+      <div>
+        <h2>Los Angeles</h2>
+        <div class="muted">Groups watched for this city. Subscribed is unknown until we add an explicit membership check/file; tracking profile shows which account is assigned in project data.</div>
+      </div>
+      <div class="city-group-stats">
+        <div><b>18</b><span>groups</span></div>
+        <div><b>11</b><span>boosted</span></div>
+        <div><b>18</b><span>tracked</span></div>
+      </div>
+    </div>
+    <div class="groups-table-wrap">
+      <table class="groups-table">
+        <thead><tr><th>Group</th><th>Status</th><th>Priority</th><th>Need join</th><th>Subscribed</th><th>Tracking profile</th><th>Quality</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/3434522096784677/" target="_blank">looking for affordable photographer</a><div class="muted">96K · 3434522096784677</div></td>
+            <td><span class="sla-pill idle">low_priority</span></td>
+            <td><span class="sla-pill ok">boosted</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-client">client</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/909001089874390/" target="_blank">Arizona Wedding/Event Vendors &amp; Venues</a><div class="muted">22K · 909001089874390</div></td>
+            <td><span class="sla-pill idle">low_priority</span></td>
+            <td><span class="sla-pill ok">boosted</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-mixed">mixed</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/1640820006416803/" target="_blank">Freelance Film Crew - Los Angeles</a><div class="muted">17K · 1640820006416803</div></td>
+            <td><span class="sla-pill warn">needs_sample</span></td>
+            <td><span class="sla-pill ok">boosted</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-b2b">b2b</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/478444433870189/" target="_blank">I need A Affordable Photographer/Videographer in Arizona</a><div class="muted">18K · 478444433870189</div></td>
+            <td><span class="sla-pill idle">low_priority</span></td>
+            <td><span class="sla-pill ok">boosted</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-client">client</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/389879199853276/" target="_blank">I Need A Photographer or Videographer in Los Angeles California - LA - Jobs</a><div class="muted">11K · 389879199853276</div></td>
+            <td><span class="sla-pill idle">low_priority</span></td>
+            <td><span class="sla-pill ok">boosted</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-client">client</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/1765590277249860/" target="_blank">ISO Budget Friendly Wedding Photographer- No Ads</a><div class="muted">28K · 1765590277249860</div></td>
+            <td><span class="sla-pill ok">priority_sample</span></td>
+            <td><span class="sla-pill ok">boosted</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-client">client</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/1575300009459868/" target="_blank">Photographers, Videographers, Models, Actors In Los Angeles</a><div class="muted">25K · 1575300009459868</div></td>
+            <td><span class="sla-pill idle">low_priority</span></td>
+            <td><span class="sla-pill ok">boosted</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-b2b">b2b</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/3061008987465814/" target="_blank">SoCal Weddings &amp; Events (Vendors &amp; Discussion)</a><div class="muted">10K · 3061008987465814</div></td>
+            <td><span class="sla-pill ok">priority_sample</span></td>
+            <td><span class="sla-pill ok">boosted</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-mixed">mixed</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/322870532646906/" target="_blank">Southern California Photographer Search</a><div class="muted">19K · 322870532646906</div></td>
+            <td><span class="sla-pill idle">low_priority</span></td>
+            <td><span class="sla-pill ok">boosted</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-client">client</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/596371002346098/" target="_blank">Chicago Wedding Photographers</a><div class="muted">2.6K · 596371002346098</div></td>
+            <td><span class="sla-pill idle">low_priority</span></td>
+            <td><span class="sla-pill ok">boosted</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-b2b">b2b</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/201014947194652/" target="_blank">San Diego / Los Angeles - Wedding Videographers</a><div class="muted">1.9K · 201014947194652</div></td>
+            <td><span class="sla-pill idle">low_priority</span></td>
+            <td><span class="sla-pill ok">boosted</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-b2b">b2b</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/theweddinghacker/" target="_blank">Budget Wedding Planning Community</a><div class="muted">197K · theweddinghacker</div></td>
+            <td><span class="sla-pill ok">priority_sample</span></td>
+            <td><span class="sla-pill idle">normal</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-client">client</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/426864460029408/" target="_blank">Wedding Planning Advice, Tips, Amazon Budget Wedding and Home Deals by Moxx</a><div class="muted">108K · 426864460029408</div></td>
+            <td><span class="sla-pill ok">priority_sample</span></td>
+            <td><span class="sla-pill idle">normal</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-client">client</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/967290983469795/" target="_blank">Los Angeles Actors, Models , Photographers, MUAHS, Agents, LA &amp; Hollywood</a><div class="muted">44K · 967290983469795</div></td>
+            <td><span class="sla-pill idle">low_priority</span></td>
+            <td><span class="sla-pill idle">normal</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-b2b">b2b</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/PAJobsLA/" target="_blank">Paid Film/TV Production Jobs: Los Angeles Area</a><div class="muted">83K · PAJobsLA</div></td>
+            <td><span class="sla-pill warn">needs_sample</span></td>
+            <td><span class="sla-pill idle">normal</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-b2b">b2b</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/125847850767767/" target="_blank">Wedding DIY group</a><div class="muted">34K · 125847850767767</div></td>
+            <td><span class="sla-pill warn">needs_sample</span></td>
+            <td><span class="sla-pill idle">normal</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-client">client</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/californiaweddingvendors1/" target="_blank">California Wedding Vendors</a><div class="muted">20K · californiaweddingvendors1</div></td>
+            <td><span class="sla-pill idle">low_priority</span></td>
+            <td><span class="sla-pill idle">normal</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-mixed">mixed</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/1062116291793796/" target="_blank">Florida Weddings &amp; Events Resale, Venues &amp; Vendors</a><div class="muted">16K · 1062116291793796</div></td>
+            <td><span class="sla-pill ok">priority_sample</span></td>
+            <td><span class="sla-pill idle">normal</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-client">client</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="city-group-card">
+    <div class="city-group-head">
+      <div>
+        <h2>Houston</h2>
+        <div class="muted">Groups watched for this city. Subscribed is unknown until we add an explicit membership check/file; tracking profile shows which account is assigned in project data.</div>
+      </div>
+      <div class="city-group-stats">
+        <div><b>18</b><span>groups</span></div>
+        <div><b>7</b><span>boosted</span></div>
+        <div><b>18</b><span>tracked</span></div>
+      </div>
+    </div>
+    <div class="groups-table-wrap">
+      <table class="groups-table">
+        <thead><tr><th>Group</th><th>Status</th><th>Priority</th><th>Need join</th><th>Subscribed</th><th>Tracking profile</th><th>Quality</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/4177377222382530/" target="_blank">Brides Houston Area</a><div class="muted">27K · 4177377222382530</div></td>
+            <td><span class="sla-pill warn">needs_sample</span></td>
+            <td><span class="sla-pill ok">boosted</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-client">client</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/453052061521245/" target="_blank">Houston Wedding Brides</a><div class="muted">28K · 453052061521245</div></td>
+            <td><span class="sla-pill ok">priority_sample</span></td>
+            <td><span class="sla-pill ok">boosted</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-client">client</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/1765590277249860/" target="_blank">ISO Budget Friendly Wedding Photographer- No Ads</a><div class="muted">28K · 1765590277249860</div></td>
+            <td><span class="sla-pill ok">priority_sample</span></td>
+            <td><span class="sla-pill ok">boosted</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-client">client</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/1178781449280054/" target="_blank">Looking For Photographer’s -DFW Area</a><div class="muted">16K · 1178781449280054</div></td>
+            <td><span class="sla-pill idle">low_priority</span></td>
+            <td><span class="sla-pill ok">boosted</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-client">client</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/412644225549897/" target="_blank">Photographers of Houston</a><div class="muted">11K · 412644225549897</div></td>
+            <td><span class="sla-pill idle">low_priority</span></td>
+            <td><span class="sla-pill ok">boosted</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-b2b">b2b</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/1713805642398594/" target="_blank">Creatives of Houston - Photographers, Videographers, &amp; Models</a><div class="muted">7.5K · 1713805642398594</div></td>
+            <td><span class="sla-pill idle">low_priority</span></td>
+            <td><span class="sla-pill ok">boosted</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-b2b">b2b</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/993553661240694/" target="_blank">Houston Videographers</a><div class="muted">6.1K · 993553661240694</div></td>
+            <td><span class="sla-pill idle">low_priority</span></td>
+            <td><span class="sla-pill ok">boosted</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-b2b">b2b</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/theweddinghacker/" target="_blank">Budget Wedding Planning Community</a><div class="muted">197K · theweddinghacker</div></td>
+            <td><span class="sla-pill ok">priority_sample</span></td>
+            <td><span class="sla-pill idle">normal</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-client">client</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/625333780988765/" target="_blank">Houston area events and vendor reviews</a><div class="muted">95K · 625333780988765</div></td>
+            <td><span class="sla-pill idle">low_priority</span></td>
+            <td><span class="sla-pill idle">normal</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-client">client</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/1360786180614572/" target="_blank">Bride to Bride North Houston</a><div class="muted">15K · 1360786180614572</div></td>
+            <td><span class="sla-pill ok">priority_sample</span></td>
+            <td><span class="sla-pill idle">normal</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-client">client</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/382739011348613/" target="_blank">Destination Wedding Photographers Network</a><div class="muted">14K · 382739011348613</div></td>
+            <td><span class="sla-pill idle">low_priority</span></td>
+            <td><span class="sla-pill idle">normal</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-b2b">b2b</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/780513274250527/" target="_blank">Florida Wedding Brides and Vendors</a><div class="muted">19K · 780513274250527</div></td>
+            <td><span class="sla-pill ok">priority_sample</span></td>
+            <td><span class="sla-pill idle">normal</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-client">client</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/366624879417330/" target="_blank">Houston Area Wedding Decor Resale / Trade / Sell</a><div class="muted">17K · 366624879417330</div></td>
+            <td><span class="sla-pill warn">needs_sample</span></td>
+            <td><span class="sla-pill idle">normal</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-client">client</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/houstonweddingrecycle/" target="_blank">Houston Brides on a Budget</a><div class="muted">11K · houstonweddingrecycle</div></td>
+            <td><span class="sla-pill ok">priority_sample</span></td>
+            <td><span class="sla-pill idle">normal</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-client">client</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/houstonweddingcommunity/" target="_blank">Houston Wedding Community</a><div class="muted">16K · houstonweddingcommunity</div></td>
+            <td><span class="sla-pill idle">low_priority</span></td>
+            <td><span class="sla-pill idle">normal</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-client">client</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/JoeSioufi/" target="_blank">🇺🇸 📸 HOUSTON EVENTS PHOTOGRAPHER WEDDINGS PHOTOGRAPHY</a><div class="muted">3K · JoeSioufi</div></td>
+            <td><span class="sla-pill ok">priority_sample</span></td>
+            <td><span class="sla-pill idle">normal</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-b2b">b2b</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/1547891779852457/" target="_blank">Affordable Photographers</a><div class="muted">2.1K · 1547891779852457</div></td>
+            <td><span class="sla-pill idle">low_priority</span></td>
+            <td><span class="sla-pill idle">normal</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-client">client</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/400430569468811/" target="_blank">Austin TX - Photographers/Videographers</a><div class="muted">6.3K · 400430569468811</div></td>
+            <td><span class="sla-pill idle">low_priority</span></td>
+            <td><span class="sla-pill idle">normal</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-b2b">b2b</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="city-group-card">
+    <div class="city-group-head">
+      <div>
+        <h2>Chicago</h2>
+        <div class="muted">Groups watched for this city. Subscribed is unknown until we add an explicit membership check/file; tracking profile shows which account is assigned in project data.</div>
+      </div>
+      <div class="city-group-stats">
+        <div><b>18</b><span>groups</span></div>
+        <div><b>10</b><span>boosted</span></div>
+        <div><b>18</b><span>tracked</span></div>
+      </div>
+    </div>
+    <div class="groups-table-wrap">
+      <table class="groups-table">
+        <thead><tr><th>Group</th><th>Status</th><th>Priority</th><th>Need join</th><th>Subscribed</th><th>Tracking profile</th><th>Quality</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/111050779414653/" target="_blank">Brides of Chicago</a><div class="muted">32K · 111050779414653</div></td>
+            <td><span class="sla-pill ok">priority_sample</span></td>
+            <td><span class="sla-pill ok">boosted</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-client">client</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/3434522096784677/" target="_blank">looking for affordable photographer</a><div class="muted">96K · 3434522096784677</div></td>
+            <td><span class="sla-pill idle">low_priority</span></td>
+            <td><span class="sla-pill ok">boosted</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-client">client</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/909001089874390/" target="_blank">Arizona Wedding/Event Vendors &amp; Venues</a><div class="muted">22K · 909001089874390</div></td>
+            <td><span class="sla-pill idle">low_priority</span></td>
+            <td><span class="sla-pill ok">boosted</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-mixed">mixed</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/478444433870189/" target="_blank">I need A Affordable Photographer/Videographer in Arizona</a><div class="muted">18K · 478444433870189</div></td>
+            <td><span class="sla-pill idle">low_priority</span></td>
+            <td><span class="sla-pill ok">boosted</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-client">client</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/419714976656539/" target="_blank">I Need A Photographer or Videographer in New York City - NYC - Paid Jobs</a><div class="muted">14K · 419714976656539</div></td>
+            <td><span class="sla-pill idle">low_priority</span></td>
+            <td><span class="sla-pill ok">boosted</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-client">client</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/1765590277249860/" target="_blank">ISO Budget Friendly Wedding Photographer- No Ads</a><div class="muted">28K · 1765590277249860</div></td>
+            <td><span class="sla-pill ok">priority_sample</span></td>
+            <td><span class="sla-pill ok">boosted</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-client">client</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/1178781449280054/" target="_blank">Looking For Photographer’s -DFW Area</a><div class="muted">16K · 1178781449280054</div></td>
+            <td><span class="sla-pill idle">low_priority</span></td>
+            <td><span class="sla-pill ok">boosted</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-client">client</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/449439834247861/" target="_blank">Chicago Last Minute Photographer</a><div class="muted">5K · 449439834247861</div></td>
+            <td><span class="sla-pill idle">low_priority</span></td>
+            <td><span class="sla-pill ok">boosted</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-client">client</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/575523955920202/" target="_blank">CHICAGO VIDEOGRAPHERS AND FILM</a><div class="muted">7K · 575523955920202</div></td>
+            <td><span class="sla-pill idle">low_priority</span></td>
+            <td><span class="sla-pill ok">boosted</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-b2b">b2b</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/596371002346098/" target="_blank">Chicago Wedding Photographers</a><div class="muted">2.6K · 596371002346098</div></td>
+            <td><span class="sla-pill idle">low_priority</span></td>
+            <td><span class="sla-pill ok">boosted</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-b2b">b2b</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/theweddinghacker/" target="_blank">Budget Wedding Planning Community</a><div class="muted">197K · theweddinghacker</div></td>
+            <td><span class="sla-pill ok">priority_sample</span></td>
+            <td><span class="sla-pill idle">normal</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-client">client</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/destinationweddingdirectory/" target="_blank">Destination Wedding Directory</a><div class="muted">111K · destinationweddingdirectory</div></td>
+            <td><span class="sla-pill warn">needs_sample</span></td>
+            <td><span class="sla-pill idle">normal</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-client">client</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/426864460029408/" target="_blank">Wedding Planning Advice, Tips, Amazon Budget Wedding and Home Deals by Moxx</a><div class="muted">108K · 426864460029408</div></td>
+            <td><span class="sla-pill ok">priority_sample</span></td>
+            <td><span class="sla-pill idle">normal</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-client">client</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/1070592286415617/" target="_blank">DMV Wedding Directory</a><div class="muted">40K · 1070592286415617</div></td>
+            <td><span class="sla-pill warn">needs_sample</span></td>
+            <td><span class="sla-pill idle">normal</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-client">client</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/ineedaphotographer/" target="_blank">I need a photo/videographer (International Group)</a><div class="muted">99K · ineedaphotographer</div></td>
+            <td><span class="sla-pill idle">low_priority</span></td>
+            <td><span class="sla-pill idle">normal</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-client">client</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/125847850767767/" target="_blank">Wedding DIY group</a><div class="muted">34K · 125847850767767</div></td>
+            <td><span class="sla-pill warn">needs_sample</span></td>
+            <td><span class="sla-pill idle">normal</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-client">client</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/524470497577432/" target="_blank">Central Illinois Wedding Vendors</a><div class="muted">10K · 524470497577432</div></td>
+            <td><span class="sla-pill idle">low_priority</span></td>
+            <td><span class="sla-pill idle">normal</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-mixed">mixed</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/603217294474404/" target="_blank">Cheap Photographer &amp; Videographer</a><div class="muted">14K · 603217294474404</div></td>
+            <td><span class="sla-pill idle">low_priority</span></td>
+            <td><span class="sla-pill idle">normal</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-client">client</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="city-group-card">
+    <div class="city-group-head">
+      <div>
+        <h2>Phoenix</h2>
+        <div class="muted">Groups watched for this city. Subscribed is unknown until we add an explicit membership check/file; tracking profile shows which account is assigned in project data.</div>
+      </div>
+      <div class="city-group-stats">
+        <div><b>18</b><span>groups</span></div>
+        <div><b>9</b><span>boosted</span></div>
+        <div><b>18</b><span>tracked</span></div>
+      </div>
+    </div>
+    <div class="groups-table-wrap">
+      <table class="groups-table">
+        <thead><tr><th>Group</th><th>Status</th><th>Priority</th><th>Need join</th><th>Subscribed</th><th>Tracking profile</th><th>Quality</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/1620071041727209/" target="_blank">Wedding Videographer Network</a><div class="muted">45K · 1620071041727209</div></td>
+            <td><span class="sla-pill idle">low_priority</span></td>
+            <td><span class="sla-pill ok">boosted</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-b2b">b2b</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/909001089874390/" target="_blank">Arizona Wedding/Event Vendors &amp; Venues</a><div class="muted">22K · 909001089874390</div></td>
+            <td><span class="sla-pill idle">low_priority</span></td>
+            <td><span class="sla-pill ok">boosted</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-mixed">mixed</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/478444433870189/" target="_blank">I need A Affordable Photographer/Videographer in Arizona</a><div class="muted">18K · 478444433870189</div></td>
+            <td><span class="sla-pill idle">low_priority</span></td>
+            <td><span class="sla-pill ok">boosted</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-client">client</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/419714976656539/" target="_blank">I Need A Photographer or Videographer in New York City - NYC - Paid Jobs</a><div class="muted">14K · 419714976656539</div></td>
+            <td><span class="sla-pill idle">low_priority</span></td>
+            <td><span class="sla-pill ok">boosted</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-client">client</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/1765590277249860/" target="_blank">ISO Budget Friendly Wedding Photographer- No Ads</a><div class="muted">28K · 1765590277249860</div></td>
+            <td><span class="sla-pill ok">priority_sample</span></td>
+            <td><span class="sla-pill ok">boosted</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-client">client</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/1178781449280054/" target="_blank">Looking For Photographer’s -DFW Area</a><div class="muted">16K · 1178781449280054</div></td>
+            <td><span class="sla-pill idle">low_priority</span></td>
+            <td><span class="sla-pill ok">boosted</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-client">client</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/322870532646906/" target="_blank">Southern California Photographer Search</a><div class="muted">19K · 322870532646906</div></td>
+            <td><span class="sla-pill idle">low_priority</span></td>
+            <td><span class="sla-pill ok">boosted</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-client">client</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/449439834247861/" target="_blank">Chicago Last Minute Photographer</a><div class="muted">5K · 449439834247861</div></td>
+            <td><span class="sla-pill idle">low_priority</span></td>
+            <td><span class="sla-pill ok">boosted</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-client">client</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/542802845804827/" target="_blank">Wedding Photographers of Tucson &amp; Phoenix Arizona</a><div class="muted">1K · 542802845804827</div></td>
+            <td><span class="sla-pill idle">low_priority</span></td>
+            <td><span class="sla-pill ok">boosted</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-b2b">b2b</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/theweddinghacker/" target="_blank">Budget Wedding Planning Community</a><div class="muted">197K · theweddinghacker</div></td>
+            <td><span class="sla-pill ok">priority_sample</span></td>
+            <td><span class="sla-pill idle">normal</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-client">client</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/426864460029408/" target="_blank">Wedding Planning Advice, Tips, Amazon Budget Wedding and Home Deals by Moxx</a><div class="muted">108K · 426864460029408</div></td>
+            <td><span class="sla-pill ok">priority_sample</span></td>
+            <td><span class="sla-pill idle">normal</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-client">client</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/1070592286415617/" target="_blank">DMV Wedding Directory</a><div class="muted">40K · 1070592286415617</div></td>
+            <td><span class="sla-pill warn">needs_sample</span></td>
+            <td><span class="sla-pill idle">normal</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-client">client</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/ineedaphotographer/" target="_blank">I need a photo/videographer (International Group)</a><div class="muted">99K · ineedaphotographer</div></td>
+            <td><span class="sla-pill idle">low_priority</span></td>
+            <td><span class="sla-pill idle">normal</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-client">client</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/352527064790380/" target="_blank">NC Photographers &amp; Videographers</a><div class="muted">41K · 352527064790380</div></td>
+            <td><span class="sla-pill idle">low_priority</span></td>
+            <td><span class="sla-pill idle">normal</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-b2b">b2b</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/603217294474404/" target="_blank">Cheap Photographer &amp; Videographer</a><div class="muted">14K · 603217294474404</div></td>
+            <td><span class="sla-pill idle">low_priority</span></td>
+            <td><span class="sla-pill idle">normal</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-client">client</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/DMVPhotographers/" target="_blank">DMV Photographers</a><div class="muted">15K · DMVPhotographers</div></td>
+            <td><span class="sla-pill idle">low_priority</span></td>
+            <td><span class="sla-pill idle">normal</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-b2b">b2b</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/dmvphotographygroup/" target="_blank">DMV Photography Group (For Models &amp; Photographers)</a><div class="muted">10K · dmvphotographygroup</div></td>
+            <td><span class="sla-pill idle">low_priority</span></td>
+            <td><span class="sla-pill idle">normal</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-b2b">b2b</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/763685450414399/" target="_blank">DMV Wedding &amp; Event Decor Sale</a><div class="muted">29K · 763685450414399</div></td>
+            <td><span class="sla-pill warn">needs_sample</span></td>
+            <td><span class="sla-pill idle">normal</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-client">client</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="city-group-card">
+    <div class="city-group-head">
+      <div>
+        <h2>Philadelphia</h2>
+        <div class="muted">Groups watched for this city. Subscribed is unknown until we add an explicit membership check/file; tracking profile shows which account is assigned in project data.</div>
+      </div>
+      <div class="city-group-stats">
+        <div><b>18</b><span>groups</span></div>
+        <div><b>4</b><span>boosted</span></div>
+        <div><b>18</b><span>tracked</span></div>
+      </div>
+    </div>
+    <div class="groups-table-wrap">
+      <table class="groups-table">
+        <thead><tr><th>Group</th><th>Status</th><th>Priority</th><th>Need join</th><th>Subscribed</th><th>Tracking profile</th><th>Quality</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/478444433870189/" target="_blank">I need A Affordable Photographer/Videographer in Arizona</a><div class="muted">18K · 478444433870189</div></td>
+            <td><span class="sla-pill idle">low_priority</span></td>
+            <td><span class="sla-pill ok">boosted</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-client">client</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/419714976656539/" target="_blank">I Need A Photographer or Videographer in New York City - NYC - Paid Jobs</a><div class="muted">14K · 419714976656539</div></td>
+            <td><span class="sla-pill idle">low_priority</span></td>
+            <td><span class="sla-pill ok">boosted</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-client">client</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/1765590277249860/" target="_blank">ISO Budget Friendly Wedding Photographer- No Ads</a><div class="muted">28K · 1765590277249860</div></td>
+            <td><span class="sla-pill ok">priority_sample</span></td>
+            <td><span class="sla-pill ok">boosted</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-client">client</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/596371002346098/" target="_blank">Chicago Wedding Photographers</a><div class="muted">2.6K · 596371002346098</div></td>
+            <td><span class="sla-pill idle">low_priority</span></td>
+            <td><span class="sla-pill ok">boosted</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-b2b">b2b</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/theweddinghacker/" target="_blank">Budget Wedding Planning Community</a><div class="muted">197K · theweddinghacker</div></td>
+            <td><span class="sla-pill ok">priority_sample</span></td>
+            <td><span class="sla-pill idle">normal</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-client">client</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/1519806368214005/" target="_blank">FREELANCE VIDEOGRAPHER AND PHOTOGRAPHER PHILIPPINES</a><div class="muted">127K · 1519806368214005</div></td>
+            <td><span class="sla-pill idle">low_priority</span></td>
+            <td><span class="sla-pill idle">normal</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-b2b">b2b</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/426864460029408/" target="_blank">Wedding Planning Advice, Tips, Amazon Budget Wedding and Home Deals by Moxx</a><div class="muted">108K · 426864460029408</div></td>
+            <td><span class="sla-pill ok">priority_sample</span></td>
+            <td><span class="sla-pill idle">normal</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-client">client</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/1070592286415617/" target="_blank">DMV Wedding Directory</a><div class="muted">40K · 1070592286415617</div></td>
+            <td><span class="sla-pill warn">needs_sample</span></td>
+            <td><span class="sla-pill idle">normal</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-client">client</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/301080196930990/" target="_blank">Vintage Photos of Philadelphia</a><div class="muted">88K · 301080196930990</div></td>
+            <td><span class="sla-pill warn">needs_sample</span></td>
+            <td><span class="sla-pill idle">normal</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-unknown">unknown</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/198647013634203/" target="_blank">&quot;All Things Wedding&quot; - South Central PA</a><div class="muted">11K · 198647013634203</div></td>
+            <td><span class="sla-pill warn">needs_sample</span></td>
+            <td><span class="sla-pill idle">normal</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-client">client</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/603217294474404/" target="_blank">Cheap Photographer &amp; Videographer</a><div class="muted">14K · 603217294474404</div></td>
+            <td><span class="sla-pill idle">low_priority</span></td>
+            <td><span class="sla-pill idle">normal</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-client">client</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/DMVPhotographers/" target="_blank">DMV Photographers</a><div class="muted">15K · DMVPhotographers</div></td>
+            <td><span class="sla-pill idle">low_priority</span></td>
+            <td><span class="sla-pill idle">normal</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-b2b">b2b</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/dmvphotographygroup/" target="_blank">DMV Photography Group (For Models &amp; Photographers)</a><div class="muted">10K · dmvphotographygroup</div></td>
+            <td><span class="sla-pill idle">low_priority</span></td>
+            <td><span class="sla-pill idle">normal</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-b2b">b2b</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/780513274250527/" target="_blank">Florida Wedding Brides and Vendors</a><div class="muted">19K · 780513274250527</div></td>
+            <td><span class="sla-pill ok">priority_sample</span></td>
+            <td><span class="sla-pill idle">normal</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-client">client</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/1062116291793796/" target="_blank">Florida Weddings &amp; Events Resale, Venues &amp; Vendors</a><div class="muted">16K · 1062116291793796</div></td>
+            <td><span class="sla-pill ok">priority_sample</span></td>
+            <td><span class="sla-pill idle">normal</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-client">client</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/168886597131412/" target="_blank">London Freelance (Only Paid Services) Photographers and Videographers</a><div class="muted">18K · 168886597131412</div></td>
+            <td><span class="sla-pill idle">low_priority</span></td>
+            <td><span class="sla-pill idle">normal</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-b2b">b2b</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/267456132963265/" target="_blank">NC Wedding Planners &amp; Vendors</a><div class="muted">12K · 267456132963265</div></td>
+            <td><span class="sla-pill ok">priority_sample</span></td>
+            <td><span class="sla-pill idle">normal</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-mixed">mixed</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/newjerseybridesweddingplanning/" target="_blank">New Jersey Brides Wedding Planning</a><div class="muted">23K · newjerseybridesweddingplanning</div></td>
+            <td><span class="sla-pill ok">priority_sample</span></td>
+            <td><span class="sla-pill idle">normal</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-client">client</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="city-group-card">
+    <div class="city-group-head">
+      <div>
+        <h2>San Antonio</h2>
+        <div class="muted">Groups watched for this city. Subscribed is unknown until we add an explicit membership check/file; tracking profile shows which account is assigned in project data.</div>
+      </div>
+      <div class="city-group-stats">
+        <div><b>17</b><span>groups</span></div>
+        <div><b>3</b><span>boosted</span></div>
+        <div><b>17</b><span>tracked</span></div>
+      </div>
+    </div>
+    <div class="groups-table-wrap">
+      <table class="groups-table">
+        <thead><tr><th>Group</th><th>Status</th><th>Priority</th><th>Need join</th><th>Subscribed</th><th>Tracking profile</th><th>Quality</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/1765590277249860/" target="_blank">ISO Budget Friendly Wedding Photographer- No Ads</a><div class="muted">28K · 1765590277249860</div></td>
+            <td><span class="sla-pill ok">priority_sample</span></td>
+            <td><span class="sla-pill ok">boosted</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-client">client</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/1178781449280054/" target="_blank">Looking For Photographer’s -DFW Area</a><div class="muted">16K · 1178781449280054</div></td>
+            <td><span class="sla-pill idle">low_priority</span></td>
+            <td><span class="sla-pill ok">boosted</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-client">client</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/486102838114690/" target="_blank">San Antonio Photographers</a><div class="muted">19K · 486102838114690</div></td>
+            <td><span class="sla-pill idle">low_priority</span></td>
+            <td><span class="sla-pill ok">boosted</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-b2b">b2b</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/1174696692575072/" target="_blank">Austin &amp; San Antonio Wedding &amp; Brides</a><div class="muted">27K · 1174696692575072</div></td>
+            <td><span class="sla-pill ok">priority_sample</span></td>
+            <td><span class="sla-pill idle">normal</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-client">client</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/sanantonioweddingandeventvendors/" target="_blank">San Antonio Area Wedding &amp; Event Vendors</a><div class="muted">28K · sanantonioweddingandeventvendors</div></td>
+            <td><span class="sla-pill idle">low_priority</span></td>
+            <td><span class="sla-pill idle">normal</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-mixed">mixed</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/1547891779852457/" target="_blank">Affordable Photographers</a><div class="muted">2.1K · 1547891779852457</div></td>
+            <td><span class="sla-pill idle">low_priority</span></td>
+            <td><span class="sla-pill idle">normal</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-client">client</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/371038363039329/" target="_blank">Bride to Be San Antonio</a><div class="muted">6.5K · 371038363039329</div></td>
+            <td><span class="sla-pill ok">priority_sample</span></td>
+            <td><span class="sla-pill idle">normal</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-client">client</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/SACameraBuySellTrade/" target="_blank">San Antonio Area - Camera Buy/Sell/Trade Review &amp; Tech</a><div class="muted">1.6K · SACameraBuySellTrade</div></td>
+            <td><span class="sla-pill warn">needs_sample</span></td>
+            <td><span class="sla-pill idle">normal</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-b2b">b2b</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/sanantonioweddingresale/" target="_blank">San Antonio Wedding Resale</a><div class="muted">5.2K · sanantonioweddingresale</div></td>
+            <td><span class="sla-pill ok">priority_sample</span></td>
+            <td><span class="sla-pill idle">normal</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-client">client</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/597286257867267/" target="_blank">Photography San Antonio</a><div class="muted">466 · 597286257867267</div></td>
+            <td><span class="sla-pill idle">low_priority</span></td>
+            <td><span class="sla-pill idle">normal</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-b2b">b2b</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/233218500914961/" target="_blank">San Antonio Photography Exchange</a><div class="muted">375 · 233218500914961</div></td>
+            <td><span class="sla-pill idle">low_priority</span></td>
+            <td><span class="sla-pill idle">normal</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-b2b">b2b</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/295363834746223/" target="_blank">San Antonio Photography Location Scouting</a><div class="muted">313 · 295363834746223</div></td>
+            <td><span class="sla-pill idle">low_priority</span></td>
+            <td><span class="sla-pill idle">normal</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-b2b">b2b</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/1796918133713997/" target="_blank">San Antonio Professional Models And Photographers</a><div class="muted">147 · 1796918133713997</div></td>
+            <td><span class="sla-pill idle">low_priority</span></td>
+            <td><span class="sla-pill idle">normal</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-b2b">b2b</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/709862801418492/" target="_blank">San Antonio Wedding &amp; Event Vendors</a><div class="muted">704 · 709862801418492</div></td>
+            <td><span class="sla-pill idle">low_priority</span></td>
+            <td><span class="sla-pill idle">normal</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-mixed">mixed</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/403148882322336/" target="_blank">San Antonio wedding planning</a><div class="muted">799 · 403148882322336</div></td>
+            <td><span class="sla-pill ok">priority_sample</span></td>
+            <td><span class="sla-pill idle">normal</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-client">client</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/sanantonioweddings/" target="_blank">San Antonio Weddings</a><div class="muted">730 · sanantonioweddings</div></td>
+            <td><span class="sla-pill ok">priority_sample</span></td>
+            <td><span class="sla-pill idle">normal</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-client">client</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/3915566005407095/" target="_blank">Seeking Professional Photographer San Antonio</a><div class="muted">255 · 3915566005407095</div></td>
+            <td><span class="sla-pill idle">low_priority</span></td>
+            <td><span class="sla-pill idle">normal</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill ok">US_ASH_WED_08</span></td>
+            <td><span class="status-pill status-client">client</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="city-group-card">
+    <div class="city-group-head">
+      <div>
+        <h2>San Diego</h2>
+        <div class="muted">Groups watched for this city. Subscribed is unknown until we add an explicit membership check/file; tracking profile shows which account is assigned in project data.</div>
+      </div>
+      <div class="city-group-stats">
+        <div><b>0</b><span>groups</span></div>
+        <div><b>0</b><span>boosted</span></div>
+        <div><b>0</b><span>tracked</span></div>
+      </div>
+    </div>
+    <div class="groups-table-wrap">
+      <table class="groups-table">
+        <thead><tr><th>Group</th><th>Status</th><th>Priority</th><th>Need join</th><th>Subscribed</th><th>Tracking profile</th><th>Quality</th></tr></thead>
+        <tbody><tr><td colspan="6" class="muted">No groups found for this city in current classified data.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="city-group-card">
+    <div class="city-group-head">
+      <div>
+        <h2>Dallas</h2>
+        <div class="muted">Groups watched for this city. Subscribed is unknown until we add an explicit membership check/file; tracking profile shows which account is assigned in project data.</div>
+      </div>
+      <div class="city-group-stats">
+        <div><b>1</b><span>groups</span></div>
+        <div><b>1</b><span>boosted</span></div>
+        <div><b>0</b><span>tracked</span></div>
+      </div>
+    </div>
+    <div class="groups-table-wrap">
+      <table class="groups-table">
+        <thead><tr><th>Group</th><th>Status</th><th>Priority</th><th>Need join</th><th>Subscribed</th><th>Tracking profile</th><th>Quality</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/227717737275697/" target="_blank">Dallas Wedding Vendors</a><div class="muted">? · 227717737275697</div></td>
+            <td><span class="sla-pill ok">boosted</span></td>
+            <td><span class="sla-pill ok">boosted</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="sla-pill idle">unknown</span></td>
+            <td><span class="status-pill status-client">client</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="city-group-card">
+    <div class="city-group-head">
+      <div>
+        <h2>San Jose</h2>
+        <div class="muted">Groups watched for this city. Subscribed is unknown until we add an explicit membership check/file; tracking profile shows which account is assigned in project data.</div>
+      </div>
+      <div class="city-group-stats">
+        <div><b>0</b><span>groups</span></div>
+        <div><b>0</b><span>boosted</span></div>
+        <div><b>0</b><span>tracked</span></div>
+      </div>
+    </div>
+    <div class="groups-table-wrap">
+      <table class="groups-table">
+        <thead><tr><th>Group</th><th>Status</th><th>Priority</th><th>Need join</th><th>Subscribed</th><th>Tracking profile</th><th>Quality</th></tr></thead>
+        <tbody><tr><td colspan="6" class="muted">No groups found for this city in current classified data.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
 </div>
 
 <!-- ====================== PAGE: LEADS (D3D) ====================== -->
