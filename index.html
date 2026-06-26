@@ -38,6 +38,40 @@
   .step-dot.idle { background: #484f58; }
   .tl-refresh { font-size: 11px; color: var(--muted); float: right; }
 
+
+  .ops-hero { position: relative; overflow: hidden; border: 1px solid rgba(57, 217, 138, .28); background: radial-gradient(circle at 10% 0%, rgba(57,217,138,.20), transparent 34%), radial-gradient(circle at 88% 10%, rgba(88,166,255,.18), transparent 30%), linear-gradient(135deg, #0a1110, #111821 54%, #0d1117); border-radius: 18px; padding: 24px; margin-bottom: 16px; }
+  .ops-hero:before { content: ''; position:absolute; inset:-40%; background: repeating-linear-gradient(115deg, rgba(255,255,255,.035) 0 1px, transparent 1px 18px); transform: rotate(2deg); pointer-events:none; }
+  .ops-hero > * { position: relative; }
+  .ops-title { font-size: 30px; line-height: 1; letter-spacing: -.04em; font-weight: 800; color: #f0fff7; }
+  .ops-sub { color: #9fb6ad; margin-top: 8px; max-width: 760px; font-size: 13px; }
+  .ops-sla { display:grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 18px; }
+  .ops-sla .tile { background: rgba(7,12,14,.72); border: 1px solid rgba(255,255,255,.09); border-radius: 14px; padding: 14px; box-shadow: inset 0 1px 0 rgba(255,255,255,.05); }
+  .ops-sla .tile .v { font-size: 26px; font-weight: 800; font-feature-settings: 'tnum'; }
+  .ops-sla .tile .k { color: var(--muted); font-size: 10px; text-transform: uppercase; letter-spacing: .08em; }
+  .ops-layout { display:grid; grid-template-columns: 1.15fr .85fr; gap: 16px; }
+  .ops-card { background: linear-gradient(180deg, rgba(255,255,255,.035), rgba(255,255,255,.015)); border: 1px solid var(--border); border-radius: 14px; padding: 16px; }
+  .ops-card h2 { font-size: 11px; color: var(--muted); letter-spacing: .12em; text-transform: uppercase; margin-bottom: 12px; }
+  .account-grid { display:grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
+  .account-card { border: 1px solid var(--border); border-radius: 12px; padding: 10px; background: #0b1016; }
+  .account-card .no { font-size: 22px; font-weight: 800; }
+  .account-card .role { color: var(--muted); font-size: 10px; text-transform: uppercase; }
+  .account-card.active { border-color: rgba(63,185,80,.6); box-shadow: 0 0 0 1px rgba(63,185,80,.15); }
+  .account-card.candidate { border-color: rgba(88,166,255,.45); }
+  .account-card.disabled { opacity: .48; }
+  .sla-pill { display:inline-flex; align-items:center; gap:5px; border-radius: 999px; padding: 2px 8px; font-size: 10px; font-weight:700; text-transform: uppercase; }
+  .sla-pill.ok { color: #3fb950; background: rgba(63,185,80,.12); }
+  .sla-pill.warn { color: #d29922; background: rgba(210,153,34,.12); }
+  .sla-pill.fail { color: #f85149; background: rgba(248,81,73,.12); }
+  .sla-pill.idle { color: var(--muted); background: rgba(139,148,158,.12); }
+  .ops-tape { display:flex; flex-direction:column; gap:8px; max-height: 620px; overflow:auto; padding-right: 4px; }
+  .ops-event { display:grid; grid-template-columns: 76px 112px 1fr 80px; gap: 10px; align-items:start; padding: 10px; border: 1px solid rgba(255,255,255,.07); border-radius: 12px; background: rgba(8,13,18,.78); }
+  .ops-event .time { color: var(--muted); font-family: Consolas, monospace; font-size: 11px; }
+  .ops-event .actor { color: var(--blue); font-weight:700; font-size: 12px; }
+  .ops-event .main { font-size: 12px; }
+  .ops-event .snippet { color: var(--muted); font-size: 11px; margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 420px; }
+  .ops-table td, .ops-table th { font-size: 12px; }
+  @media (max-width: 900px) { .ops-layout, .ops-sla, .account-grid { grid-template-columns: 1fr; } .ops-event { grid-template-columns: 1fr; } }
+
   .tab:hover:not(.active) { color: var(--text); }
   .page { display: none; }
   .page.active { display: block; }
@@ -202,6 +236,7 @@
 </header>
 
 <nav class="tabs">
+  <button class="tab" data-page="liveops">Live Ops</button>
   <button class="tab active" data-page="leads">dY"≠ Lead Pipeline</button>
   <button class="tab" data-page="parser">ÉsTã,? Parser</button>
   <button class="tab" data-page="system">dY" System</button>
@@ -209,6 +244,474 @@
   <button class="tab" data-page="livefeed">dY"≠ Live Feed</button>
   <button class="tab" data-page="handbook">dY"- Handbook</button>
 </nav>
+
+<!-- ====================== PAGE: LIVE OPS ====================== -->
+<div class="page" data-page="liveops">
+  <section class="ops-hero">
+    <div class="ops-title">Reaction Control Room</div>
+    <div class="ops-sub">City-by-city live monitor for the only metric that matters: time from Facebook post appearance to contextual English comment. Green is under 5 minutes, yellow is under 15, red is missed SLA.</div>
+    <div class="ops-sla">
+      <div class="tile"><div class="k">Ideal SLA</div><div class="v" style="color:var(--green)">5m</div></div>
+      <div class="tile"><div class="k">Max acceptable</div><div class="v" style="color:var(--yellow)">15m</div></div>
+      <div class="tile"><div class="k">Fresh detections <=15m</div><div class="v" style="color:var(--blue)">8</div></div>
+      <div class="tile"><div class="k">Missed >15m</div><div class="v" style="color:var(--red)">102</div></div>
+    </div>
+  </section>
+
+  <div class="ops-card" style="margin-bottom:16px">
+    <h2>Account roles</h2>
+    <div class="account-grid">
+      <div class="account-card active"><div class="role">Parser / read-only</div><div class="no">102</div><div class="muted">serial 55</div><div style="margin-top:8px"><span class="sla-pill ok">active</span></div><div class="muted" style="font-size:10px;margin-top:6px">current realtime parser</div></div><div class="account-card reserved"><div class="role">Parser / read-only</div><div class="no">104</div><div class="muted">serial 57</div><div style="margin-top:8px"><span class="sla-pill idle">reserved</span></div><div class="muted" style="font-size:10px;margin-top:6px">reserved parser, do not comment</div></div>
+      <div class="account-card candidate"><div class="role">Commenter</div><div class="no">101</div><div class="muted">serial 54</div><div style="margin-top:8px"><span class="sla-pill warn">candidate</span></div><div class="muted" style="font-size:10px;margin-top:6px">English comments</div></div><div class="account-card candidate"><div class="role">Commenter</div><div class="no">103</div><div class="muted">serial 56</div><div style="margin-top:8px"><span class="sla-pill warn">candidate</span></div><div class="muted" style="font-size:10px;margin-top:6px">English comments</div></div><div class="account-card disabled"><div class="role">Commenter</div><div class="no">105</div><div class="muted">serial 58</div><div style="margin-top:8px"><span class="sla-pill fail">disabled</span></div><div class="muted" style="font-size:10px;margin-top:6px">replace before use</div></div>
+    </div>
+  </div>
+
+  <div class="ops-layout">
+    <div class="ops-card">
+      <h2>Live action tape</h2>
+      <div class="ops-tape">
+        <div class="ops-event">
+          <div class="time">1s ago</div>
+          <div class="actor">Parser 102</div>
+          <div class="main"><b>saw new post</b><br><span class="muted">Los Angeles A˙ I Need A Photographer or Videographer in Los Angeles California - LA - Jobs</span><div class="snippet">Olivia Grace
+Aˇ
+ A˙ 
+Follow
+Excellent experience with Daziq Designs Professional team and top notch designs
+22h
+Like
+Reply
+Share</div></div>
+          <div><span class="sla-pill fail">22h</span></div>
+        </div><div class="ops-event">
+          <div class="time">1m ago</div>
+          <div class="actor">Parser 102</div>
+          <div class="main"><b>saw new post</b><br><span class="muted">Los Angeles A˙ looking for affordable photographer</span><div class="snippet">Alejandro Muro
+Aˇ
+ A˙ 
+Follow
+Where are you located? What city? State? Country?
+2h
+Like
+Reply
+Share</div></div>
+          <div><span class="sla-pill fail">2h</span></div>
+        </div><div class="ops-event">
+          <div class="time">1m ago</div>
+          <div class="actor">Parser 102</div>
+          <div class="main"><b>saw new post</b><br><span class="muted">Los Angeles A˙ looking for affordable photographer</span><div class="snippet">Megan Davis
+Christian does great work!! He&#39;s gotten some amazing shots at our meets &amp; local car events.
+14m
+Like
+Reply
+Share</div></div>
+          <div><span class="sla-pill warn">14m</span></div>
+        </div><div class="ops-event">
+          <div class="time">1m ago</div>
+          <div class="actor">Parser 102</div>
+          <div class="main"><b>saw new post</b><br><span class="muted">Los Angeles A˙ looking for affordable photographer</span><div class="snippet">Korryn Kelm
+IÉ?Tve considered it 
+13m
+Like
+Reply
+Share</div></div>
+          <div><span class="sla-pill warn">13m</span></div>
+        </div><div class="ops-event">
+          <div class="time">1m ago</div>
+          <div class="actor">Parser 102</div>
+          <div class="main"><b>saw new post</b><br><span class="muted">Los Angeles A˙ looking for affordable photographer</span><div class="snippet">Imaginative Timmy
+Author
+@everyone
+10m
+Like
+Reply
+Share</div></div>
+          <div><span class="sla-pill warn">10m</span></div>
+        </div><div class="ops-event">
+          <div class="time">2m ago</div>
+          <div class="actor">Parser 102</div>
+          <div class="main"><b>saw new post</b><br><span class="muted">Houston A˙ Search: &quot;ISO&quot; wedding photographer</span><div class="snippet">Christian Trey Collins
+looking for clients in the chattanooga area couples, cars, portraits, grads or any type of parties 
+dm me for details
+All reactions:
+1 comment
+Comment
+Megan </div></div>
+          <div><span class="sla-pill warn">13m</span></div>
+        </div><div class="ops-event">
+          <div class="time">2m ago</div>
+          <div class="actor">Parser 102</div>
+          <div class="main"><b>saw new post</b><br><span class="muted">Houston A˙ Search: &quot;ISO&quot; wedding photographer</span><div class="snippet">Online status indicator
+Active
+Imaginative Timmy
+ãØ®After It All (feat. Stevenson Everrett)
+ A˙ Dawn Beyer
+A mother&#39;s love begins long before the first heartbeat is heard, growing str</div></div>
+          <div><span class="sla-pill idle">unknown</span></div>
+        </div><div class="ops-event">
+          <div class="time">2m ago</div>
+          <div class="actor">Parser 102</div>
+          <div class="main"><b>saw new post</b><br><span class="muted">Houston A˙ Search: &quot;ISO&quot; wedding photographer</span><div class="snippet">Katelyn Ortiz
+Are there any Oregon couples here that are possibly looking to get couples photos done this year?
+1 comment
+Comment
+Korryn Kelm
+IÉ?Tve considered it 
+12m
+Comment as Emm</div></div>
+          <div><span class="sla-pill warn">12m</span></div>
+        </div><div class="ops-event">
+          <div class="time">2m ago</div>
+          <div class="actor">Parser 102</div>
+          <div class="main"><b>saw new post</b><br><span class="muted">Houston A˙ looking for affordable photographer</span><div class="snippet">Online status indicator
+Active
+Imaginative Timmy
+ is at Port Harcourt City.
+Port Harcourt, Nigeria
+BTS at Studio Sycl É?› See more
+BTS at Studio Sycl 
+#photography #ProductPhotograph</div></div>
+          <div><span class="sla-pill warn">9m</span></div>
+        </div><div class="ops-event">
+          <div class="time">6m ago</div>
+          <div class="actor">Parser 102</div>
+          <div class="main"><b>saw new post</b><br><span class="muted">New York A˙ Search: &quot;looking for&quot; wedding videographer</span><div class="snippet">Saratoga Rental w Heated Pool, HotTub By Track Town SPAC Lake Beach
+ SARATOGA COUNTY NY NEWEST WATERFRONT AIRBNB - SUMMER OPENINGS NOW AVAILABLE - 20% OFF SPECIAL 
+ Availability St</div></div>
+          <div><span class="sla-pill idle">unknown</span></div>
+        </div><div class="ops-event">
+          <div class="time">6m ago</div>
+          <div class="actor">Parser 102</div>
+          <div class="main"><b>saw new post</b><br><span class="muted">New York A˙ Search: &quot;looking for&quot; wedding videographer</span><div class="snippet">Paintandsipbythesea Art Classes
+Paintandsipbythesea Art Classes
+Comment
+Comment as Emma</div></div>
+          <div><span class="sla-pill idle">unknown</span></div>
+        </div><div class="ops-event">
+          <div class="time">6m ago</div>
+          <div class="actor">Parser 102</div>
+          <div class="main"><b>saw new post</b><br><span class="muted">New York A˙ Search: &quot;looking for&quot; wedding videographer</span><div class="snippet">Katy Morgan
+Planning an Event? We Design Custom Balloon &amp; Decor Installations
+I have an event styling business. My services include balloon garlands, custom back drop for photoshoo</div></div>
+          <div><span class="sla-pill idle">unknown</span></div>
+        </div><div class="ops-event">
+          <div class="time">8m ago</div>
+          <div class="actor">Parser 102</div>
+          <div class="main"><b>saw new post</b><br><span class="muted">New York A˙ NYC Photographers</span><div class="snippet">Lemuel Ayudtud
+Aˇ
+ A˙ 
+Follow
+Got several
+6d
+Like
+Reply
+Share</div></div>
+          <div><span class="sla-pill fail">144h</span></div>
+        </div><div class="ops-event">
+          <div class="time">8m ago</div>
+          <div class="actor">Parser 102</div>
+          <div class="main"><b>saw new post</b><br><span class="muted">New York A˙ ISO Budget Friendly Wedding Photographer- No Ads</span><div class="snippet">Michele Cabot
+Highly recommend Courtney Hiegel Courts Captured Moments LLC she travels San Diego often.
+2h
+Like
+Reply
+Share
+1</div></div>
+          <div><span class="sla-pill fail">2h</span></div>
+        </div><div class="ops-event">
+          <div class="time">9m ago</div>
+          <div class="actor">Parser 102</div>
+          <div class="main"><b>saw new post</b><br><span class="muted">New York A˙ Search: &quot;need a photographer&quot; wedding</span><div class="snippet">Arvin Amatorio
+ June 2026 Visa Bulletin Update
+TÉ?› See more
+Arvin Amatorio is in United States of America.
+ June 2026 Visa Bulletin Update
+TÉ?› See more
+0:03 / 1:32
+Comment
+Comment as</div></div>
+          <div><span class="sla-pill idle">unknown</span></div>
+        </div><div class="ops-event">
+          <div class="time">9m ago</div>
+          <div class="actor">Parser 102</div>
+          <div class="main"><b>saw new post</b><br><span class="muted">New York A˙ Search: &quot;need a photographer&quot; wedding</span><div class="snippet">Jhasper Louie Lopez
+HIRING: Remote Physical Therapist
+- To do initial evaluation 
+-  2 or 3 weeks onlyÉ?› See more
+Comment
+Comment as Emma</div></div>
+          <div><span class="sla-pill idle">unknown</span></div>
+        </div><div class="ops-event">
+          <div class="time">9m ago</div>
+          <div class="actor">Parser 102</div>
+          <div class="main"><b>saw new post</b><br><span class="muted">New York A˙ Search: &quot;need a photographer&quot; wedding</span><div class="snippet">Jenny Rose Osahita Retaga
+Own a Beach Condo in Palawan for as low as Php14,000 per month. 
+Discover Megaworld&#39;s premier beach township in one of the world&#39;s most breathtaking islan</div></div>
+          <div><span class="sla-pill idle">unknown</span></div>
+        </div><div class="ops-event">
+          <div class="time">9m ago</div>
+          <div class="actor">Parser 102</div>
+          <div class="main"><b>saw new post</b><br><span class="muted">New York A˙ Search: &quot;need a photographer&quot; wedding</span><div class="snippet">Chico.Beri
+AVAILABLE!
+$780/month
+All-Inclusive:
+(Electricity, Gas, Water, Wi-Fi)
+See more
+All reactions:
+29 comments
+Comment
+View more comments
+Miguel Lumbao
+hi, may pictures po ka</div></div>
+          <div><span class="sla-pill fail">504h</span></div>
+        </div><div class="ops-event">
+          <div class="time">10m ago</div>
+          <div class="actor">Parser 102</div>
+          <div class="main"><b>saw new post</b><br><span class="muted">Unmapped A˙ Filipino NewYorker</span><div class="snippet">Maura Gastardo
+Anung floor?
+Walk up or elevator?
+3h
+Like
+Reply
+Share</div></div>
+          <div><span class="sla-pill fail">3h</span></div>
+        </div><div class="ops-event">
+          <div class="time">11m ago</div>
+          <div class="actor">Parser 102</div>
+          <div class="main"><b>saw new post</b><br><span class="muted">Los Angeles A˙ Search: &quot;recommendations&quot; wedding photographer</span><div class="snippet">Alie Breaux
+Hi! IÉ?Tm a portrait and wedding photographer based in SF but travel all over! 
+I am looking to expand my wedding portfolio and offering discounted rates for any 2026 bri</div></div>
+          <div><span class="sla-pill idle">unknown</span></div>
+        </div><div class="ops-event">
+          <div class="time">11m ago</div>
+          <div class="actor">Parser 102</div>
+          <div class="main"><b>saw new post</b><br><span class="muted">Los Angeles A˙ Search: &quot;recommendations&quot; wedding photographer</span><div class="snippet">Alaundra Alford
+ Calling all 2026 &amp; 2027 brides!
+This beaded halter column gown is perfect for destination weddings, coastal ceremonies, civil weddings, or as a chic reception look</div></div>
+          <div><span class="sla-pill idle">unknown</span></div>
+        </div><div class="ops-event">
+          <div class="time">11m ago</div>
+          <div class="actor">Parser 102</div>
+          <div class="main"><b>saw new post</b><br><span class="muted">Los Angeles A˙ Search: &quot;recommendations&quot; wedding photographer</span><div class="snippet">Nary Godinez
+Hi, IÉ?Tm Nary, the owner of @MemoriesbyNary. IÉ?Tm a wedding photographer based in Northern, CA + Bay Area &amp; open to travel. 
+IÉ?Tm currently accepting a limited number of </div></div>
+          <div><span class="sla-pill idle">unknown</span></div>
+        </div><div class="ops-event">
+          <div class="time">11m ago</div>
+          <div class="actor">Parser 102</div>
+          <div class="main"><b>saw new post</b><br><span class="muted">Los Angeles A˙ Search: &quot;recommendations&quot; wedding photographer</span><div class="snippet">Anonymous participant
+Any recommendations for a makeup artist available in Salinas, California on Monday, July 13, 2026?
+All reactions:
+17 comments
+Comment
+View more answers
+Ann Ho</div></div>
+          <div><span class="sla-pill fail">4h</span></div>
+        </div><div class="ops-event">
+          <div class="time">12m ago</div>
+          <div class="actor">Parser 102</div>
+          <div class="main"><b>saw new post</b><br><span class="muted">Unmapped A˙ Weddings &amp; Event Planning in Southern California</span><div class="snippet">Erin Grace Manzano
+Alan Katz is your go-to for officiant
+1h
+Like
+Reply
+Share
+1</div></div>
+          <div><span class="sla-pill fail">1h</span></div>
+        </div><div class="ops-event">
+          <div class="time">12m ago</div>
+          <div class="actor">Parser 102</div>
+          <div class="main"><b>saw new post</b><br><span class="muted">Unmapped A˙ Weddings &amp; Event Planning in Southern California</span><div class="snippet">Ruby Sabori Gibson
+I have greenery white florals green candle holders with the white candlestick, I have some hurricane I have a gold frame frames. I have a gold mirror so you can </div></div>
+          <div><span class="sla-pill fail">72h</span></div>
+        </div><div class="ops-event">
+          <div class="time">12m ago</div>
+          <div class="actor">Parser 102</div>
+          <div class="main"><b>saw new post</b><br><span class="muted">Unmapped A˙ DFW Wedding Vendors - For Couples to Find You!</span><div class="snippet">Calloway Collective Photography
+Aˇ
+ A˙ 
+Follow
+We are available 
+6h
+Like
+Reply
+Share</div></div>
+          <div><span class="sla-pill fail">6h</span></div>
+        </div><div class="ops-event">
+          <div class="time">19m ago</div>
+          <div class="actor">Parser 102</div>
+          <div class="main"><b>saw new post</b><br><span class="muted">Unmapped A˙ San Diego Photographers</span><div class="snippet">Meryam Popal
+Wow these are absolutely stunning 
+22h
+Like
+Reply
+Share
+1</div></div>
+          <div><span class="sla-pill fail">22h</span></div>
+        </div><div class="ops-event">
+          <div class="time">21m ago</div>
+          <div class="actor">Parser 102</div>
+          <div class="main"><b>saw new post</b><br><span class="muted">Unmapped A˙ ARIZONA Photographers</span><div class="snippet">Paisley Willis
+Love this idea!! I sent you a message! 
+4h
+Like
+Reply
+Share
+1</div></div>
+          <div><span class="sla-pill fail">4h</span></div>
+        </div><div class="ops-event">
+          <div class="time">22m ago</div>
+          <div class="actor">Parser 102</div>
+          <div class="main"><b>saw new post</b><br><span class="muted">Unmapped A˙ Brides of the Hudson Valley</span><div class="snippet">Marlene Espinosa
+Contact Karina Monegro of The BombA3n Shop. Best cookies in OC
+5h
+Like
+Reply
+Share
+2</div></div>
+          <div><span class="sla-pill fail">5h</span></div>
+        </div><div class="ops-event">
+          <div class="time">23m ago</div>
+          <div class="actor">Parser 102</div>
+          <div class="main"><b>saw new post</b><br><span class="muted">Unmapped A˙ DFW Wedding Venues</span><div class="snippet">Sweet Memories Cakes and Catering
+Aˇ
+ A˙ 
+Follow
+The Kalla in Old Town Keller, The Harrison Ballroom. Sweet Memories Cakes and Catering would be glad to talk with you about your cate</div></div>
+          <div><span class="sla-pill fail">72h</span></div>
+        </div><div class="ops-event">
+          <div class="time">23m ago</div>
+          <div class="actor">Parser 102</div>
+          <div class="main"><b>saw new post</b><br><span class="muted">Unmapped A˙ DFW Wedding Venues</span><div class="snippet">Rachel Bennett
+Barnett Estates has exactly what youÉ?Tre looking for!
+2d
+Like
+Reply
+Share</div></div>
+          <div><span class="sla-pill fail">48h</span></div>
+        </div><div class="ops-event">
+          <div class="time">23m ago</div>
+          <div class="actor">Parser 102</div>
+          <div class="main"><b>saw new post</b><br><span class="muted">Unmapped A˙ Philadelphia Brides</span><div class="snippet">Adriana Marie
+@ flandersfilms on Instagram is amazing!!
+4h
+Like
+Reply
+Share</div></div>
+          <div><span class="sla-pill fail">4h</span></div>
+        </div><div class="ops-event">
+          <div class="time">23m ago</div>
+          <div class="actor">Parser 102</div>
+          <div class="main"><b>saw new post</b><br><span class="muted">Unmapped A˙ Philadelphia Brides</span><div class="snippet">SofA-a Wagner McCoy
+I have some stuff!
+3h
+Like
+Reply
+Share</div></div>
+          <div><span class="sla-pill fail">3h</span></div>
+        </div><div class="ops-event">
+          <div class="time">23m ago</div>
+          <div class="actor">Parser 102</div>
+          <div class="main"><b>saw new post</b><br><span class="muted">Unmapped A˙ Philadelphia Brides</span><div class="snippet">PlayfulPapaya
+We looked into it but didnÉ?Tt move forward as we could not find lodging reasonably close and we wanted more than the max # that could stay onsite
+1d
+Like
+Reply
+Share
+1</div></div>
+          <div><span class="sla-pill fail">24h</span></div>
+        </div><div class="ops-event">
+          <div class="time">27m ago</div>
+          <div class="actor">Parser 102</div>
+          <div class="main"><b>saw new post</b><br><span class="muted">Unmapped A˙ New York Photography Referral Group!</span><div class="snippet">Marc Solomon
+That is not close to a realistic rate for an experienced professional photographer!
+5d
+Like
+Reply
+Share
+1</div></div>
+          <div><span class="sla-pill fail">120h</span></div>
+        </div><div class="ops-event">
+          <div class="time">31m ago</div>
+          <div class="actor">Parser 102</div>
+          <div class="main"><b>saw new post</b><br><span class="muted">San Antonio A˙ San Antonio Photographers</span><div class="snippet">Darryl E. Edwards
+Hello Tori Ybanez, I send you a message on FB messenger
+5h
+Like
+Reply
+Share</div></div>
+          <div><span class="sla-pill fail">5h</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ops-card">
+      <h2>City SLA board</h2>
+      <table class="ops-table">
+        <thead><tr><th>City</th><th>Groups</th><th>Fresh</th><th>Last age</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>Los Angeles</td><td>52</td><td>3</td><td>22h</td><td><span class="sla-pill fail">fail</span></td>
+          </tr><tr>
+            <td>Houston</td><td>37</td><td>5</td><td>13m</td><td><span class="sla-pill warn">warn</span></td>
+          </tr><tr>
+            <td>New York</td><td>85</td><td>0</td><td>unknown</td><td><span class="sla-pill idle">idle</span></td>
+          </tr><tr>
+            <td>San Antonio</td><td>17</td><td>0</td><td>5h</td><td><span class="sla-pill fail">fail</span></td>
+          </tr><tr>
+            <td>Chicago</td><td>51</td><td>0</td><td>4h</td><td><span class="sla-pill fail">fail</span></td>
+          </tr><tr>
+            <td>Phoenix</td><td>52</td><td>0</td><td>48h</td><td><span class="sla-pill fail">fail</span></td>
+          </tr><tr>
+            <td>Philadelphia</td><td>47</td><td>0</td><td>unknown</td><td><span class="sla-pill idle">idle</span></td>
+          </tr><tr>
+            <td>San Diego</td><td>0</td><td>0</td><td>unknown</td><td><span class="sla-pill idle">idle</span></td>
+          </tr><tr>
+            <td>Dallas</td><td>0</td><td>0</td><td>unknown</td><td><span class="sla-pill idle">idle</span></td>
+          </tr><tr>
+            <td>San Jose</td><td>0</td><td>0</td><td>unknown</td><td><span class="sla-pill idle">idle</span></td>
+          </tr>
+        </tbody>
+      </table>
+      <div style="height:14px"></div>
+      <h2>Latest groups touched</h2>
+      <table class="ops-table">
+        <thead><tr><th>Group</th><th>City</th><th>Q</th><th>Age</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><a href="https://www.facebook.com/groups/389879199853276/" target="_blank">I Need A Photographer or Videographer in L</a></td><td>Los Angeles</td><td><span class="status-pill status-unknown">unknown</span></td><td><span class="sla-pill fail">22h</span></td>
+          </tr><tr>
+            <td><a href="https://www.facebook.com/groups/3434522096784677/" target="_blank">looking for affordable photographer</a></td><td>Los Angeles</td><td><span class="status-pill status-unknown">unknown</span></td><td><span class="sla-pill fail">2h</span></td>
+          </tr><tr>
+            <td><a href="https://www.facebook.com/groups/weddingphotographerclub/" target="_blank">wedding photographer</a></td><td>New York</td><td><span class="status-pill status-unknown">unknown</span></td><td><span class="sla-pill warn">13m</span></td>
+          </tr><tr>
+            <td><a href="https://www.facebook.com/groups/623845381027124/" target="_blank">NYC Photographers</a></td><td>New York</td><td><span class="status-pill status-unknown">unknown</span></td><td><span class="sla-pill fail">144h</span></td>
+          </tr><tr>
+            <td><a href="https://www.facebook.com/groups/nycphotographersusa/" target="_blank">NYC Photographers</a></td><td>New York</td><td><span class="status-pill status-unknown">unknown</span></td><td><span class="sla-pill fail">144h</span></td>
+          </tr><tr>
+            <td><a href="https://www.facebook.com/groups/1765590277249860/" target="_blank">ISO Budget Friendly Wedding Photographer- </a></td><td>New York</td><td><span class="status-pill status-unknown">unknown</span></td><td><span class="sla-pill fail">2h</span></td>
+          </tr><tr>
+            <td><a href="https://www.facebook.com/groups/jurufoto.perkahwinan/" target="_blank">Wedding Photographer</a></td><td>New York</td><td><span class="status-pill status-unknown">unknown</span></td><td><span class="sla-pill fail">2h</span></td>
+          </tr><tr>
+            <td><a href="https://www.facebook.com/groups/PhoenixPhotographers/" target="_blank">ARIZONA Photographers</a></td><td>Phoenix</td><td><span class="status-pill status-unknown">unknown</span></td><td><span class="sla-pill fail">4h</span></td>
+          </tr><tr>
+            <td><a href="https://www.facebook.com/groups/PhiladelphiaBrides/" target="_blank">Philadelphia Brides</a></td><td>Philadelphia</td><td><span class="status-pill status-unknown">unknown</span></td><td><span class="sla-pill fail">4h</span></td>
+          </tr><tr>
+            <td><a href="https://www.facebook.com/groups/ericaberger/" target="_blank">New York Photography Referral Group!</a></td><td>New York</td><td><span class="status-pill status-unknown">unknown</span></td><td><span class="sla-pill fail">120h</span></td>
+          </tr><tr>
+            <td><a href="https://www.facebook.com/groups/NYSPG/" target="_blank">New York Photography</a></td><td>New York</td><td><span class="status-pill status-unknown">unknown</span></td><td><span class="sla-pill fail">120h</span></td>
+          </tr><tr>
+            <td><a href="https://www.facebook.com/groups/486102838114690/" target="_blank">San Antonio Photographers</a></td><td>San Antonio</td><td><span class="status-pill status-unknown">unknown</span></td><td><span class="sla-pill fail">5h</span></td>
+          </tr><tr>
+            <td><a href="https://www.facebook.com/groups/993553661240694/" target="_blank">Houston Videographers</a></td><td>Houston</td><td><span class="status-pill status-unknown">unknown</span></td><td><span class="sla-pill ok">1m</span></td>
+          </tr><tr>
+            <td><a href="https://www.facebook.com/groups/453052061521245/" target="_blank">Houston Wedding Brides</a></td><td>Houston</td><td><span class="status-pill status-unknown">unknown</span></td><td><span class="sla-pill fail">15h</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
 
 <!-- ====================== PAGE: LEADS (D3DØD¯D˝D´D¯•?) ====================== -->
 <div class="page active" data-page="leads">
@@ -223,33 +726,33 @@
       <div style="background:var(--bg);padding:14px 16px;border-radius:6px;border:1px solid var(--border)">
         <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px">DYD_•?DØDÊD'D´D,DÊ 5 •ÿD¯•?D_D˝</div>
         <div style="font-size:24px;font-weight:700;color:var(--green);margin:4px 0">
-          2.5K
+          13.0K
         </div>
         <div style="font-size:12px;color:var(--muted)">
-          3 calls A˙ CLI 2.5K A˙ API 0.0K
+          27 calls A˙ CLI 2.5K A˙ API 10.4K
         </div>
       </div>
       <div style="background:var(--bg);padding:14px 16px;border-radius:6px;border:1px solid var(--border)">
         <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px">DYD_•?DØDÊD'D´D,DÊ 24 •ÿD¯•?D¯</div>
         <div style="font-size:24px;font-weight:700;color:var(--yellow);margin:4px 0">
-          2.5K
+          13.0K
         </div>
         <div style="font-size:12px;color:var(--muted)">
-          3 calls A˙ CLI 2.5K A˙ API 0.0K
+          27 calls A˙ CLI 2.5K A˙ API 10.4K
         </div>
       </div>
       <div style="background:var(--bg);padding:14px 16px;border-radius:6px;border:1px solid var(--border)">
         <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px">DYD_•?DØDÊD'D´D,DÊ 7 D'D´DÊD1</div>
         <div style="font-size:24px;font-weight:700;color:var(--accent);margin:4px 0">
-          752.4K
+          762.9K
         </div>
         <div style="font-size:12px;color:var(--muted)">
-          922 calls A˙ CLI 716.1K A˙ API 36.3K
+          946 calls A˙ CLI 716.1K A˙ API 46.8K
         </div>
       </div>
     </div>
     <div style="font-size:12px;color:var(--muted);margin-top:8px">
-      DYD_ D¨D_D'DÊDØ•?D¨ D˙D¯ 7D': <b style="color:var(--fg)">haiku-4-5-20251001</b> 290.2K A˙ <b style="color:var(--fg)">haiku</b> 225.9K A˙ <b style="color:var(--fg)">sonnet-4-6</b> 198.6K A˙ <b style="color:var(--fg)">gemini-3.1-flash-lite</b> 35.2K
+      DYD_ D¨D_D'DÊDØ•?D¨ D˙D¯ 7D': <b style="color:var(--fg)">haiku-4-5-20251001</b> 290.2K A˙ <b style="color:var(--fg)">haiku</b> 225.9K A˙ <b style="color:var(--fg)">sonnet-4-6</b> 198.6K A˙ <b style="color:var(--fg)">gemini-3.1-flash-lite</b> 45.6K
     </div>
     <div style="background:#1c2128;border-left:3px solid var(--accent);padding:8px 12px;border-radius:4px;margin-top:12px;font-size:12px;line-height:1.5">
       dY'≠ <b>Note:</b> Contabo CLI D¯D˝•,D_•?D,D˙D_D˝D¯D´ •,DÊD¨ DDÊ <code>CLAUDE_CODE_OAUTH_TOKEN</code>, •ÿ•,D_ D, •,D˝D_D1 Mac.
@@ -395,24 +898,24 @@
         <tbody>
           <tr>
             <td style="padding:6px">24•ÿ</td>
-            <td style="text-align:right;padding:6px">2.5K</td>
-            <td style="text-align:right;padding:6px">$0.017</td>
-            <td style="text-align:right;padding:6px">$0.012</td>
-            <td style="text-align:right;padding:6px;color:var(--green)">$0.001</td>
+            <td style="text-align:right;padding:6px">13.0K</td>
+            <td style="text-align:right;padding:6px">$0.079</td>
+            <td style="text-align:right;padding:6px">$0.057</td>
+            <td style="text-align:right;padding:6px;color:var(--green)">$0.003</td>
           </tr>
           <tr>
             <td style="padding:6px"><b>7D'</b></td>
-            <td style="text-align:right;padding:6px"><b>752.4K</b></td>
-            <td style="text-align:right;padding:6px"><b>$2.61</b></td>
-            <td style="text-align:right;padding:6px"><b>$3.36</b></td>
+            <td style="text-align:right;padding:6px"><b>762.9K</b></td>
+            <td style="text-align:right;padding:6px"><b>$2.67</b></td>
+            <td style="text-align:right;padding:6px"><b>$3.41</b></td>
             <td style="text-align:right;padding:6px;color:var(--green)"><b>$0.20</b></td>
           </tr>
           <tr style="background:var(--bg)">
             <td style="padding:6px"><b>DoDÊ•?•?•+</b></td>
-            <td style="text-align:right;padding:6px">~3258K</td>
-            <td style="text-align:right;padding:6px"><b>$11.30</b></td>
-            <td style="text-align:right;padding:6px"><b>$14.55</b></td>
-            <td style="text-align:right;padding:6px;color:var(--green)"><b>$0.87</b></td>
+            <td style="text-align:right;padding:6px">~3303K</td>
+            <td style="text-align:right;padding:6px"><b>$11.57</b></td>
+            <td style="text-align:right;padding:6px"><b>$14.75</b></td>
+            <td style="text-align:right;padding:6px;color:var(--green)"><b>$0.88</b></td>
           </tr>
         </tbody>
       </table>
@@ -463,10 +966,10 @@
       <div class="sparkline-wrap"><canvas id="sparkline"></canvas></div>
     </div>
     <div style="margin-top:12px;display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px;font-size:12px">
-      <div style="border:1px solid var(--border);border-radius:6px;padding:8px;background:rgba(255,255,255,0.02)"><b style="color:var(--fg)">Claude CLI</b><br><span style="color:var(--muted)">715 calls A˙ 713.6K tokens</span><br><code>claude-haiku-4-5-20251001 289.0K A˙ haiku 225.9K</code></div><div style="border:1px solid var(--border);border-radius:6px;padding:8px;background:rgba(255,255,255,0.02)"><b style="color:var(--fg)">Gemini REST</b><br><span style="color:var(--muted)">203 calls A˙ 35.2K tokens</span><br><code>gemini-3.1-flash-lite 35.2K</code></div><div style="border:1px solid var(--border);border-radius:6px;padding:8px;background:rgba(255,255,255,0.02)"><b style="color:var(--fg)">Gemini CLI</b><br><span style="color:var(--muted)">3 calls A˙ 2.5K tokens</span><br><code>gemini-cli 2.5K</code></div><div style="border:1px solid var(--border);border-radius:6px;padding:8px;background:rgba(255,255,255,0.02)"><b style="color:var(--fg)">Paid API</b><br><span style="color:var(--muted)">1 calls A˙ 1.1K tokens</span><br><code>claude-haiku-4-5-20251001 1.1K</code></div>
+      <div style="border:1px solid var(--border);border-radius:6px;padding:8px;background:rgba(255,255,255,0.02)"><b style="color:var(--fg)">Claude CLI</b><br><span style="color:var(--muted)">715 calls A˙ 713.6K tokens</span><br><code>claude-haiku-4-5-20251001 289.0K A˙ haiku 225.9K</code></div><div style="border:1px solid var(--border);border-radius:6px;padding:8px;background:rgba(255,255,255,0.02)"><b style="color:var(--fg)">Gemini REST</b><br><span style="color:var(--muted)">227 calls A˙ 45.6K tokens</span><br><code>gemini-3.1-flash-lite 45.6K</code></div><div style="border:1px solid var(--border);border-radius:6px;padding:8px;background:rgba(255,255,255,0.02)"><b style="color:var(--fg)">Gemini CLI</b><br><span style="color:var(--muted)">3 calls A˙ 2.5K tokens</span><br><code>gemini-cli 2.5K</code></div><div style="border:1px solid var(--border);border-radius:6px;padding:8px;background:rgba(255,255,255,0.02)"><b style="color:var(--fg)">Paid API</b><br><span style="color:var(--muted)">1 calls A˙ 1.1K tokens</span><br><code>claude-haiku-4-5-20251001 1.1K</code></div>
     </div>
     <div style="margin-top: 12px; font-size: 11px; color: var(--muted);">
-      D~•?•,D_•ÿD´D,Dß: <code>data/ai-stats.jsonl + data/ai-stats-new.jsonl (922 calls tracked)</code> A˙
+      D~•?•,D_•ÿD´D,Dß: <code>data/ai-stats.jsonl + data/ai-stats-new.jsonl (946 calls tracked)</code> A˙
       CLI = DØD_DßD¯DØ•OD´•<D1 Gemini/Claude CLI, •,D¯Dß•,D,•ÿDÊ•?DßD,DÊ •,D_DßDÊD´•< DÊ•?DØD, D˙D¯DØD_D3D,•?D_D˝D¯D´•<; •?•,D¯•?•<DÊ CLI-D˙D¯D®D,•?D, DÒDÊD˙ •,D_DßDÊD´D_D˝ D_•+DÊD´DÊD´•< 3.5K/call A˙ REST/API = pay-per-token/free quota A˙
       DzDÒD´D_D˝D,•,•O: <code>node build-dashboard.js</code>
     </div>
@@ -475,10 +978,10 @@
   <!-- Funnel stats -->
   <div class="stat-row">
     <div class="stat"><div class="num" style="color:var(--blue)">14</div><div class="lbl">Posts collected</div></div>
-    <div class="stat"><div class="num">1</div><div class="lbl">After lex filter</div></div>
-    <div class="stat"><div class="num">0</div><div class="lbl">Tier-1 pass (Haiku)</div></div>
-    <div class="stat"><div class="num" style="color:var(--green)">0</div><div class="lbl">Tier-2 confirmed</div></div>
-    <div class="stat"><div class="num" style="color:var(--yellow)">0</div><div class="lbl">Sent to Telegram</div></div>
+    <div class="stat"><div class="num">56</div><div class="lbl">After lex filter</div></div>
+    <div class="stat"><div class="num">3</div><div class="lbl">Tier-1 pass (Haiku)</div></div>
+    <div class="stat"><div class="num" style="color:var(--green)">5</div><div class="lbl">Tier-2 confirmed</div></div>
+    <div class="stat"><div class="num" style="color:var(--yellow)">3</div><div class="lbl">Sent to Telegram</div></div>
   </div>
 
   <!-- Funnel viz -->
@@ -487,16 +990,16 @@
     <div class="funnel">
       <div class="stage"><div class="v">14</div><div class="l">posts</div></div>
       <div class="arr">É+'</div>
-      <div class="stage"><div class="v">1</div><div class="l">lex filter</div></div>
+      <div class="stage"><div class="v">56</div><div class="l">lex filter</div></div>
       <div class="arr">É+'</div>
-      <div class="stage"><div class="v">0</div><div class="l">tier-1 haiku</div></div>
+      <div class="stage"><div class="v">3</div><div class="l">tier-1 haiku</div></div>
       <div class="arr">É+'</div>
-      <div class="stage"><div class="v">0</div><div class="l">tier-2 sonnet</div></div>
+      <div class="stage"><div class="v">5</div><div class="l">tier-2 sonnet</div></div>
       <div class="arr">É+'</div>
-      <div class="stage" style="border-color: var(--green);"><div class="v" style="color:var(--green)">0</div><div class="l">delivered</div></div>
+      <div class="stage" style="border-color: var(--green);"><div class="v" style="color:var(--green)">3</div><div class="l">delivered</div></div>
     </div>
     <div style="margin-top: 12px; font-size: 11px; color: var(--muted);">
-      Source: <code>data/dash-state2.json</code> A˙ leads file: <code>data/leads-new.jsonl</code> A˙ unique leads: <b>585</b> of 604 raw
+      Source: <code>data/dash-state2.json</code> A˙ leads file: <code>data/leads-new.jsonl</code> A˙ unique leads: <b>592</b> of 611 raw
     </div>
   </div>
 
@@ -781,7 +1284,7 @@
           <div class="desc"></div>
           <div class="footer">
             <span class="lbl"></span>
-            <span><b>0</b></span>
+            <span><b>1</b></span>
           </div>
         </div>
         <div class="agent">
@@ -809,7 +1312,7 @@
           <div class="desc"></div>
           <div class="footer">
             <span class="lbl"></span>
-            <span><b>0</b></span>
+            <span><b>6</b></span>
           </div>
         </div>
         <div class="agent">
@@ -823,7 +1326,7 @@
           <div class="desc"></div>
           <div class="footer">
             <span class="lbl"></span>
-            <span><b>0</b></span>
+            <span><b>1</b></span>
           </div>
         </div>
         <div class="agent">
@@ -837,7 +1340,7 @@
           <div class="desc"></div>
           <div class="footer">
             <span class="lbl"></span>
-            <span><b>604</b></span>
+            <span><b>1</b></span>
           </div>
         </div>
     </div>
@@ -872,154 +1375,154 @@ graph TB
       <div class="feed">
         
           <div class="row">
-            <div class="ts">17:39</div>
+            <div class="ts">20:14</div>
             <div class="agent-tag">PIPELINE</div>
-            <div class="msg">smart pipeline done</div>
+            <div class="msg">search pipeline done</div>
           </div>
           <div class="row">
-            <div class="ts">17:39</div>
+            <div class="ts">20:14</div>
+            <div class="agent-tag">TELEGRAM</div>
+            <div class="msg">1 leads sent</div>
+          </div>
+          <div class="row">
+            <div class="ts">20:13</div>
+            <div class="agent-tag">TIER-2</div>
+            <div class="msg">1 potentials É+' 1 real leads</div>
+          </div>
+          <div class="row">
+            <div class="ts">20:13</div>
+            <div class="agent-tag">TIER-1</div>
+            <div class="msg">6 candidates É+' 1 potentials</div>
+          </div>
+          <div class="row">
+            <div class="ts">20:13</div>
+            <div class="agent-tag">LEX</div>
+            <div class="msg">15730 posts É+' 6 new candidates</div>
+          </div>
+          <div class="row">
+            <div class="ts">20:13</div>
+            <div class="agent-tag">PIPELINE</div>
+            <div class="msg">search pipeline start</div>
+          </div>
+          <div class="row">
+            <div class="ts">20:06</div>
+            <div class="agent-tag">PIPELINE</div>
+            <div class="msg">search pipeline done</div>
+          </div>
+          <div class="row">
+            <div class="ts">20:06</div>
+            <div class="agent-tag">TIER-1</div>
+            <div class="msg">2 candidates É+' 0 potentials</div>
+          </div>
+          <div class="row">
+            <div class="ts">20:06</div>
+            <div class="agent-tag">LEX</div>
+            <div class="msg">15718 posts É+' 2 new candidates</div>
+          </div>
+          <div class="row">
+            <div class="ts">20:06</div>
+            <div class="agent-tag">PIPELINE</div>
+            <div class="msg">search pipeline start</div>
+          </div>
+          <div class="row">
+            <div class="ts">20:04</div>
+            <div class="agent-tag">PIPELINE</div>
+            <div class="msg">search pipeline done</div>
+          </div>
+          <div class="row">
+            <div class="ts">20:04</div>
+            <div class="agent-tag">TIER-1</div>
+            <div class="msg">5 candidates É+' 0 potentials</div>
+          </div>
+          <div class="row">
+            <div class="ts">20:04</div>
+            <div class="agent-tag">LEX</div>
+            <div class="msg">15713 posts É+' 5 new candidates</div>
+          </div>
+          <div class="row">
+            <div class="ts">20:04</div>
+            <div class="agent-tag">PIPELINE</div>
+            <div class="msg">search pipeline start</div>
+          </div>
+          <div class="row">
+            <div class="ts">20:02</div>
+            <div class="agent-tag">PIPELINE</div>
+            <div class="msg">search pipeline done</div>
+          </div>
+          <div class="row">
+            <div class="ts">20:02</div>
             <div class="agent-tag">TIER-1</div>
             <div class="msg">1 candidates É+' 0 potentials</div>
           </div>
           <div class="row">
-            <div class="ts">17:39</div>
+            <div class="ts">20:02</div>
             <div class="agent-tag">LEX</div>
-            <div class="msg">15591 posts É+' 0 new candidates</div>
+            <div class="msg">15706 posts É+' 1 new candidates</div>
           </div>
           <div class="row">
-            <div class="ts">17:39</div>
+            <div class="ts">20:02</div>
             <div class="agent-tag">PIPELINE</div>
-            <div class="msg">smart pipeline start, skip=b2b</div>
+            <div class="msg">search pipeline start</div>
           </div>
           <div class="row">
-            <div class="ts">17:38</div>
+            <div class="ts">19:52</div>
             <div class="agent-tag">PIPELINE</div>
-            <div class="msg">smart pipeline done</div>
+            <div class="msg">search pipeline done</div>
           </div>
           <div class="row">
-            <div class="ts">17:38</div>
+            <div class="ts">19:51</div>
             <div class="agent-tag">TIER-1</div>
-            <div class="msg">1 candidates É+' 0 potentials</div>
+            <div class="msg">2 candidates É+' 0 potentials</div>
           </div>
           <div class="row">
-            <div class="ts">17:38</div>
-            <div class="agent-tag">TIER-1</div>
-            <div class="msg">batch error: All AI providers failed. Last Gemini: No GEMINI_API_KEY. Haiku: exit 1: </div>
-          </div>
-          <div class="row">
-            <div class="ts">17:38</div>
+            <div class="ts">19:51</div>
             <div class="agent-tag">LEX</div>
-            <div class="msg">15591 posts É+' 0 new candidates</div>
+            <div class="msg">15702 posts É+' 2 new candidates</div>
           </div>
           <div class="row">
-            <div class="ts">17:38</div>
+            <div class="ts">19:51</div>
             <div class="agent-tag">PIPELINE</div>
-            <div class="msg">smart pipeline start, skip=b2b</div>
+            <div class="msg">search pipeline start</div>
           </div>
           <div class="row">
-            <div class="ts">17:37</div>
+            <div class="ts">19:44</div>
             <div class="agent-tag">PIPELINE</div>
-            <div class="msg">smart pipeline done</div>
+            <div class="msg">search pipeline done</div>
           </div>
           <div class="row">
-            <div class="ts">17:37</div>
+            <div class="ts">19:44</div>
             <div class="agent-tag">TIER-1</div>
-            <div class="msg">1 candidates É+' 0 potentials</div>
+            <div class="msg">3 candidates É+' 0 potentials</div>
           </div>
           <div class="row">
-            <div class="ts">17:37</div>
-            <div class="agent-tag">TIER-1</div>
-            <div class="msg">batch error: All AI providers failed. Last Gemini: No GEMINI_API_KEY. Haiku: exit 1: </div>
-          </div>
-          <div class="row">
-            <div class="ts">17:37</div>
+            <div class="ts">19:44</div>
             <div class="agent-tag">LEX</div>
-            <div class="msg">15591 posts É+' 0 new candidates</div>
+            <div class="msg">15696 posts É+' 3 new candidates</div>
           </div>
           <div class="row">
-            <div class="ts">17:37</div>
+            <div class="ts">19:44</div>
             <div class="agent-tag">PIPELINE</div>
-            <div class="msg">smart pipeline start, skip=b2b</div>
+            <div class="msg">search pipeline start</div>
           </div>
           <div class="row">
-            <div class="ts">17:36</div>
+            <div class="ts">19:38</div>
             <div class="agent-tag">PIPELINE</div>
-            <div class="msg">smart pipeline done</div>
+            <div class="msg">search pipeline done</div>
           </div>
           <div class="row">
-            <div class="ts">17:36</div>
-            <div class="agent-tag">TIER-1</div>
-            <div class="msg">1 candidates É+' 0 potentials</div>
-          </div>
-          <div class="row">
-            <div class="ts">17:36</div>
-            <div class="agent-tag">TIER-1</div>
-            <div class="msg">batch error: All AI providers failed. Last Gemini: No GEMINI_API_KEY. Haiku: exit 1: </div>
-          </div>
-          <div class="row">
-            <div class="ts">17:36</div>
+            <div class="ts">19:38</div>
             <div class="agent-tag">LEX</div>
-            <div class="msg">15591 posts É+' 0 new candidates</div>
+            <div class="msg">15691 posts É+' 0 new candidates</div>
           </div>
           <div class="row">
-            <div class="ts">17:36</div>
+            <div class="ts">19:38</div>
             <div class="agent-tag">PIPELINE</div>
-            <div class="msg">smart pipeline start, skip=b2b</div>
+            <div class="msg">search pipeline start</div>
           </div>
           <div class="row">
-            <div class="ts">17:35</div>
+            <div class="ts">19:35</div>
             <div class="agent-tag">PIPELINE</div>
-            <div class="msg">smart pipeline done</div>
-          </div>
-          <div class="row">
-            <div class="ts">17:35</div>
-            <div class="agent-tag">TIER-1</div>
-            <div class="msg">1 candidates É+' 0 potentials</div>
-          </div>
-          <div class="row">
-            <div class="ts">17:35</div>
-            <div class="agent-tag">TIER-1</div>
-            <div class="msg">batch error: All AI providers failed. Last Gemini: No GEMINI_API_KEY. Haiku: exit 1: </div>
-          </div>
-          <div class="row">
-            <div class="ts">17:35</div>
-            <div class="agent-tag">LEX</div>
-            <div class="msg">15591 posts É+' 0 new candidates</div>
-          </div>
-          <div class="row">
-            <div class="ts">17:34</div>
-            <div class="agent-tag">PIPELINE</div>
-            <div class="msg">smart pipeline start, skip=b2b</div>
-          </div>
-          <div class="row">
-            <div class="ts">17:22</div>
-            <div class="agent-tag">PIPELINE</div>
-            <div class="msg">smart pipeline done</div>
-          </div>
-          <div class="row">
-            <div class="ts">17:22</div>
-            <div class="agent-tag">TIER-1</div>
-            <div class="msg">1 candidates É+' 0 potentials</div>
-          </div>
-          <div class="row">
-            <div class="ts">17:22</div>
-            <div class="agent-tag">TIER-1</div>
-            <div class="msg">batch error: All AI providers failed. Last Gemini: No GEMINI_API_KEY. Haiku: exit 1: </div>
-          </div>
-          <div class="row">
-            <div class="ts">17:22</div>
-            <div class="agent-tag">LEX</div>
-            <div class="msg">15591 posts É+' 1 new candidates</div>
-          </div>
-          <div class="row">
-            <div class="ts">17:22</div>
-            <div class="agent-tag">PIPELINE</div>
-            <div class="msg">smart pipeline start, skip=b2b</div>
-          </div>
-          <div class="row">
-            <div class="ts">17:22</div>
-            <div class="agent-tag">PIPELINE</div>
-            <div class="msg">smart pipeline done</div>
+            <div class="msg">search pipeline done</div>
           </div>
       </div>
     </div>
@@ -1223,7 +1726,34 @@ graph TB
       <table class="conv-table">
         <thead><tr><th>When</th><th>Author</th><th>Group</th><th>Post age</th><th>Event</th><th>Conf</th><th>Touches</th><th>Status</th></tr></thead>
         <tbody>
-          <tr class="conv-row" data-cidx="0" data-age="unknown" data-event="unknown">
+          <tr class="conv-row" data-cidx="0" data-age="h1" data-event="unknown">
+              <td style="color:var(--muted);font-size:12px">Jun 26, 10:12 PM</td>
+              <td>Online status indicatorActive</td>
+              <td style="color:var(--muted);font-size:12px">looking for affordable photographer</td>
+              <td><span style="color:var(--red);font-weight:600">dY"ù 6m</span></td>
+              <td><span style="color:var(--muted)">É?"</span></td>
+              <td style="color:var(--accent)">100</td>
+              <td style="font-size:12px"></td>
+              <td><span style="color:var(--muted)">É?" pending</span></td>
+            </tr><tr class="conv-row" data-cidx="1" data-age="old" data-event="unknown">
+              <td style="color:var(--muted);font-size:12px">Jun 26, 09:33 PM</td>
+              <td>unknown</td>
+              <td style="color:var(--muted);font-size:12px">Southern California Photographer Se</td>
+              <td><span style="color:var(--muted);font-weight:600">ÉsÆ 4d</span></td>
+              <td><span style="color:var(--muted)">É?"</span></td>
+              <td style="color:var(--accent)">100</td>
+              <td style="font-size:12px"></td>
+              <td><span style="color:var(--muted)">É?" pending</span></td>
+            </tr><tr class="conv-row" data-cidx="2" data-age="old" data-event="unknown">
+              <td style="color:var(--muted);font-size:12px">Jun 26, 09:15 PM</td>
+              <td>unknown</td>
+              <td style="color:var(--muted);font-size:12px">San Diego Photographers</td>
+              <td><span style="color:var(--muted);font-weight:600">ÉsÆ 3d</span></td>
+              <td><span style="color:var(--muted)">É?"</span></td>
+              <td style="color:var(--accent)">100</td>
+              <td style="font-size:12px"></td>
+              <td><span style="color:var(--muted)">É?" pending</span></td>
+            </tr><tr class="conv-row" data-cidx="3" data-age="unknown" data-event="unknown">
               <td style="color:var(--muted);font-size:12px">Jun 26, 08:23 PM</td>
               <td>Michael Dwight Tan</td>
               <td style="color:var(--muted);font-size:12px">Pinoy in New York</td>
@@ -1232,7 +1762,7 @@ graph TB
               <td style="color:var(--accent)">100</td>
               <td style="font-size:12px"></td>
               <td><span style="color:var(--muted)">É?" pending</span></td>
-            </tr><tr class="conv-row" data-cidx="1" data-age="unknown" data-event="unknown">
+            </tr><tr class="conv-row" data-cidx="4" data-age="unknown" data-event="unknown">
               <td style="color:var(--muted);font-size:12px">Jun 26, 08:23 PM</td>
               <td>Kalynn Tabron</td>
               <td style="color:var(--muted);font-size:12px">NYC Photographers</td>
@@ -1241,7 +1771,7 @@ graph TB
               <td style="color:var(--accent)">100</td>
               <td style="font-size:12px"></td>
               <td><span style="color:var(--muted)">É?" pending</span></td>
-            </tr><tr class="conv-row" data-cidx="2" data-age="unknown" data-event="unknown">
+            </tr><tr class="conv-row" data-cidx="5" data-age="unknown" data-event="unknown">
               <td style="color:var(--muted);font-size:12px">Jun 26, 08:23 PM</td>
               <td>Hector Luis Rivera</td>
               <td style="color:var(--muted);font-size:12px">New York Photographers &amp; Videograph</td>
@@ -1250,7 +1780,7 @@ graph TB
               <td style="color:var(--accent)">100</td>
               <td style="font-size:12px"></td>
               <td><span style="color:var(--muted)">É?" pending</span></td>
-            </tr><tr class="conv-row" data-cidx="3" data-age="unknown" data-event="unknown">
+            </tr><tr class="conv-row" data-cidx="6" data-age="unknown" data-event="unknown">
               <td style="color:var(--muted);font-size:12px">Jun 26, 08:23 PM</td>
               <td>HappyOwl9308</td>
               <td style="color:var(--muted);font-size:12px">New York Wedding Elopement</td>
@@ -1259,7 +1789,7 @@ graph TB
               <td style="color:var(--accent)">100</td>
               <td style="font-size:12px"></td>
               <td><span style="color:var(--muted)">É?" pending</span></td>
-            </tr><tr class="conv-row" data-cidx="4" data-age="unknown" data-event="unknown">
+            </tr><tr class="conv-row" data-cidx="7" data-age="unknown" data-event="unknown">
               <td style="color:var(--muted);font-size:12px">May 21, 06:05 AM</td>
               <td>Catherine Lu-Pascual</td>
               <td style="color:var(--muted);font-size:12px">Search: &quot;need a videographer&quot;</td>
@@ -1268,7 +1798,7 @@ graph TB
               <td style="color:var(--accent)">95</td>
               <td style="font-size:12px"></td>
               <td><span style="color:var(--muted)">É?" pending</span></td>
-            </tr><tr class="conv-row" data-cidx="5" data-age="h6" data-event="unknown">
+            </tr><tr class="conv-row" data-cidx="8" data-age="h6" data-event="unknown">
               <td style="color:var(--muted);font-size:12px">May 21, 06:01 AM</td>
               <td>Rachel Collins</td>
               <td style="color:var(--muted);font-size:12px">Search: &quot;any photographers&quot; wedding</td>
@@ -1277,49 +1807,13 @@ graph TB
               <td style="color:var(--accent)">95</td>
               <td style="font-size:12px"></td>
               <td><span style="color:var(--muted)">É?" pending</span></td>
-            </tr><tr class="conv-row" data-cidx="6" data-age="unknown" data-event="unknown">
+            </tr><tr class="conv-row" data-cidx="9" data-age="unknown" data-event="unknown">
               <td style="color:var(--muted);font-size:12px">May 21, 04:05 AM</td>
               <td>Caitlin Diaz-Gorsi</td>
               <td style="color:var(--muted);font-size:12px">Search: &quot;ISO&quot; wedding photographer</td>
               <td><span style="color:var(--muted)">dY? É?"</span></td>
               <td><span style="color:var(--muted)">É?"</span></td>
               <td style="color:var(--accent)">95</td>
-              <td style="font-size:12px"></td>
-              <td><span style="color:var(--muted)">É?" pending</span></td>
-            </tr><tr class="conv-row" data-cidx="7" data-age="unknown" data-event="unknown">
-              <td style="color:var(--muted);font-size:12px">May 21, 02:15 AM</td>
-              <td>Oleh VideoEditor Pustovoit</td>
-              <td style="color:var(--muted);font-size:12px">I Need A Photographer or Videograph</td>
-              <td><span style="color:var(--muted)">dY? É?"</span></td>
-              <td><span style="color:var(--muted)">É?"</span></td>
-              <td style="color:var(--accent)">95</td>
-              <td style="font-size:12px"></td>
-              <td><span style="color:var(--muted)">É?" pending</span></td>
-            </tr><tr class="conv-row" data-cidx="8" data-age="h1" data-event="unknown">
-              <td style="color:var(--muted);font-size:12px">May 21, 01:54 AM</td>
-              <td>unknown</td>
-              <td style="color:var(--muted);font-size:12px">Photographers, Videographers, Model</td>
-              <td><span style="color:var(--red);font-weight:600">dY"ù 18m</span></td>
-              <td><span style="color:var(--muted)">É?"</span></td>
-              <td style="color:var(--accent)">55</td>
-              <td style="font-size:12px"></td>
-              <td><span style="color:var(--muted)">É?" pending</span></td>
-            </tr><tr class="conv-row" data-cidx="9" data-age="h1" data-event="unknown">
-              <td style="color:var(--muted);font-size:12px">May 21, 01:31 AM</td>
-              <td>unknown</td>
-              <td style="color:var(--muted);font-size:12px">Photographers of Houston</td>
-              <td><span style="color:var(--red);font-weight:600">dY"ù 12m</span></td>
-              <td><span style="color:var(--muted)">É?"</span></td>
-              <td style="color:var(--accent)">65</td>
-              <td style="font-size:12px"></td>
-              <td><span style="color:var(--muted)">É?" pending</span></td>
-            </tr><tr class="conv-row" data-cidx="10" data-age="d1" data-event="unknown">
-              <td style="color:var(--muted);font-size:12px">May 21, 12:24 AM</td>
-              <td>Darryl Johnson</td>
-              <td style="color:var(--muted);font-size:12px">Search: &quot;need a videographer&quot;</td>
-              <td><span style="color:var(--yellow);font-weight:600">dYY≠ 7h</span></td>
-              <td><span style="color:var(--muted)">É?"</span></td>
-              <td style="color:var(--accent)">92</td>
               <td style="font-size:12px"></td>
               <td><span style="color:var(--muted)">É?" pending</span></td>
             </tr>
@@ -1614,8 +2108,8 @@ graph LR
           </div>
           <div class="line">
             <div class="name ">dY", build-dashboard.js</div>
-            <div class="size">136.3 KB</div>
-            <div class="modified">2026-06-26 18:37</div>
+            <div class="size">149.1 KB</div>
+            <div class="modified">2026-06-26 20:14</div>
           </div>
           <div class="line">
             <div class="name ">dY", build-dashboard.js.bak-20260516-002439</div>
@@ -1694,13 +2188,13 @@ graph LR
           </div>
           <div class="line">
             <div class="name ">dY", dashboard.html</div>
-            <div class="size">224.7 KB</div>
-            <div class="modified">2026-06-26 18:34</div>
+            <div class="size">224.0 KB</div>
+            <div class="modified">2026-06-26 20:04</div>
           </div>
           <div class="line">
             <div class="name dir">dY"? data</div>
             <div class="size"></div>
-            <div class="modified">2026-06-26 10:54</div>
+            <div class="modified">2026-06-26 20:01</div>
           </div>
           <div class="line">
             <div class="name ">dY", debug-forsale.mjs</div>
@@ -1854,8 +2348,8 @@ graph LR
           </div>
           <div class="line">
             <div class="name ">dY", groups.classified.json</div>
-            <div class="size">259.1 KB</div>
-            <div class="modified">2026-06-26 17:39</div>
+            <div class="size">259.6 KB</div>
+            <div class="modified">2026-06-26 20:14</div>
           </div>
           <div class="line">
             <div class="name ">dY", groups.json</div>
@@ -2044,8 +2538,8 @@ graph LR
           </div>
           <div class="line">
             <div class="name ">dY", quality.html</div>
-            <div class="size">188.3 KB</div>
-            <div class="modified">2026-06-26 17:39</div>
+            <div class="size">188.8 KB</div>
+            <div class="modified">2026-06-26 20:14</div>
           </div>
           <div class="line">
             <div class="name ">dY", quick-check.mjs</div>
@@ -2074,8 +2568,8 @@ graph LR
           </div>
           <div class="line">
             <div class="name ">dY", run-pipeline.bat</div>
-            <div class="size">667 B</div>
-            <div class="modified">2026-05-17 23:28</div>
+            <div class="size">921 B</div>
+            <div class="modified">2026-06-26 18:44</div>
           </div>
           <div class="line">
             <div class="name ">dY", run-profile-54-photo-wall.cmd</div>
@@ -2711,7 +3205,7 @@ graph LR
 </div>
 
 <footer>
-  D≠D3DÊD´DÊ•?D,•?D_D˝D¯D´D_: 26.06.2026, 20:37:14 A˙
+  D≠D3DÊD´DÊ•?D,•?D_D˝D¯D´D_: 26.06.2026, 22:14:26 A˙
   DYD_•?DØDÊD'D´D,D1 D®•?D_D3D_D´ D®D¯•?•?DÊ•?D¯: 05.05.2026, 01:40:11 A˙
   DzDÒD´D_D˝D,•,•O: <code>node build-dashboard.js</code>
 </footer>
@@ -2935,7 +3429,7 @@ document.getElementById('modal-search-input').addEventListener('input', (e) => f
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
 
 // É"?É"?É"? Conversations slide-out panel É"?É"?É"?É"?É"?É"?É"?É"?É"?É"?É"?É"?É"?É"?É"?É"?É"?É"?É"?É"?É"?É"?É"?É"?É"?É"?É"?É"?É"?É"?É"?É"?É"?É"?É"?É"?É"?É"?É"?É"?É"?
-const CONVERSATIONS = [{"id":"s_6z14m0","author":"Michael Dwight Tan","groupName":"Pinoy in New York","postUrl":"","postText":"Pinoy in New York\nMichael Dwight Tan\n[Wedding Photographer and Videographer]\nGood day Kabayan! \nI'm looking for a Wedding Photographer and Videographers based in New York. \nKindly tag their FB page on the comment section.  É?› See more\nAll reactions:\n18 comments\nComment","scrapedAt":"2026-06-26T18:23:08.759Z","confidence":100,"postAgeHours":null,"ageBucket":"unknown","eventDate":null,"eventCat":"unknown","urgency":null,"touches":[],"hasOutbound":false,"lastTouchAt":null},{"id":"s_oduibk","author":"Kalynn Tabron","groupName":"NYC Photographers","postUrl":"","postText":"NYC Photographers\nKalynn Tabron\nSecond Shooter Needed É?" Hensonville, NY | June 19th & 20th\nIÉ?Tm looking for an experienced wedding photographer to second shoot a wedding weekend with me in Hensonville, New York on June 19th and June 20th.\nWhat IÉ?Tm looking for:\n Confident photographing the groom and groomsmen independently\nSee more\nAll reactions:\n12\n12\n29 comments\nComment","scrapedAt":"2026-06-26T18:23:08.759Z","confidence":100,"postAgeHours":null,"ageBucket":"unknown","eventDate":null,"eventCat":"unknown","urgency":null,"touches":[],"hasOutbound":false,"lastTouchAt":null},{"id":"s_tekm72","author":"Hector Luis Rivera","groupName":"New York Photographers & Videographers Network","postUrl":"","postText":"New York Photographers & Videographers Network\nHector Luis Rivera\nStill In search of a Lead Videographer ($100/hr) and a Second Shooter Photographer ($75/hr) for a wedding on August 16, 2026 at The Venetian, Garfield, NJ.\nWedding experience is a plus. Canon shooter. A must \nPlease send your gear list, portfolio, website, and/or Instagram for consideration. É?› See more\nAll reactions:\n4 comments\nComment","scrapedAt":"2026-06-26T18:23:08.759Z","confidence":100,"postAgeHours":null,"ageBucket":"unknown","eventDate":null,"eventCat":"unknown","urgency":null,"touches":[],"hasOutbound":false,"lastTouchAt":null},{"id":"s_427469","author":"HappyOwl9308","groupName":"New York Wedding Elopement","postUrl":"","postText":"New York Wedding Elopement\nHappyOwl9308\nHi,\nIÉ?Tm looking to come from wales and get married in NYC during the week of the 14th September. IÉ?Tm looking for a witness/photographer.\nWith about a budget of $250. I just want to witness and a couple of photos during the ceremony and outside. Any advise/help welcome.\nAll reactions:\n17 comments\nComment","scrapedAt":"2026-06-26T18:23:08.755Z","confidence":100,"postAgeHours":null,"ageBucket":"unknown","eventDate":null,"eventCat":"unknown","urgency":null,"touches":[],"hasOutbound":false,"lastTouchAt":null},{"id":"s_51um3","author":"Catherine Lu-Pascual","groupName":"Search: \"need a videographer\"","postUrl":"","postText":"Catherine Lu-Pascual\nHi! Looking for a photographer for a couple's shoot between May 25-29 in NYC. Please send me a DM.\n14\n46","scrapedAt":"2026-05-21T04:05:34.140Z","confidence":95,"postAgeHours":null,"ageBucket":"unknown","eventDate":null,"eventCat":"unknown","urgency":null,"touches":[],"hasOutbound":false,"lastTouchAt":null},{"id":"2178495252902582","author":"Rachel Collins","groupName":"Search: \"any photographers\" wedding","postUrl":"https://www.facebook.com/groups/608408669911256/posts/2178495252902582/","postText":"Rachel Collins is  feeling festive in Petaluma, CA.\nSeeking Makeup/Hair, PA, Editor and Ethnic Actress for Indie Feature, likely SUNDANCE\nThis is a microbudget indie to be shot June 7-18 in Petaluma, Ca. The crew, DP, Soud Mixer, Lights all worked on \"13 Reasons Why\" together and are all coming together to make this film because they believe it's a perfect fit for the NEXT category at Sundance film festival. Please DM if interested. The editor will need to be available in July. Warmly, Rachel\nCITY\nPetaluma, CA\n14\nView more comments\nJonathon Aspittle\nMessage sent\n3h\nSophia Nawabi\nHello I sent you a dm\n1h\nComment as Cheryl","scrapedAt":"2026-05-21T04:01:24.519Z","confidence":95,"postAgeHours":3,"ageBucket":"h6","eventDate":null,"eventCat":"unknown","urgency":null,"touches":[],"hasOutbound":false,"lastTouchAt":null},{"id":"s_eehkja","author":"Caitlin Diaz-Gorsi","groupName":"Search: \"ISO\" wedding photographer","postUrl":"","postText":"Caitlin Diaz-Gorsi\nHi! Hoping this is the right place, I found this page by accident.\nIÉ?Tm looking to do a graduation photo shoot with me (MBA) and my daughter (Kinder). I cant afford over $175-$200.\nIf this is something you think youÉ?Td be open to or can help out with that would be great! If we are a good match I would like to do family photos in the future with the same photographer to keep the same vibe lol\n40","scrapedAt":"2026-05-21T02:05:25.190Z","confidence":95,"postAgeHours":null,"ageBucket":"unknown","eventDate":null,"eventCat":"unknown","urgency":null,"touches":[],"hasOutbound":false,"lastTouchAt":null},{"id":"s_akwzt4","author":"Oleh VideoEditor Pustovoit","groupName":"I Need A Photographer or Videographer in Los Angeles California - LA - Jobs","postUrl":"","postText":"I Need A Photographer or Videographer in Los Angeles California - LA - Jobs\nOleh VideoEditor Pustovoit\nHi,É?› See more\nYOUTUBE.COM\nWedding Event Real Estate Corporate Video Editor\nComment as Cheryl","scrapedAt":"2026-05-21T00:15:49.151Z","confidence":95,"postAgeHours":null,"ageBucket":"unknown","eventDate":null,"eventCat":"unknown","urgency":null,"touches":[],"hasOutbound":false,"lastTouchAt":null},{"id":"4748968032093034","author":"unknown","groupName":"Photographers, Videographers, Models, Actors In Los Angeles","postUrl":"https://www.facebook.com/groups/1575300009459868/posts/4748968032093034/","postText":"Alexis My'Chell\nAˇ\n A˙ \nFollow\nHi love:) do you have photos of some of your work?:)\n18m\nLike\nReply\nShare","scrapedAt":"2026-05-20T23:54:47.774Z","confidence":55,"postAgeHours":0.3,"ageBucket":"h1","eventDate":null,"eventCat":"unknown","urgency":null,"touches":[],"hasOutbound":false,"lastTouchAt":null},{"id":"3564588053688816","author":"unknown","groupName":"Photographers of Houston","postUrl":"https://www.facebook.com/groups/412644225549897/posts/3564588053688816/","postText":"Jacqueline Brooke Alba\nMine has lots of natural lighting in in Friendswood GracefulLee Photography\n12m\nLike\nReply\nShare\nEdited","scrapedAt":"2026-05-20T23:31:18.817Z","confidence":65,"postAgeHours":0.2,"ageBucket":"h1","eventDate":null,"eventCat":"unknown","urgency":null,"touches":[],"hasOutbound":false,"lastTouchAt":null},{"id":"27312382778345234","author":"Darryl Johnson","groupName":"Search: \"need a videographer\"","postUrl":"https://www.facebook.com/groups/sandiegophotographers1/posts/27312382778345234/","postText":"Darryl Johnson\nHey artists! IÉ?Tm inquiring to see if a photographer and/or videographer would be up for a barter \nMy primary vocation is personal development coaching specializing in self protection and fitness. \nI also have a custom apparel/merchandise business and a custom website/landing page business. É?› See more\n10\nView more answers\nRaven Kinsler\ni'm interested! www.instagram.com/ravenberlinphoto\n7h\nView 1 reply\nAnswer as Cheryl","scrapedAt":"2026-05-20T22:24:14.146Z","confidence":92,"postAgeHours":7,"ageBucket":"d1","eventDate":null,"eventCat":"unknown","urgency":null,"touches":[],"hasOutbound":false,"lastTouchAt":null}];
+const CONVERSATIONS = [{"id":"4551437831759759","author":"Online status indicatorActive","groupName":"looking for affordable photographer","postUrl":"https://www.facebook.com/groups/3434522096784677/posts/4551437831759759/","postText":"Online status indicator\nActive\nImaginative Timmy\n is at Port Harcourt City.\nPort Harcourt, Nigeria\nBTS at Studio Sycl É?› See more\nBTS at Studio Sycl \n#photography #ProductPhotography  #SYCL\nImaginative Timmy A˙ Original audio\nImaginative Timmy A˙ Original audio\nImaginative Timmy A˙ Original audio\nlooking for affordable photographer\nA˙ Imaginative Timmy\n A˙ Jun 26\n1 comment\nComment\nImaginative Timmy\nAuthor\n@everyone\n9m\nComment as Emma","scrapedAt":"2026-06-26T20:12:28.343Z","confidence":100,"postAgeHours":0.1,"ageBucket":"h1","eventDate":null,"eventCat":"unknown","urgency":null,"touches":[],"hasOutbound":false,"lastTouchAt":null},{"id":"1331594521774497","author":"unknown","groupName":"Southern California Photographer Search","postUrl":"https://www.facebook.com/groups/322870532646906/posts/1331594521774497/","postText":"Taylor Padilla\nAˇ\n A˙ \nFollow\nWould love to know your current fee for a maternity session! WeÉ?Tre not available this Sat but these are lovely. \n4d\nLike\nReply\nShare","scrapedAt":"2026-06-26T19:33:29.041Z","confidence":100,"postAgeHours":96,"ageBucket":"old","eventDate":null,"eventCat":"unknown","urgency":null,"touches":[],"hasOutbound":false,"lastTouchAt":null},{"id":"27742851158631725","author":"unknown","groupName":"San Diego Photographers","postUrl":"https://www.facebook.com/groups/sandiegophotographers1/posts/27742851158631725/","postText":"SoftHedgehog6416\nHi I have a bday coming soon and wanted to do a shoot by the beach? If thats something youÉ?Tll like to do\n3d\nLike\nReply\nShare\n1","scrapedAt":"2026-06-26T19:15:23.498Z","confidence":100,"postAgeHours":72,"ageBucket":"old","eventDate":null,"eventCat":"unknown","urgency":null,"touches":[],"hasOutbound":false,"lastTouchAt":null},{"id":"s_6z14m0","author":"Michael Dwight Tan","groupName":"Pinoy in New York","postUrl":"","postText":"Pinoy in New York\nMichael Dwight Tan\n[Wedding Photographer and Videographer]\nGood day Kabayan! \nI'm looking for a Wedding Photographer and Videographers based in New York. \nKindly tag their FB page on the comment section.  É?› See more\nAll reactions:\n18 comments\nComment","scrapedAt":"2026-06-26T18:23:08.759Z","confidence":100,"postAgeHours":null,"ageBucket":"unknown","eventDate":null,"eventCat":"unknown","urgency":null,"touches":[],"hasOutbound":false,"lastTouchAt":null},{"id":"s_oduibk","author":"Kalynn Tabron","groupName":"NYC Photographers","postUrl":"","postText":"NYC Photographers\nKalynn Tabron\nSecond Shooter Needed É?" Hensonville, NY | June 19th & 20th\nIÉ?Tm looking for an experienced wedding photographer to second shoot a wedding weekend with me in Hensonville, New York on June 19th and June 20th.\nWhat IÉ?Tm looking for:\n Confident photographing the groom and groomsmen independently\nSee more\nAll reactions:\n12\n12\n29 comments\nComment","scrapedAt":"2026-06-26T18:23:08.759Z","confidence":100,"postAgeHours":null,"ageBucket":"unknown","eventDate":null,"eventCat":"unknown","urgency":null,"touches":[],"hasOutbound":false,"lastTouchAt":null},{"id":"s_tekm72","author":"Hector Luis Rivera","groupName":"New York Photographers & Videographers Network","postUrl":"","postText":"New York Photographers & Videographers Network\nHector Luis Rivera\nStill In search of a Lead Videographer ($100/hr) and a Second Shooter Photographer ($75/hr) for a wedding on August 16, 2026 at The Venetian, Garfield, NJ.\nWedding experience is a plus. Canon shooter. A must \nPlease send your gear list, portfolio, website, and/or Instagram for consideration. É?› See more\nAll reactions:\n4 comments\nComment","scrapedAt":"2026-06-26T18:23:08.759Z","confidence":100,"postAgeHours":null,"ageBucket":"unknown","eventDate":null,"eventCat":"unknown","urgency":null,"touches":[],"hasOutbound":false,"lastTouchAt":null},{"id":"s_427469","author":"HappyOwl9308","groupName":"New York Wedding Elopement","postUrl":"","postText":"New York Wedding Elopement\nHappyOwl9308\nHi,\nIÉ?Tm looking to come from wales and get married in NYC during the week of the 14th September. IÉ?Tm looking for a witness/photographer.\nWith about a budget of $250. I just want to witness and a couple of photos during the ceremony and outside. Any advise/help welcome.\nAll reactions:\n17 comments\nComment","scrapedAt":"2026-06-26T18:23:08.755Z","confidence":100,"postAgeHours":null,"ageBucket":"unknown","eventDate":null,"eventCat":"unknown","urgency":null,"touches":[],"hasOutbound":false,"lastTouchAt":null},{"id":"s_51um3","author":"Catherine Lu-Pascual","groupName":"Search: \"need a videographer\"","postUrl":"","postText":"Catherine Lu-Pascual\nHi! Looking for a photographer for a couple's shoot between May 25-29 in NYC. Please send me a DM.\n14\n46","scrapedAt":"2026-05-21T04:05:34.140Z","confidence":95,"postAgeHours":null,"ageBucket":"unknown","eventDate":null,"eventCat":"unknown","urgency":null,"touches":[],"hasOutbound":false,"lastTouchAt":null},{"id":"2178495252902582","author":"Rachel Collins","groupName":"Search: \"any photographers\" wedding","postUrl":"https://www.facebook.com/groups/608408669911256/posts/2178495252902582/","postText":"Rachel Collins is  feeling festive in Petaluma, CA.\nSeeking Makeup/Hair, PA, Editor and Ethnic Actress for Indie Feature, likely SUNDANCE\nThis is a microbudget indie to be shot June 7-18 in Petaluma, Ca. The crew, DP, Soud Mixer, Lights all worked on \"13 Reasons Why\" together and are all coming together to make this film because they believe it's a perfect fit for the NEXT category at Sundance film festival. Please DM if interested. The editor will need to be available in July. Warmly, Rachel\nCITY\nPetaluma, CA\n14\nView more comments\nJonathon Aspittle\nMessage sent\n3h\nSophia Nawabi\nHello I sent you a dm\n1h\nComment as Cheryl","scrapedAt":"2026-05-21T04:01:24.519Z","confidence":95,"postAgeHours":3,"ageBucket":"h6","eventDate":null,"eventCat":"unknown","urgency":null,"touches":[],"hasOutbound":false,"lastTouchAt":null},{"id":"s_eehkja","author":"Caitlin Diaz-Gorsi","groupName":"Search: \"ISO\" wedding photographer","postUrl":"","postText":"Caitlin Diaz-Gorsi\nHi! Hoping this is the right place, I found this page by accident.\nIÉ?Tm looking to do a graduation photo shoot with me (MBA) and my daughter (Kinder). I cant afford over $175-$200.\nIf this is something you think youÉ?Td be open to or can help out with that would be great! If we are a good match I would like to do family photos in the future with the same photographer to keep the same vibe lol\n40","scrapedAt":"2026-05-21T02:05:25.190Z","confidence":95,"postAgeHours":null,"ageBucket":"unknown","eventDate":null,"eventCat":"unknown","urgency":null,"touches":[],"hasOutbound":false,"lastTouchAt":null}];
 function fmtConvDate(s) { if (!s) return ''; try { return new Date(s).toLocaleString('en-US', { month:'short', day:'numeric', hour:'2-digit', minute:'2-digit' }); } catch { return s; } }
 function openConvPanel(idx) {
   const c = CONVERSATIONS[idx]; if (!c) return;
