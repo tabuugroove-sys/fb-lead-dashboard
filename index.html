@@ -964,7 +964,7 @@ Share</div></div>
   <div class="stat-row">
     <div class="stat"><div class="num" style="color:var(--blue)">14</div><div class="lbl">Posts collected</div></div>
     <div class="stat"><div class="num">56</div><div class="lbl">After lex filter</div></div>
-    <div class="stat"><div class="num">3</div><div class="lbl">Tier-1 pass (Haiku)</div></div>
+    <div class="stat"><div class="num">3</div><div class="lbl">Tier-1 pass (Gemini)</div></div>
     <div class="stat"><div class="num" style="color:var(--green)">5</div><div class="lbl">Tier-2 confirmed</div></div>
     <div class="stat"><div class="num" style="color:var(--yellow)">3</div><div class="lbl">Sent to Telegram</div></div>
   </div>
@@ -977,9 +977,9 @@ Share</div></div>
       <div class="arr">-></div>
       <div class="stage"><div class="v">56</div><div class="l">lex filter</div></div>
       <div class="arr">-></div>
-      <div class="stage"><div class="v">3</div><div class="l">tier-1 haiku</div></div>
+      <div class="stage"><div class="v">3</div><div class="l">tier-1 gemini</div></div>
       <div class="arr">-></div>
-      <div class="stage"><div class="v">5</div><div class="l">tier-2 sonnet</div></div>
+      <div class="stage"><div class="v">5</div><div class="l">tier-2 codex gpt</div></div>
       <div class="arr">-></div>
       <div class="stage" style="border-color: var(--green);"><div class="v" style="color:var(--green)">3</div><div class="l">delivered</div></div>
     </div>
@@ -1341,12 +1341,12 @@ graph TB
   POSTS[(posts-new.jsonl)]
   LEX[Lex Filter<br/>regex / V1+V2 dictionary]
   CAND[(candidates-new.jsonl)]
-  T1[AI Tier-1<br/>Haiku 4.5 batch-50<br/>broad sweep]
+  T1[AI Tier-1<br/>Gemini batch-50<br/>broad sweep]
   POT[(potentials-new.jsonl)]
-  T2[AI Tier-2<br/>Sonnet 4.6<br/>precision pass]
+  T2[AI Tier-2<br/>Codex GPT<br/>precision pass]
   LEADS[(leads-new.jsonl)]
   TG[Telegram Bot<br/>card delivery]
-  TS{Test set 100 posts<br/>single H / single S / cascade}
+  TS{Test set 100 posts<br/>single Gemini / Codex GPT / cascade}
 
   SCRAPER --> POSTS --> LEX --> CAND --> T1 --> POT --> T2 --> LEADS --> TG
   TS -.measures.-> T1
@@ -1839,7 +1839,7 @@ graph TB
       </div>
       <div class="rule-card">
         <div class="title">, Token economy: lex filter D"Dz AI</div>
-        <div class="body">D-85% DD'D,D_DYD,-D,DD. Sonnet ,D_DDrderline.</div>
+        <div class="body">Gemini handles broad Tier-1 screening. Codex GPT handles Tier-2 borderline precision while Sonnet is on cooldown.</div>
       </div>
     </div>
 
@@ -1849,9 +1849,9 @@ graph TB
       <table>
         <thead><tr><th>Configuration</th><th>Cost</th><th>Precision target</th></tr></thead>
         <tbody>
-          <tr><td>Single Haiku 4.5</td><td>$</td><td>%%</td></tr>
-          <tr><td>Haiku -> Sonnet (cascade)</td><td>$$</td><td>%%</td></tr>
-          <tr><td>Single Sonnet 4.6</td><td>$$$</td><td>%%</td></tr>
+          <tr><td>Single Gemini</td><td>$</td><td>%%</td></tr>
+          <tr><td>Gemini -> Codex GPT (cascade)</td><td>$$</td><td>%%</td></tr>
+          <tr><td>Single Codex GPT</td><td>$$$</td><td>%%</td></tr>
         </tbody>
       </table>
       <p style="font-size: 12px; color: var(--muted); margin-top: 14px;">D: precision D<b>order</b> %%. Recall D,,D,</p>
