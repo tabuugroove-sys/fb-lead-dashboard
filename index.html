@@ -3181,15 +3181,11 @@ graph LR
   </div>
 </div>
 
-<footer>
-  D,D: 26.06.2026, 22:14:26 ·
-  DYD_,D1 DD3D_D: 05.05.2026, 01:40:11 ·
-  DzD,,: <code>node build-dashboard.js</code>
-</footer>
+<footer>Updated: 2026-06-26 22:14 · Build: <code>node build-dashboard.js</code></footer>
 
 </div>
 
-<script>
+<script type="text/plain" id="legacy-dashboard-script">
 mermaid.initialize({ startOnLoad: true, theme: 'dark', themeVariables: { background: '#0a0e13', primaryColor: '#1e2530', primaryTextColor: '#c9d1d9', lineColor: '#58a6ff', textColor: '#c9d1d9' } });
 
 // ===== Tabs router =====
@@ -3197,13 +3193,16 @@ function showPage(name) {
   document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.page === name));
   document.querySelectorAll('.page').forEach(p => p.classList.toggle('active', p.dataset.page === name));
   history.replaceState(null, '', '#/' + name);
-  // re-render mermaid D,D,D1 DsetTimeout(() => mermaid.run({ querySelector: '.page.active .mermaid' }), 50);
+  // re-render mermaid when switching to pages that contain diagrams
+  setTimeout(() => mermaid.run({ querySelector: '.page.active .mermaid' }), 50);
 }
 document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => showPage(t.dataset.page)));
-const initial = (location.hash.match(/^#\/(\w+)/) || [])[1] || 'leads';
-if (['leads','parser','system'].includes(initial)) showPage(initial);
+const initial = (location.hash.match(/^#\/(\w+)/) || [])[1] || 'liveops';
+const pages = Array.from(document.querySelectorAll('.page')).map(p => p.dataset.page);
+showPage(pages.includes(initial) ? initial : 'liveops');
 
-// Live Feed auto-refresh function stepBadge(post) {
+// Live Feed auto-refresh
+function stepBadge(post) {
   if (post.dm_sent)        return '<span class="step-dot ok"></span>DM sent';
   if (post.dm_failed)      return '<span class="step-dot fail"></span>DM failed';
   if (post.commented)      return '<span class="step-dot ok"></span>Commented';
@@ -3462,6 +3461,26 @@ document.querySelectorAll('button.fchip').forEach(btn => {
     });
     applyConvFilters();
   });
+});
+</script>
+<script>
+mermaid.initialize({ startOnLoad: false, theme: 'dark', themeVariables: { background: '#0a0e13', primaryColor: '#1e2530', primaryTextColor: '#c9d1d9', lineColor: '#58a6ff', textColor: '#c9d1d9' } });
+function renderActiveMermaid() {
+  if (!window.mermaid) return;
+  try { mermaid.run({ querySelector: '.page.active .mermaid' }); } catch (e) { console.warn('mermaid render skipped', e); }
+}
+function showPage(name) {
+  var pages = Array.from(document.querySelectorAll('.page')).map(function(p){ return p.dataset.page; });
+  if (!pages.includes(name)) name = 'liveops';
+  document.querySelectorAll('.tab').forEach(function(t){ t.classList.toggle('active', t.dataset.page === name); });
+  document.querySelectorAll('.page').forEach(function(p){ p.classList.toggle('active', p.dataset.page === name); });
+  history.replaceState(null, '', '#/' + name);
+  setTimeout(renderActiveMermaid, 80);
+}
+document.addEventListener('DOMContentLoaded', function() {
+  document.querySelectorAll('.tab').forEach(function(t){ t.addEventListener('click', function(){ showPage(t.dataset.page); }); });
+  var initial = (location.hash.match(/^#/(w+)/) || [])[1] || 'liveops';
+  showPage(initial);
 });
 </script>
 </body>
