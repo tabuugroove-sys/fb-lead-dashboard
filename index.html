@@ -3473,13 +3473,19 @@ function showPage(name) {
   var pages = Array.from(document.querySelectorAll('.page')).map(function(p){ return p.dataset.page; });
   if (!pages.includes(name)) name = 'liveops';
   document.querySelectorAll('.tab').forEach(function(t){ t.classList.toggle('active', t.dataset.page === name); });
-  document.querySelectorAll('.page').forEach(function(p){ p.classList.toggle('active', p.dataset.page === name); });
+  document.querySelectorAll('.page').forEach(function(p){
+    var active = p.dataset.page === name;
+    p.classList.toggle('active', active);
+    p.hidden = !active;
+    p.style.display = active ? 'block' : 'none';
+  });
   history.replaceState(null, '', '#/' + name);
   setTimeout(renderActiveMermaid, 80);
 }
 document.addEventListener('DOMContentLoaded', function() {
   document.querySelectorAll('.tab').forEach(function(t){ t.addEventListener('click', function(){ showPage(t.dataset.page); }); });
-  var initial = (location.hash.match(/^#/(w+)/) || [])[1] || 'liveops';
+  var initialMatch = location.hash.match(/^#\/(\w+)/);
+  var initial = initialMatch ? initialMatch[1] : 'liveops';
   showPage(initial);
 });
 </script>
