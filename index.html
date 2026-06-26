@@ -462,9 +462,12 @@
       </div>
       <div class="sparkline-wrap"><canvas id="sparkline"></canvas></div>
     </div>
+    <div style="margin-top:12px;display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px;font-size:12px">
+      <div style="border:1px solid var(--border);border-radius:6px;padding:8px;background:rgba(255,255,255,0.02)"><b style="color:var(--fg)">Claude CLI</b><br><span style="color:var(--muted)">715 calls · 713.6K tokens</span><br><code>claude-haiku-4-5-20251001 289.0K · haiku 225.9K</code></div><div style="border:1px solid var(--border);border-radius:6px;padding:8px;background:rgba(255,255,255,0.02)"><b style="color:var(--fg)">Gemini REST</b><br><span style="color:var(--muted)">203 calls · 35.2K tokens</span><br><code>gemini-3.1-flash-lite 35.2K</code></div><div style="border:1px solid var(--border);border-radius:6px;padding:8px;background:rgba(255,255,255,0.02)"><b style="color:var(--fg)">Gemini CLI</b><br><span style="color:var(--muted)">3 calls · 2.5K tokens</span><br><code>gemini-cli 2.5K</code></div><div style="border:1px solid var(--border);border-radius:6px;padding:8px;background:rgba(255,255,255,0.02)"><b style="color:var(--fg)">Paid API</b><br><span style="color:var(--muted)">1 calls · 1.1K tokens</span><br><code>claude-haiku-4-5-20251001 1.1K</code></div>
+    </div>
     <div style="margin-top: 12px; font-size: 11px; color: var(--muted);">
       Источник: <code>data/ai-stats.jsonl + data/ai-stats-new.jsonl (922 calls tracked)</code> ·
-      CLI = твоя подписка (free) · API = pay-per-token ·
+      CLI = локальный Gemini/Claude CLI, фактические токены если залогированы; старые CLI-записи без токенов оценены 3.5K/call · REST/API = pay-per-token/free quota ·
       Обновить: <code>node build-dashboard.js</code>
     </div>
   </div>
@@ -1611,8 +1614,8 @@ graph LR
           </div>
           <div class="line">
             <div class="name ">📄 build-dashboard.js</div>
-            <div class="size">135.1 KB</div>
-            <div class="modified">2026-06-26 18:19</div>
+            <div class="size">136.3 KB</div>
+            <div class="modified">2026-06-26 18:37</div>
           </div>
           <div class="line">
             <div class="name ">📄 build-dashboard.js.bak-20260516-002439</div>
@@ -1692,7 +1695,7 @@ graph LR
           <div class="line">
             <div class="name ">📄 dashboard.html</div>
             <div class="size">224.7 KB</div>
-            <div class="modified">2026-06-26 18:30</div>
+            <div class="modified">2026-06-26 18:34</div>
           </div>
           <div class="line">
             <div class="name dir">📁 data</div>
@@ -1910,6 +1913,16 @@ graph LR
             <div class="modified">2026-05-10 03:29</div>
           </div>
           <div class="line">
+            <div class="name ">📄 patch_aiusage_breakdown.cjs</div>
+            <div class="size">541 B</div>
+            <div class="modified">2026-06-26 18:35</div>
+          </div>
+          <div class="line">
+            <div class="name ">📄 patch_aiusage_exact.cjs</div>
+            <div class="size">675 B</div>
+            <div class="modified">2026-06-26 18:35</div>
+          </div>
+          <div class="line">
             <div class="name ">📄 patch_fb_dashboard_tokens.cjs</div>
             <div class="size">5.0 KB</div>
             <div class="modified">2026-06-26 18:19</div>
@@ -1938,6 +1951,16 @@ graph LR
             <div class="name ">📄 patch_session_tg.mjs</div>
             <div class="size">1.2 KB</div>
             <div class="modified">2026-05-16 16:56</div>
+          </div>
+          <div class="line">
+            <div class="name ">📄 patch_stats_after.cjs</div>
+            <div class="size">820 B</div>
+            <div class="modified">2026-06-26 18:37</div>
+          </div>
+          <div class="line">
+            <div class="name ">📄 patch_token_widget_source.cjs</div>
+            <div class="size">1.7 KB</div>
+            <div class="modified">2026-06-26 18:34</div>
           </div>
           <div class="line">
             <div class="name ">📄 patch-dashboard.cjs</div>
@@ -2688,7 +2711,7 @@ graph LR
 </div>
 
 <footer>
-  Сгенерировано: 26.06.2026, 20:32:07 ·
+  Сгенерировано: 26.06.2026, 20:37:14 ·
   Последний прогон парсера: 05.05.2026, 01:40:11 ·
   Обновить: <code>node build-dashboard.js</code>
 </footer>
